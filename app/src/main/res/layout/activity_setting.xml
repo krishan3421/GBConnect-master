@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".ui.SettingActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay"
+                app:contentInsetEnd="0dp"
+                app:contentInsetLeft="0dp"
+                app:contentInsetRight="0dp"
+                app:contentInsetStart="0dp"
+                app:titleTextAppearance="@style/Toolbar.TitleText"
+                app:contentInsetStartWithNavigation="0dp">
+            <TextView
+                    android:id="@+id/setting_title"
+                    style="@style/header_title"
+                    android:layout_gravity="center_vertical"
+                    android:text="@string/back"/>
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/setting_text_lower"
+                    android:layout_gravity="center"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:visibility="visible"
+                    android:textSize="@dimen/sp_size_16"
+                    android:id="@+id/toolbar_title" />
+        </androidx.appcompat.widget.Toolbar>
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include layout="@layout/content_setting"/>
+
+    <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_60"
+            android:visibility="gone"
+                    android:background="@color/light_gray"
+                    android:layout_gravity="bottom">
+
+        <Button style="@style/color_primary_round_button"
+                android:layout_centerInParent="true"
+                android:onClick="submit"
+                android:text="@string/save"
+                android:layout_marginLeft="@dimen/dimen_30"
+                android:layout_marginRight="@dimen/dimen_30"/>
+
+    </RelativeLayout>
+    <ProgressBar android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:id="@+id/progress_bar"
+            android:visibility="gone"/>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

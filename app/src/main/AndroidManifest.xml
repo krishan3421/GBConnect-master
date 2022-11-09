@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        package="com.gb.restaurant"
+        tools:ignore="LockedOrientationActivity">
+
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
+
+    <application
+            android:name=".MyApp"
+            android:allowBackup="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:networkSecurityConfig="@xml/network_security_config"
+            android:roundIcon="@mipmap/ic_launcher_round"
+            android:supportsRtl="true"
+            android:theme="@style/AppTheme">
+        <activity
+                android:name=".ui.ViewInvoiceActivity"
+                android:windowSoftInputMode="adjustResize"
+                android:theme="@style/AppTheme.NoActionBar"></activity>
+
+        <activity
+                android:name=".ui.DailySummaryActivity"
+                android:windowSoftInputMode="adjustResize"
+                android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+                android:name=".ui.CancelRefundActivity"
+                android:label="@string/title_activity_add_tips"
+                android:windowSoftInputMode="adjustResize"
+                android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+                android:name=".ui.AddTipsActivity"
+                android:label="@string/title_activity_add_tips"
+                android:windowSoftInputMode="adjustResize"
+                android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+                android:name=".ui.AddItemActivity"
+                android:label="@string/title_activity_add_tips"
+                android:windowSoftInputMode="adjustResize"
+                android:theme="@style/AppTheme.NoActionBar"></activity>
+        <activity
+                android:name=".ui.ReportsDetailActivity"
+                android:label="@string/title_activity_reports_detail"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.NewReportActivity"
+                android:label="@string/title_activity_new_report"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.CreateUserActivity"
+                android:label="@string/create_user"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.UserListActivity"
+                android:label="@string/users_list"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.MarketCouponActivity"
+                android:label="@string/title_activity_market_coupon"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.BankInfoActivity"
+                android:label="@string/bank_info"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.SupportActivity"
+                android:label="@string/title_activity_support"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.SearchActivity"
+                android:label="@string/title_activity_search"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" /> <!-- android:networkSecurityConfig="@xml/network_security_config" -->
+        <activity
+                android:name=".ui.ResetPassActivity"
+                android:label="@string/title_activity_reset_pass"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.ConfirmTimeDialogActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/Theme.Transparent" />
+        <activity
+                android:name=".ui.NewDetailActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.ComDetailActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.HomeDetailActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.ViewDialogActivity"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.SettingActivity"
+                android:label="@string/title_activity_setting"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.ViewReportActivity"
+                android:label="@string/view_report"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.EventEnquiryActivity"
+                android:label="@string/title_activity_event_enquiry"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.ReservationActivity"
+                android:label="@string/title_activity_reservation"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.OrdersActivity"
+                android:label="@string/title_activity_orders"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.HomeActivity"
+                android:launchMode="singleTask"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.RegistrationActivity"
+                android:label="@string/title_activity_registration"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar"
+                android:windowSoftInputMode="adjustResize" />
+        <activity
+                android:name=".ui.RestaurantLoginActivity"
+                android:label="@string/title_activity_restaurant_home"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar"
+                android:windowSoftInputMode="adjustResize" />
+        <activity
+                android:name=".ui.DriverLoginActivity"
+                android:label="@string/title_activity_driver_home"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+                android:name=".ui.DashboardActivity"
+                android:label="@string/title_activity_dashboard"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoAnimTheme" /> <!-- use android:usesCleartextTraffic="true"  or  android:networkSecurityConfig="@xml/network_security_config" -->
+        <activity
+                android:name=".ui.SplashActivity"
+                android:label="@string/app_name"
+                android:screenOrientation="portrait"
+                android:theme="@style/AppTheme.NoActionBar">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <service
+                android:name=".push.MyFirebaseMessagingService"
+                android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
+
+        <service android:name="net.posprinter.service.PosprinterService" />
+
+        <!--
+ Set custom default icon. This is used when no icon is set for incoming notification messages.
+     See README(https://goo.gl/l4GJaQ) for more.
+        -->
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_icon"
+                android:resource="@drawable/ic_action_refresh" />
+        <!--
+ Set color used with incoming notification messages. This is used when no color is set for the incoming
+             notification message. See README(https://goo.gl/6BKBk7) for more.
+        -->
+        <meta-data
+                android:name="com.google.firebase.messaging.default_notification_color"
+                android:resource="@color/colorAccent" />
+    </application>
+
+</manifest>

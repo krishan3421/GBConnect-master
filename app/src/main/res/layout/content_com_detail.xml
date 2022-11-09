@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/com_detail_activity"
+        tools:context=".ui.ComDetailActivity">
+
+
+    <LinearLayout android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="@color/white">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:background="@color/light_pink"
+                android:id="@+id/future_order_layout">
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:layout_gravity="center_horizontal">
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_size_22"
+                        android:text="@string/future"/>
+                <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/watch_icon"/>
+                <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_size_22"
+                        android:text="@string/order"/>
+            </LinearLayout>
+
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textStyle="bold"
+                    android:id="@+id/hold_time_text"
+                    android:textColor="@color/colorAccent"
+                    android:layout_gravity="center_horizontal"
+                    android:textSize="@dimen/sp_size_14"
+                    android:layout_marginLeft="@dimen/dimen_10"
+                    android:layout_marginRight="@dimen/dimen_10"
+                    android:layout_marginBottom="@dimen/dimen_5"
+                    android:text="Hold Order on: November 6, 2019 at 05:00"/>
+
+        </LinearLayout>
+        <include layout="@layout/order_detail_item"/>
+        <TextView style="@style/normal_text_12"
+                android:layout_gravity="center"
+                android:layout_width="match_parent"
+                android:background="@color/black"
+                android:textColor="@color/white"
+                android:paddingTop="@dimen/dimen_5"
+                android:paddingBottom="@dimen/dimen_5"
+                android:gravity="center"
+                android:id="@+id/order_time_text"/>
+
+        <LinearLayout android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_30"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dimen_5"
+                android:paddingRight="@dimen/dimen_5">
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:orientation="horizontal">
+                <TextView
+                        style="@style/normal_text_12"
+                        android:id="@+id/order_id_text"
+                        android:textStyle="bold"
+                        android:textIsSelectable="true"
+                        android:layout_gravity="left|center_vertical"
+                        android:text="GB11123238769321"/>
+                <TextView android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="right"
+                        android:layout_gravity="right|center_vertical"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/sp_size_16"
+                        android:textStyle="bold"
+                        android:id="@+id/orders_item_count"
+                        android:text="Orders (5 Items)"/>
+            </LinearLayout>
+            <View   android:id="@+id/divider_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_1"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:background="@color/black"/>
+
+        </LinearLayout>
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:id="@+id/detail_recycler"
+                android:layout_marginTop="@dimen/dimen_5"
+                android:layout_marginBottom="@dimen/dimen_5"
+                android:layout_marginRight="@dimen/activity_horizontal_margin"
+                android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                android:layout_height="match_parent"/>
+        <include layout="@layout/detail_com_footer"/>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

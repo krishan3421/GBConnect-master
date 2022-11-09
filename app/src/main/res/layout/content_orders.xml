@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/dimen_2"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/activity_orders"
+        tools:context=".ui.OrdersActivity">
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:gravity="end|center_vertical">
+        <ImageView android:id="@+id/back_image"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="backMethod"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/back_icon_order" />
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/refresh_image"
+                android:onClick="refreshPage"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                app:backgroundTint="@color/refresh_blue_color"
+                android:src="@drawable/ic_action_refresh" />
+    </RelativeLayout>
+
+    <androidx.appcompat.widget.LinearLayoutCompat android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:paddingTop="@dimen/dimen_5"
+            android:paddingBottom="@dimen/dimen_20"
+            android:layout_marginLeft="@dimen/dimen_30"
+            android:layout_marginRight="@dimen/dimen_30"
+            android:gravity="center_vertical"
+            android:background="@color/white"
+            android:layout_height="wrap_content">
+
+        <Button android:id="@+id/reservation_button"
+                style="@style/dot9_png_button"
+                android:layout_weight="1"
+                android:onClick="reservationPage"
+                android:layout_marginRight="@dimen/dimen_2"
+                android:text="@string/reservations"/>
+        <Button
+                style="@style/dot9_png_button"
+                android:layout_weight="1"
+                android:onClick="eventEnquieryPage"
+                android:layout_marginLeft="@dimen/dimen_2"
+                android:text="@string/event_enquiry"/>
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+
+    <com.google.android.material.tabs.TabLayout
+            android:id="@+id/order_tab_layout"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_40"
+            android:layout_marginTop="@dimen/dimen_2"
+            app:tabTextColor="@color/blue_color"
+            app:tabSelectedTextColor="@color/white"
+            app:tabTextAppearance="@style/MyCustomTabText"
+            app:tabBackground="@drawable/tab_selector"
+            app:tabPaddingStart="@dimen/dimen_10"
+            app:tabPaddingEnd="@dimen/dimen_10"
+            app:tabMode="fixed"
+            app:tabGravity="fill"
+            app:tabIndicatorColor="@null"/>
+
+
+
+    <androidx.viewpager.widget.ViewPager
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dimen_35"
+            android:id="@+id/order_view_pager"/>
+
+</LinearLayout>

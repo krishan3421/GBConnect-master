@@ -1,0 +1,329 @@
+<resources>
+    <string name="app_name">GB\nRESTAURANT</string>
+    <string name="app_name_alert">GB RESTAURANT</string>
+    <string name="action_settings">Settings</string>
+    <string name="grabull_lower">Grabull</string>
+    <string name="ok">OK</string>
+    <string name="exit_app">Are you sure,You want to exit App?</string>
+    <string name="logout_app">Are you sure,You want to Logout?</string>
+    <string name="restart">RESTART</string>
+    <string name="no">NO</string>
+    <string name="reply">Reply</string>
+    <string name="reply_res"><i>Reply</i></string>
+    <string name="submit">SUBMIT</string>
+    <string name="create_user"><u>Create User</u></string>
+    <string name="users_list">Users</string>
+    <string name="save">SAVE</string>
+    <string name="auto_login">Remember Me</string>
+    <string name="remove_user_msg">Do you want to remove User?</string>
+    <string name="remove_discount_msg">Do you want to remove Discount?</string>
+    <!--splash-->
+    <string name="grabull">GRABULL</string>
+    <string name="for_restaurant">For Restaurants</string>
+    <string name="for_driver">For Drivers</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_activity_driver_home">DriverHomeActivity</string>
+    <string name="title_activity_restaurant_home">Login</string>
+
+    <!--    Bank info activity-->
+    <string name="update_bank_info">Update Bank Info</string>
+    <string name="add_bank_info">Add Bank Info</string>
+    <string name="account_number">Account Number*</string>
+    <string name="bank_name">Bank Name*</string>
+    <string name="routing">Routing*</string>
+    <string name="account_holder_name">Account Holder name</string>
+    <!--Restaurant login-->
+    <string name="login_title">View Orders &amp; Admin Account</string>
+    <string name="login">Login</string>
+    <string name="back">BACK</string>
+    <string name="back_order">Back to Orders</string>
+    <string name="restaurant">RESTAURANT</string>
+    <string name="forgot_password"><u>Forgot Password</u></string>
+    <string name="user_id">User ID</string>
+    <string name="user_name">Username</string>
+    <string name="password">Password</string>
+    <string name="get_order">GET ORDERS</string>
+    <string name="new_to_grabull">New to Grabull</string>
+    <string name="request_signup"><u>Request Signup</u></string>
+    <string name="order_details">Order Details</string>
+    <string name="dollar_off">$ OFF</string>
+    <string name="percent_off">% OFF</string>
+    <string name="cancel_order_not_found_text">Opps order not found,Please retype correct order number.</string>
+    <string name="forgot_password_text">Forgot Password</string>
+    <string name="forgot_pass_validation">Please enter valid User ID</string>
+    <!--home page-->
+    <string name="new_update">New update available with new features upgrade now Upgrade</string>
+    <string name="upgrade">Upgrade</string>
+    <string name="orders">ORDERS</string>
+    <string name="support">SUPPORT</string>
+    <string name="setting_text">SETTINGS</string>
+    <string name="setting_text_lower">Settings</string>
+    <string name="reports">REPORTS</string>
+    <string name="reports_lower">Reports</string>
+    <string name="daily_summary">Daily Summary</string>
+    <string name="request_Call_back">REQUEST CALL BACK</string>
+    <string name="marketing_coupon">MARKETING &amp; COUPONS</string>
+    <string name="marketing_coupon_lower">Marketing &amp; Coupons</string>
+    <string name="design_your_discount_coupons">Design your Discount coupons</string>
+    <string name="marketing_description">Our Simple Promotions Attract new customers,\nEncourage large orders, get Repeat customers</string>
+    <string name="user_attracted">USERS ATTRACTED</string>
+    <string name="upto_four_promotions">You can create\nupto 4 Promotions</string>
+    <!--Registration-->
+    <string name="choose">CHOOSE</string>
+    <string name="role">Role</string>
+    <!--Reset password-->
+    <string name="new_password">New Password</string>
+    <string name="reset_password">Confirm Password</string>
+<!--    Create User-->
+    <string name="create_user_text">Create User</string>
+    <string name="full_name">Full Name</string>
+    <string name="login_id">Login ID</string>
+    <string name="all_user_list"><u>All user list</u></string>
+    <!--Registration activity-->
+    <string name="regis_dis">Tell us about your restaurant and a member of the grabull team will get in touch with you
+        soon.
+    </string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="mob_no">Mobile No</string>
+    <string name="restaurant_name">Restaurant name</string>
+    <string name="restaurant_zip_code">Restaurant Zip Code</string>
+    <string name="restaurant_role">Restaurant Role</string>
+
+    <!--New Fragment-->
+    <string name="view_details">View Details</string>
+    <!--ORDERS ACTIVITY-->
+    <string name="reservations">RESERVATIONS</string>
+    <string name="event_enquiry">EVENT ENQUIRY</string>
+    <string name="confirm">CONFIRM</string>
+    <string name="confirm_text">Confirm</string>
+    <string name="location">Location :</string>
+    <string name="confirmed">Confirmed</string>
+    <string name="no_order">No Order(s) found</string>
+    <string name="no_new_order">You don\'t have any new orders right now.</string>
+    <string name="upcoming_new_order">Upcoming new orders will show up here before becoming complete.</string>
+    <string name="no_active_order">You don\'t have any Active orders right now.</string>
+    <string name="upcoming_active_order">Upcoming Active orders will show up here before becoming complete.</string>
+    <string name="no_complete_order">You don\'t have any completed orders right now.</string>
+    <string name="upcoming_complete_order">Upcoming Completed orders will show up here. </string>
+    <string name="no_user">No User(s) found</string>
+    <string name="update">UPDATE</string>
+    <string name="action_refresh">Refresh</string>
+    <string name="action_search">Search</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+
+    <!--Reports activity-->
+    <string name="select_date">SELECT DATE</string>
+    <string name="select_date_lower">Select Date</string>
+    <string name="month">MONTH</string>
+    <string name="year">YEAR</string>
+    <string name="month_text">SELECT MONTH</string>
+    <string name="year_text">SELECT YEAR</string>
+    <string name="get_report">GET REPORT</string>
+    <string name="create_offer_lower">Create Offer</string>
+    <string name="get_reservation">GET RESERVATION</string>
+    <string name="get_reservation_lower">Get Reservation</string>
+    <string name="stop_reservation">Stop Reservation</string>
+    <string name="get_enquiry">GET ENQUIRY</string>
+    <string name="date">DATE</string>
+    <string name="privious">Previous</string>
+    <string name="no_report">No Report(s) found</string>
+    <string name="no_reservation">No Reservation(s) found</string>
+    <string name="no_order_found">No Order(s) found</string>
+    <string name="oops_no_order_found">Oops! Order(s) not found</string>
+    <string name="oops_no_order_found_with_order_id_tips">Oops! Order not found,please retype the correct order number of SUBMIT QUERY we will add the tips for you.</string>
+    <string name="oops_no_order_found_with_order_id_item">Oops! Order not found,please retype the correct order number of SUBMIT QUERY we will add the Items for you.</string>
+    <string name="oops_no_offer_added">No Offer Available.</string>
+    <string name="default_pickup_estimate">Default Pickup Estimate</string>
+    <string name="picked_up">PICKED UP</string>
+    <string name="continue_text">Continue</string>
+    <string name="refund">REFUND</string>
+    <string name="card_number">Card Number</string>
+    <string name="card_holder_name">Card Holder Name</string>
+    <string name="exp">Exp</string>
+    <string name="cvv">CVV</string>
+    <string name="zipcode">ZipCode</string>
+    <string name="default_delivery_estimate">Default Delivery Estimate</string>
+    <string name="default_miles">Default Miles</string>
+    <string name="minimum_delivery">Minimum Delivery $</string>
+    <string name="minimum_delivery_lower">Minimum Delivery $</string>
+    <string name="min_delivery">Minimum Delivery $</string>
+    <string name="delivery_charge">Delivery Charge $</string>
+    <string name="stop_order_today">STOP ORDER FOR TODAY</string>
+    <string name="open_order_today">OPEN ORDER FOR TODAY</string>
+    <string name="dialog_des">Or Enter Your Query here and Submit</string>
+
+    <!--Settings-->
+    <string name="grabull_demand">Grabull on Demand Delivery</string>
+    <string name="self_delivery">Self Delivery</string>
+    <string name="gb_delivery">GB Delivery</string>
+    <string name="view_terms">View <font color='#108AE5'>Terms</font></string>
+    <string name="store_profile">Store Profile</string>
+    <!--Dialog activity-->
+    <string name="items">ITEMS</string>
+    <string name="qty">QTY</string>
+    <string name="price">PRICE</string>
+    <string name="tips">TIPS</string>
+    <string name="add_tips">ADD TIPS</string>
+    <string name="items_text">Enter item name...</string>
+    <string name="price_text">$</string>
+    <string name="add_item">ADD ITEM</string>
+    <string name="modify_now">Modify now</string>
+    <string name="add_item_small">Add Items</string>
+    <string name="add_tips_small">Add Tips</string>
+    <string name="more_then_items">To enter more than 1 item use plus icon</string>
+    <string name="select_extra_toppings">Please select extra toppings</string>
+    <string name="tax_applicable">Taxes will be automatically applicable,\nPlease only enter the item price</string>
+    <string name="create_offer">CREATE OFFER</string>
+    <!--New Details page-->
+    <string name="future">FUTURE</string>
+    <string name="order">ORDER</string>
+    <string name="delivery_address">Delivery Address:</string>
+    <string name="sub_total">Sub Total</string>
+    <string name="discount">Discount</string>
+    <string name="tax">Tax</string>
+    <string name="delivery_fee">Delivery Fee</string>
+    <string name="tip">Tip</string>
+    <string name="total">Total</string>
+    <string name="collect_cash">COLLECT CASH</string>
+    <string name="cash">Cash</string>
+    <string name="prepaid">PREPAID</string>
+    <string name="prepaid_lower">Prepaid</string>
+    <string name="re_fax">Re-fax</string>
+    <string name="re_email">Re-Email</string>
+    <string name="print">PRINT</string>
+    <!--Confirm time activity-->
+    <string name="des">Click on Button To Confirm Time When it\n will be Ready</string>
+    <string name="min_20">READY IN 20 MIN</string>
+    <string name="min_25">READY IN 25 MIN</string>
+    <string name="min_30">READY IN 30 MIN</string>
+    <string name="min_35">READY IN 35 MIN</string>
+    <string name="min_40">READY IN 40 MIN</string>
+    <string name="min_45">READY IN 45 MIN</string>
+    <string name="or">OR</string>
+    <string name="type_your_issue">Type your issue</string>
+    <string name="type_your_query">Type your query...</string>
+    <string name="cancel">CANCEL</string>
+    <string name="cancel_text">Cancel</string>
+
+    <!--Delivery paid-->
+    <string name="delivery_paid">DELIVERY PAID</string>
+    <string name="delivered">Delivered</string>
+    <string name="no_show">NO SHOW</string>
+    <string name="reset_pass"><u>Reset Password</u></string>
+    <string name="nav_bank_info"><u>Bank Info</u></string>
+    <string name="terms">Terms</string>
+    <string name="reset">Reset</string>
+    <string name="delete">Delete</string>
+    <string name="edit">Edit</string>
+    <string name="save_lower">Save</string>
+    <!--Reservations-->
+    <string name="select_date_text">Select Date</string>
+    <string name="from">From</string>
+    <string name="to">To</string>
+    <string name="from_date">From Date</string>
+    <string name="to_date">To Date</string>
+    <string name="stop_today">Stop Today</string>
+    <string name="stop_between">Stop Between</string>
+    <string name="stop">Stop</string>
+    <string name="to_lower_text">to</string>
+    <!--validation-->
+    <string name="internet_connected">Sorry! Internet connection is not available, please try again later.</string>
+    <string name="service_error">Unable to connect to server. Please try again after sometime.</string>
+    <string name="invalid_credentials">Invalid Credentials.</string>
+    <string name="new_pass_empty">New Password is empty.</string>
+    <string name="con_pass_empty">Confirm Password is not same as New Password.</string>
+    <string name="username_empty">Please provide valid User ID.</string>
+    <string name="password_empty">Please provide valid password.</string>
+    <string name="title_activity_registration">Sign Up</string>
+    <string name="title_activity_home">GRABULL</string>
+    <string name="bank_name_empty">Bank Name should not empty.</string>
+    <string name="account_holder_empty">Account Holder Name should not empty.</string>
+    <string name="account_number_empty">Account Number should not empty.</string>
+    <string name="account_number_length">Account Number should not less then 3 and greater then 14 digits.</string>
+    <string name="routing_empty">Routing should not empty.</string>
+    <string name="routing_length">Routing Number should be 9 digits.</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="name_empty">Please provide valid Name.</string>
+    <string name="email_empty">Please provide valid Email.</string>
+    <string name="mobile_empty">Please provide valid Mobile No.</string>
+    <string name="resturant_name_empty">Please provide valid Restaurant Name.</string>
+    <string name="zip_validation">Please provide valid Zip Code.</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+    <string name="logout"><u>LogOut</u></string>
+    <string name="con_pass">Confirm Password</string>
+    <string name="title_activity_orders">ORDERS</string>
+
+    <!--    Report activity-->
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_market_coupon">Marketing &amp; Coupons</string>
+    <string name="bank_info">Bank Info</string>
+    <string name="title_activity_new_report">Reports</string>
+    <string name="monthly_meal">Monthly Meal Tax &amp; Other Charges</string>
+    <string name="monthly_invoice">Monthly &amp; Weekly Invoice</string>
+    <string name="orders_weekly">Orders By Weekly</string>
+    <string name="title_activity_reports_detail">ReportsDetailActivity</string>
+
+    <!--    Daily Summary-->
+    <string name="prepaid_sub_total">Prepaid Sub Total</string>
+    <string name="cash_sub_total">Cash Sub Total</string>
+    <string name="adjustment">Adjustment</string>
+    <string name="meal_tax">Meal Tax</string>
+    <string name="processing">Processing</string>
+    <string name="comission">Comission</string>
+    <string name="gb_delivery_fee">GB Delivery Fee</string>
+    <string name="gb_delivery_tips">(GB) Delivery Tips</string>
+    <string name="order_com_gb">Orders completed by Grabull Delivery Service</string>
+    <!--Help activity-->
+    <string name="enter_order">Enter Order #</string>
+    <string name="add_tips_text">ADDING TIPS</string>
+    <string name="add_item_text">ADD ITEM</string>
+    <string name="need_more_help">Need More Help</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_reservation">RESERVATIONS</string>
+    <string name="title_activity_event_enquiry">EVENTS ENQUIRY</string>
+    <string name="title_activity_report">ReportActivity</string>
+    <string name="view_report">View Report</string>
+    <string name="title_activity_setting">Destined Design</string>
+    <string name="title_activity_reset_pass">RESET PASSWORD</string>
+    <string name="title_activity_search">Search</string>
+    <string name="lorem_text">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry\'s standard
+        dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not
+        only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release
+        of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</string>
+
+    <string name="title_activity_fullscreen">FullscreenActivity</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="title_activity_support">Help</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+    <string name="message_text">Message</string>
+    <string name="title_activity_add_tips">AddTips</string>
+
+
+    <string name="prompt_info_title">GB RESTAURANT\'s Authentication</string>
+    <string name="prompt_info_subtitle">Please login to get access</string>
+    <string name="prompt_info_description">GB RESTAURANT is using Android biometric authentication</string>
+    <string name="prompt_info_use_app_password">Use app password</string>
+    <string name="setup_lock_screen">
+        Secure lock screen hasn\'t set been up.\n
+        Go to \'Settings -> Security -> Fingerprint\' to set up a fingerprint or face
+    </string>
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:background="@drawable/white_darkgray_round_corner"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/dimen_20"
+        android:padding="@dimen/dimen_10"
+        android:layout_height="wrap_content">
+
+    <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:text="DELIVERY TO"/>
+
+    <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:textStyle="normal"
+            android:id="@+id/name_text"
+            android:textColor="@color/black"/>
+
+    <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="normal"
+            android:id="@+id/address_text"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:textColor="@color/black"/>
+    <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="normal"
+            android:id="@+id/phone_text"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:textColor="@color/black"/>
+
+</LinearLayout>

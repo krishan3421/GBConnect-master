@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        tools:context=".ui.ConfirmTimeDialogActivity">
+    <ImageView android:layout_width="@dimen/dimen_30"
+               android:layout_height="@dimen/dimen_30"
+               android:layout_alignParentRight="true"
+               android:scaleType="centerInside"
+               android:onClick="closePage"
+               android:layout_marginTop="@dimen/dimen_10"
+               android:layout_marginRight="@dimen/dimen_10"
+               android:src="@drawable/cross_image"/>
+    <LinearLayout android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:layout_marginTop="@dimen/dimen_30"
+                  android:layout_marginLeft="@dimen/dimen_10"
+                  android:layout_marginRight="@dimen/dimen_10"
+                  android:gravity="center_horizontal"
+                  android:orientation="vertical">
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/black"
+                  android:textSize="@dimen/sp_size_12"
+                  android:gravity="center"
+                  android:id="@+id/click_on_button_time"
+                  android:text="@string/des"/>
+
+        <ListView
+                android:id="@+id/mobile_list"
+                android:layout_width="match_parent"
+                android:divider="@color/white"
+                android:dividerHeight="@dimen/dimen_5"
+                android:layout_height="wrap_content" >
+        </ListView>
+        <TextView android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_40"
+                android:textColor="@color/white"
+                android:background="@color/blue_color"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:textSize="@dimen/sp_size_18"
+                android:gravity="center"
+                android:visibility="gone"
+                android:id="@+id/confirm"
+                android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                android:text="@string/confirm"/>
+        <TextView android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:textColor="@color/black"
+                  android:layout_marginTop="@dimen/activity_horizontal_margin"
+                  android:textSize="@dimen/sp_size_18"
+                  android:textStyle="bold"
+                  android:gravity="center"
+                  android:text="@string/or"/>
+
+        <TextView android:layout_width="match_parent"
+                  android:layout_height="@dimen/dimen_40"
+                  android:textColor="@color/white"
+                  android:background="@color/colorAccent"
+                  android:layout_marginTop="@dimen/activity_horizontal_margin"
+                  android:textSize="@dimen/sp_size_18"
+                  android:gravity="center"
+                    android:id="@+id/cancel"
+                  android:layout_marginBottom="@dimen/activity_horizontal_margin"
+                  android:text="@string/cancel"/>
+    </LinearLayout>
+<ProgressBar
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+         android:layout_centerInParent="true"
+         android:id="@+id/progress_bar"
+         android:visibility="gone"/>
+</RelativeLayout>

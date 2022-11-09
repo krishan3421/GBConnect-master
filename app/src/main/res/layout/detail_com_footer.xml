@@ -1,0 +1,227 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:gravity="right"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/dimen_5"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingBottom="@dimen/dimen_5">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+        <TextView
+                style="@style/normal_text_14"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/sub_total"
+                android:textStyle="bold" />
+
+        <TextView
+                android:id="@+id/sub_total_text"
+                style="@style/normal_text_14"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="$0.00"
+                android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:orientation="horizontal">
+
+        <TextView
+                android:id="@+id/discount_taxt"
+                style="@style/normal_text_14"
+                android:text="Discount-$0.00"
+                android:textStyle="normal" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:id="@+id/delivery_fee_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:orientation="horizontal">
+
+        <TextView
+                style="@style/normal_text_14"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/delivery_fee"
+                android:textStyle="bold" />
+
+        <TextView
+                android:id="@+id/delivery_fee_text"
+                style="@style/normal_text_14"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="$0.00"
+                android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:orientation="horizontal">
+
+        <TextView
+                style="@style/normal_text_14"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/tax"
+                android:textStyle="bold" />
+
+        <TextView
+                android:id="@+id/tax_text"
+                style="@style/normal_text_14"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="$0.00"
+                android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:orientation="horizontal">
+
+        <TextView
+                style="@style/normal_text_14"
+                android:layout_width="match_parent"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:text="@string/tip"
+                android:textStyle="bold" />
+
+        <TextView
+                android:id="@+id/tip_text"
+                style="@style/normal_text_14"
+                android:layout_width="match_parent"
+                android:layout_weight="3"
+                android:gravity="right"
+                android:text="$0.00"
+                android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_10"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+        <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+            <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/dimen_50"
+                    android:orientation="horizontal">
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginRight="@dimen/dimen_20"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/fax_icon" />
+
+                    <TextView
+                            style="@style/normal_text_14"
+                            android:text="@string/re_fax"
+                            android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_20"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical">
+
+                    <ImageView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/fax_icon" />
+
+                    <TextView
+                            style="@style/normal_text_14"
+                            android:text="@string/re_email"
+                            android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+<!--            <TextView-->
+<!--                    android:id="@+id/txtPrint"-->
+<!--                    style="@style/normal_text_14"-->
+<!--                    android:layout_width="match_parent"-->
+<!--                    android:layout_height="@dimen/dimen_30"-->
+<!--                    android:layout_gravity="center"-->
+<!--                    android:layout_marginLeft="@dimen/dimen_10"-->
+<!--                    android:layout_marginTop="10dp"-->
+<!--                    android:background="@color/blue_whale"-->
+<!--                    android:gravity="center"-->
+<!--                    android:text="@string/print"-->
+<!--                    android:textColor="@color/white"-->
+<!--                    android:textStyle="bold" />-->
+
+
+        </LinearLayout>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="right"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/total_tax"
+                    style="@style/normal_text_12"
+                    android:layout_width="@dimen/dimen_100"
+                    android:layout_height="@dimen/dimen_30"
+                    android:background="@drawable/black_color"
+                    android:gravity="center"
+                    android:text="Total $ 0.00"
+                    android:textStyle="bold" />
+
+            <TextView
+                    android:id="@+id/tip_two_text"
+                    style="@style/normal_text_14"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:text="Tips________"
+                    android:textStyle="bold" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

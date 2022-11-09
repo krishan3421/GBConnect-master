@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@drawable/cutom_dialog_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+<LinearLayout
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_60"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dimen_10"
+            android:background="@drawable/cutom_dialog_title_bg"
+            android:orientation="horizontal">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/title_stop_text"
+                android:textSize="@dimen/sp_size_16"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="Enter Card Detail"/>
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/close_dialog_stop"
+                android:src="@drawable/ic_cancel"
+                android:layout_gravity="end|center_vertical"/>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/dimen_30"
+            android:layout_marginRight="@dimen/dimen_30">
+
+        <RadioGroup android:id="@+id/radio_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checkedButton="@id/stop_today_radio"
+                android:orientation="vertical">
+            <RadioButton android:id="@+id/stop_today_radio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_16"
+                    android:text="@string/stop_today"/>
+            <RadioButton android:id="@+id/select_date_radio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_16"
+                    android:layout_marginTop="@dimen/dimen_10"
+                    android:text="@string/select_date_lower"/>
+            <RadioButton android:id="@+id/stop_betwwen_radio"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_16"
+                    android:layout_marginTop="@dimen/dimen_10"
+                    android:text="@string/stop_between"/>
+        </RadioGroup>
+        <TextView android:id="@+id/select_date_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:textSize="@dimen/sp_size_16"
+                android:textColor="@color/blue_color"
+                android:text=""/>
+    </LinearLayout>
+    <LinearLayout android:id="@+id/from_to_date_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/dimen_30"
+            android:layout_marginRight="@dimen/dimen_30"
+            android:orientation="vertical">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_14"
+                    android:text="@string/from"
+                    android:gravity="center"
+                    android:layout_weight="1.5"
+                    android:textColor="@color/black"/>
+            <TextView android:id="@+id/from_date_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_30"
+                    android:textSize="@dimen/sp_size_14"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@color/blue_color"
+                    android:text="@string/from"
+                    android:textColor="@color/white"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dimen_10"
+                android:gravity="center_vertical">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_14"
+                    android:text="@string/to"
+                    android:gravity="center"
+                    android:layout_weight="1.5"
+                    android:textColor="@color/black"/>
+            <TextView android:id="@+id/to_date_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_30"
+                    android:textSize="@dimen/sp_size_14"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@color/blue_color"
+                    android:text="@string/from"
+                    android:textColor="@color/white"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_30"
+            android:orientation="horizontal">
+        <Button   android:id="@+id/confirm_button_stop"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_50"
+                android:textSize="@dimen/sp_size_14"
+                android:textStyle="bold"
+                android:layout_weight="1"
+                android:textAllCaps="false"
+                android:layout_marginRight="@dimen/dimen_3"
+                android:textColor="@color/white"
+                android:text="@string/stop"
+                android:background="@drawable/blue_round_corner"/>
+    </LinearLayout>
+
+
+</LinearLayout>
+    <ProgressBar
+            android:layout_centerInParent="true"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/stop_progress_bar"/>
+</RelativeLayout>

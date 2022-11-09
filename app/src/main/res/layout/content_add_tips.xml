@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:background="@color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+        <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textStyle="normal"
+                android:text="@string/need_more_help"
+                android:textSize="@dimen/sp_size_12"
+                android:layout_gravity="right"
+                android:textAllCaps="false"
+                android:background="?android:attr/selectableItemBackground"
+                android:gravity="center_vertical|right"
+                android:textColor="@color/blue_color"
+                android:padding="@dimen/dimen_10"
+                />
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:text="@string/add_tips_text"
+                android:textSize="@dimen/sp_size_14"
+                android:gravity="center"
+                android:background="@color/light_gray"
+                android:textColor="@color/black"
+                android:padding="@dimen/dimen_10"
+                />
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:paddingLeft="@dimen/dimen_30"
+                android:paddingRight="@dimen/dimen_30"
+                android:orientation="horizontal">
+            <EditText android:id="@+id/search_edittext"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_40"
+                    android:layout_weight="1"
+                    android:maxWidth="@dimen/dimen_200"
+                    android:padding="@dimen/dimen_5"
+                    android:layout_marginRight="@dimen/dimen_10"
+                    android:background="@color/light_gray"
+                    android:hint="@string/enter_order"/>
+            <ImageView
+                    android:layout_width="@dimen/dimen_80"
+                    android:layout_height="@dimen/dimen_40"
+                    android:src="@drawable/ic_search"
+                    android:onClick="searchTips"
+                    android:scaleType="center"
+                    android:tint="@color/white"
+                    android:background="@color/blue_color"/>
+        </LinearLayout>
+
+
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:padding="@dimen/dimen_5"
+                    android:id="@+id/adding_tips_recycler"/>
+            <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/no_order_text"
+                    android:layout_margin="@dimen/activity_horizontal_margin"
+                    android:text="@string/oops_no_order_found"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/sp_size_14"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"/>
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>

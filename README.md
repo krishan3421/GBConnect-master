@@ -1,2 +1,2 @@
-# GBConnectAndroid
-GBConnectAndroid new
+# GBConnect
+GB for Restaurant

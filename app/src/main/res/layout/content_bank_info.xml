@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:layout_marginBottom="@dimen/dimen_50"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+    <TextView
+            android:id="@+id/textView1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:paddingTop="@dimen/dimen_10"
+            android:paddingBottom="@dimen/dimen_10"
+            android:textSize="@dimen/sp_size_14"
+            android:textColor="@color/white"
+            android:text="@string/add_bank_info"
+            android:background="@color/button_color"/>
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_bank_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dimen_40"
+            android:textColorHint="@color/login_title_color"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin">
+
+        <EditText
+                android:id="@+id/bank_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_40"
+                android:textSize="@dimen/sp_size_16"
+                android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                android:background="@drawable/edt_bg_selector"
+                android:textColorHint="@color/login_title_color"
+                android:inputType="textCapSentences"
+                android:textColor="@color/black"
+                android:hint="@string/bank_name" />
+    </com.google.android.material.textfield.TextInputLayout>
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dimen_40"
+            android:textColorHint="@color/login_title_color"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin">
+
+        <EditText
+                android:id="@+id/holder_name_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_40"
+                android:textSize="@dimen/sp_size_16"
+                android:digits="abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                android:background="@drawable/edt_bg_selector"
+                android:textColorHint="@color/login_title_color"
+                android:inputType="textCapSentences"
+                android:textColor="@color/black"
+                android:hint="@string/account_holder_name" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_account_number"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dimen_40"
+            android:textColorHint="@color/login_title_color"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin">
+
+        <EditText
+                android:id="@+id/account_number_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_40"
+                android:textSize="@dimen/sp_size_16"
+                android:digits="1234567890"
+                android:background="@drawable/edt_bg_selector"
+                android:textColorHint="@color/login_title_color"
+                android:inputType="numberDecimal"
+                android:textColor="@color/black"
+                android:hint="@string/account_number" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/input_layout_routing"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="@dimen/dimen_40"
+            android:textColorHint="@color/login_title_color"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginTop="@dimen/activity_horizontal_margin">
+
+        <EditText
+                android:id="@+id/routing_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_40"
+                android:textSize="@dimen/sp_size_16"
+                android:digits="1234567890"
+                android:background="@drawable/edt_bg_selector"
+                android:textColorHint="@color/login_title_color"
+                android:inputType="numberDecimal"
+                android:textColor="@color/black"
+                android:hint="@string/routing" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <Button style="@style/color_primary_round_button"
+            android:textAllCaps="false"
+            android:id="@+id/add_update_button"
+            android:textColor="@color/white"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/dimen_40"
+            android:text="@string/add_bank_info"/>
+</LinearLayout>
+</androidx.core.widget.NestedScrollView>

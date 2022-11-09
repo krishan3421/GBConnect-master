@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:gravity="center_horizontal"
+        android:background="@drawable/cutom_dialog_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    <LinearLayout
+            android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_60"
+                android:gravity="center_vertical"
+                android:padding="@dimen/dimen_10"
+                android:background="@drawable/cutom_dialog_title_bg"
+                android:orientation="horizontal">
+            <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/title_dialog_text"
+                    android:textSize="@dimen/sp_size_16"
+                    android:gravity="center"
+                    android:textColor="@color/white"
+                    android:text="Enter Card Detail"/>
+            <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/close_dialog"
+                    android:src="@drawable/ic_cancel"
+                    android:layout_gravity="end|center_vertical"/>
+        </LinearLayout>
+
+        <LinearLayout
+                android:id="@+id/one_offer_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/activity_horizontal_margin"
+                android:orientation="vertical">
+            <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                <RadioGroup android:id="@+id/offer_radio_group"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:checkedButton="@id/doller_radio"
+                        android:orientation="horizontal">
+                    <RadioButton android:id="@+id/doller_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:textSize="@dimen/sp_size_14"
+                            android:text="Offer Type $"/>
+                    <RadioButton android:id="@+id/percent_radio"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/dimen_20"
+                            android:textSize="@dimen/sp_size_14"
+                            android:text="Offer type %"/>
+
+                </RadioGroup>
+            </RelativeLayout>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_marginTop="@dimen/dimen_10"
+                    android:layout_height="@dimen/dimen_40"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                <TextView android:id="@+id/spend_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/sp_size_14"
+                        android:textColor="@color/black"
+                        android:text="Spend Minimum $"/>
+
+                <EditText android:id="@+id/min_edittext"
+                        style="@style/marketing_coupon_edit"
+                        android:layout_width="@dimen/dimen_80"
+                        android:layout_marginLeft="@dimen/dimen_30"
+                        android:maxLength="3"/>
+            </LinearLayout>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_40"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                <TextView android:id="@+id/get_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="right"
+                        android:textSize="@dimen/sp_size_14"
+                        android:textColor="@color/black"
+                        android:text="Get $ off"/>
+
+                <EditText android:id="@+id/off_edittext"
+                        style="@style/marketing_coupon_edit"
+                        android:layout_width="@dimen/dimen_80"
+                        android:maxLength="3"
+                        android:layout_marginLeft="@dimen/dimen_90"/>
+            </LinearLayout>
+        </LinearLayout>
+        <Button   android:id="@+id/continue_button"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_50"
+                android:layout_margin="@dimen/dimen_30"
+                android:textSize="@dimen/sp_size_18"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:text="@string/submit"
+                android:background="@drawable/blue_round_corner"/>
+
+    </LinearLayout>
+    <ProgressBar android:id="@+id/offer_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+</RelativeLayout>

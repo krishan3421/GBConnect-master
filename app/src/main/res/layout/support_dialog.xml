@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:background="@drawable/cutom_dialog_bg"
+        android:layout_width="match_parent"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:layout_height="match_parent">
+    <ImageView android:layout_width="@dimen/dimen_40"
+            android:layout_height="@dimen/dimen_40"
+            android:id="@+id/close_image"
+            android:layout_margin="@dimen/dimen_10"
+            android:layout_gravity="top|right"
+            android:tint="@color/black"
+            android:src="@drawable/ic_close"/>
+
+    <LinearLayout android:orientation="vertical"
+            android:gravity="center_horizontal"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dimen_3"
+            android:layout_margin="@dimen/dimen_10"
+            android:layout_height="match_parent">
+
+        <Button android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_50"
+                android:background="@drawable/blue_round_corner"
+                android:text="@string/request_Call_back"
+                android:textSize="@dimen/sp_size_18"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:id="@+id/call_back_image"
+                android:layout_marginLeft="@dimen/dimen_20"
+                android:layout_marginRight="@dimen/dimen_20"
+                android:paddingLeft="@dimen/dimen_5"
+                android:drawableLeft="@drawable/ic_action_call"/>
+
+        <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                android:text="@string/or"
+                android:textStyle="bold"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:textSize="@dimen/sp_size_22"/>
+
+        <EditText android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_120"
+                android:textColor="@color/black"
+                android:singleLine="false"
+                android:textSize="@dimen/sp_size_14"
+                android:hint="@string/type_your_issue"
+                android:padding="@dimen/dimen_10"
+                android:gravity="top"
+                android:id="@+id/detail_edit"
+                android:layout_marginLeft="@dimen/dimen_30"
+                android:layout_marginRight="@dimen/dimen_30"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:background="@drawable/white_round_corner"
+                />
+
+        <Button
+                android:layout_width="@dimen/dimen_180"
+                android:layout_height="@dimen/dimen_50"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:text="@string/submit"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_size_18"
+                android:background="@drawable/saffron_round_corner"
+                android:layout_marginBottom="@dimen/dimen_30"
+                android:id="@+id/submit_button"/>
+    </LinearLayout>
+
+
+</LinearLayout>

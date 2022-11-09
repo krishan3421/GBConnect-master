@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.fragments.TodayFragment">
+
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dimen_50"
+            android:id="@+id/reservation_swipe_refresh">
+        <RelativeLayout android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <androidx.recyclerview.widget.RecyclerView
+                    android:layout_width="match_parent"
+                    android:id="@+id/reservation_recycler"
+                    android:layout_height="match_parent"/>
+            <TextView android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/no_order_text"
+                    android:text="@string/no_reservation"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/sp_size_14"
+                    android:visibility="gone"
+                    android:layout_centerInParent="true"/>
+        </RelativeLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+    <ProgressBar android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:id="@+id/progress_bar"
+            android:visibility="gone"/>
+
+    <Button style="@style/color_primary_round_button"
+            android:textAllCaps="false"
+            android:id="@+id/stop_reservation_button"
+            android:textColor="@color/white"
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:text="@string/stop_reservation"/>
+
+</RelativeLayout>

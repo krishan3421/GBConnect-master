@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:showIn="@layout/activity_restaurant_login"
+        tools:context=".ui.RestaurantLoginActivity">
+
+    <LinearLayout   android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:padding="@dimen/activity_horizontal_margin"
+                    android:orientation="vertical">
+
+        <ImageView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:scaleType="centerInside"
+                android:src="@drawable/header_logo"/>
+
+        <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/login_title_color"
+                android:text="@string/login_title"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:id="@+id/login_title"
+                android:textSize="@dimen/sp_size_16"/>
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dimen_40"
+                android:paddingRight="@dimen/dimen_40"
+                android:layout_marginTop="@dimen/dimen_30"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+            <TextView android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/black"
+                    android:text="@string/login"
+                    android:layout_gravity="left"
+                    android:gravity="center_vertical"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/sp_size_20"/>
+
+            <TextView android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/blue_color"
+                    android:layout_gravity="end"
+                    android:gravity="end"
+                    android:onClick="forgotPassClick"
+                    android:text="@string/forgot_password"
+                    android:textSize="@dimen/sp_size_16"/>
+        </LinearLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_layout_user_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_40"
+                android:textColorHint="@color/login_title_color"
+                android:layout_marginLeft="@dimen/dimen_40"
+                android:layout_marginRight="@dimen/dimen_40"
+                android:layout_marginTop="@dimen/dimen_20">
+
+        <EditText
+                android:id="@+id/user_id_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_40"
+                android:textSize="@dimen/sp_size_16"
+                android:drawablePadding="@dimen/dimen_5"
+                android:background="@drawable/edt_bg_selector"
+                android:drawableRight="@drawable/ic_user"
+                android:textColorHint="@color/login_title_color"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:hint="@string/user_name" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/input_layout_password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/dimen_40"
+                android:textColorHint="@color/login_title_color"
+                app:passwordToggleEnabled="true"
+                android:layout_marginLeft="@dimen/dimen_40"
+                android:layout_marginRight="@dimen/dimen_40"
+                android:layout_marginTop="@dimen/dimen_30">
+
+            <EditText
+                    android:id="@+id/password_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:minHeight="@dimen/dimen_40"
+                    android:textSize="@dimen/sp_size_16"
+                    android:drawablePadding="@dimen/dimen_5"
+                    android:background="@drawable/edt_bg_selector"
+                    android:textColorHint="@color/login_title_color"
+                    android:inputType="textPassword"
+                    android:textColor="@color/black"
+                    android:hint="@string/password" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+<CheckBox android:id="@+id/auto_login_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_30"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:text="@string/auto_login"
+        android:checked="true"
+        android:textSize="@dimen/sp_size_14"
+        android:layout_gravity="left"/>
+        <Button style="@style/login_button"
+                android:layout_marginTop="@dimen/dimen_10"
+                android:layout_marginLeft="@dimen/dimen_40"
+                android:layout_marginRight="@dimen/dimen_40"
+                android:id="@+id/login_button"
+                android:text="@string/get_order"
+                android:onClick="loginMethod" />
+
+        <View android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_4"
+                android:background="@color/colorPrimary_one"
+                android:layout_marginTop="@dimen/dimen_20"/>
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_30">
+            <ImageView
+                    android:layout_width="@dimen/dimen_80"
+                    android:layout_height="@dimen/dimen_120"
+                    android:layout_centerInParent="true"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/help_icon" />
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_centerInParent="true"
+                android:orientation="vertical">
+
+            <TextView
+                    android:id="@+id/footer_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/new_to_grabull"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/sp_size_18"
+                    android:textStyle="bold" />
+
+        <TextView android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/blue_color"
+                android:layout_gravity="center_horizontal"
+                android:gravity="center_horizontal"
+                android:onClick="signUpMethod"
+                android:layout_marginTop="@dimen/dimen_5"
+                android:text="@string/request_signup"
+                android:textSize="@dimen/sp_size_16"/>
+        </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+</androidx.core.widget.NestedScrollView>

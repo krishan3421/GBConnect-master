@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@drawable/cutom_dialog_bg"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_60"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dimen_10"
+            android:background="@drawable/cutom_dialog_title_bg"
+            android:orientation="horizontal">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/title_dialog_text"
+                android:textSize="@dimen/sp_size_16"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="GB035473457"/>
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/close_dialog"
+                android:src="@drawable/ic_cancel"
+                android:layout_gravity="end|center_vertical"/>
+    </LinearLayout>
+
+     <Button    android:id="@+id/delivery_button"
+             android:layout_width="match_parent"
+             android:layout_height="@dimen/dimen_50"
+             android:layout_margin="@dimen/dimen_30"
+             android:textSize="@dimen/sp_size_18"
+             android:textStyle="bold"
+             android:textColor="@color/white"
+             android:text="@string/picked_up"
+             android:background="@drawable/green_round_corner"/>
+    <Button
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_50"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginBottom="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/dimen_30"
+            android:layout_marginRight="@dimen/dimen_30"
+            android:textSize="@dimen/sp_size_18"
+            android:textStyle="bold"
+            android:id="@+id/cancel_button"
+            android:textColor="@color/white"
+            android:text="@string/cancel"
+            android:background="@drawable/saffron_round_corner"/>
+
+
+</LinearLayout>

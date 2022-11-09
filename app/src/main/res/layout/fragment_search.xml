@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context=".ui.fragments.SearchFragment">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_80"
+            android:orientation="horizontal"
+            android:background="@color/white">
+        <LinearLayout android:id="@+id/start_date_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="@string/from_date"/>
+            <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_40"
+                    android:layout_marginTop="@dimen/dimen_2"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:textColor="@color/black"
+                    android:gravity="center"
+                    android:drawableRight="@drawable/double_arrow_bottom"
+                    android:paddingRight="@dimen/dimen_10"
+                    android:id="@+id/start_date_button_search"
+                    android:textAllCaps="false"
+                    android:background="@drawable/lightgray_round_corner"
+                    android:text="@string/select_date_text"
+                    android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+        <LinearLayout android:id="@+id/end_date_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_gravity="center"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/black"
+                    android:text="@string/to_date"/>
+            <Button
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_40"
+                    android:textColor="@color/black"
+                    android:layout_marginTop="@dimen/dimen_2"
+                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                    android:layout_marginRight="@dimen/activity_horizontal_margin"
+                    android:gravity="center"
+                    android:id="@+id/end_date_button_search"
+                    android:drawableRight="@drawable/double_arrow_bottom"
+                    android:paddingRight="@dimen/dimen_10"
+                    android:background="@drawable/lightgray_round_corner"
+                    android:textAllCaps="false"
+                    android:text="@string/select_date_text"
+                    android:layout_gravity="center_vertical"/>
+        </LinearLayout>
+    </LinearLayout>
+    <RelativeLayout android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:id="@+id/reservation_recycler"
+                android:layout_height="match_parent"/>
+        <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/no_order_text"
+                android:text="@string/no_reservation"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_size_14"
+                android:visibility="gone"
+                android:layout_centerInParent="true"/>
+        <ProgressBar android:id="@+id/progress_bar"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:layout_centerInParent="true"/>
+    </RelativeLayout>
+    <Button style="@style/color_primary_round_button"
+            android:textAllCaps="false"
+            android:id="@+id/get_reservation_button"
+            android:textColor="@color/white"
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/activity_horizontal_margin"
+            android:text="@string/get_reservation"/>
+</LinearLayout>

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- <color name="colorPrimary">#ED1B24</color>
+    <color name="colorPrimaryDark">#d51820</color>-->
+    <color name="colorPrimary">@color/white</color>
+    <color name="colorPrimaryDark">@color/white</color>
+    <color name="colorPrimary_one">#ED1B24</color>
+    <color name="colorPrimaryDark_one">#d51820</color>
+    <color name="colorAccent">#ED1B24</color>
+    <color name="dashboard_bg">#E40000</color>
+    <color name="login_title_color">#434343</color>
+    <color name="suffern_color">#FB7F03</color>
+    <color name="romance_color">#F4F3F1</color>
+    <color name="setting_bg">#EAE8E9</color>
+    <color name="dark_blue">#11639D</color>
+    <color name="blue_whale">#15354C</color>
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="bg_color">#E9E7E8</color>
+    <color name="blue_color">#108AE5</color>
+    <color name="refresh_blue_color">#017CFE</color>
+    <color name="dark_gray">#8D8D8D</color>
+    <color name="light_gray">#DCDCDC</color>
+    <color name="light_green">@color/green</color><!--#8BF707-->
+    <color name="button_color">#303030</color>
+    <color name="add_tips_color">#AC3EFF</color>
+    <color name="green">#249533</color>
+    <color name="light_pink">#F29CBB</color>
+
+    <color name="black_overlay">#66000000</color>
+
+</resources>

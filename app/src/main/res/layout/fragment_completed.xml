@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        tools:context=".ui.fragments.CompletedFragment">
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginBottom="@dimen/dimen_50"
+            android:orientation="vertical">
+
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/date_layout"
+                android:layout_marginTop="@dimen/activity_horizontal_margin"
+                android:layout_marginRight="@dimen/dimen_30"
+                android:layout_marginLeft= "@dimen/dimen_30"
+                android:orientation="horizontal">
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/startDateLayout"
+                    android:background="@color/light_gray"
+                    android:gravity="center"
+                    android:padding="@dimen/dimen_5"
+                    android:orientation="vertical">
+                <TextView
+                        style="@style/normal_text_12"
+                        android:textColor="@color/dark_gray"
+                        android:text="@string/start_date"/>
+                <TextView
+                        style="@style/normal_text_12"
+                        android:text="@string/start_date"
+                        android:id="@+id/start_date_text"
+                        android:layout_marginTop="@dimen/dimen_2"/>
+            </LinearLayout>
+            <TextView
+                    style="@style/normal_text_14"
+                    android:text="@string/to_lower_text"
+                    android:layout_marginLeft="@dimen/dimen_15"
+                    android:layout_marginRight="@dimen/dimen_15"
+                    android:layout_gravity="center"/>
+            <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:id="@+id/endDateLayout"
+                    android:background="@color/light_gray"
+                    android:gravity="center"
+                    android:padding="@dimen/dimen_5"
+                    android:orientation="vertical">
+                <TextView
+                        style="@style/normal_text_12"
+                        android:textColor="@color/dark_gray"
+                        android:text="@string/end_date"/>
+                <TextView
+                        style="@style/normal_text_12"
+                        android:text="@string/start_date"
+                        android:id="@+id/end_date_text"
+                        android:layout_marginTop="@dimen/dimen_2"/>
+            </LinearLayout>
+        </LinearLayout>
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/comp_swipe_refresh">
+            <RelativeLayout android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                <androidx.recyclerview.widget.RecyclerView
+                        android:layout_width="match_parent"
+                        android:id="@+id/comp_recycler"
+                        android:paddingLeft="@dimen/activity_horizontal_margin"
+                        android:paddingRight="@dimen/activity_horizontal_margin"
+                        android:layout_height="match_parent"/>
+                <LinearLayout android:id="@+id/no_order_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerInParent="true"
+                        android:gravity="center"
+                        android:visibility="gone"
+                        android:orientation="vertical">
+                    <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="@string/no_complete_order"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+                            android:layout_marginRight="@dimen/activity_horizontal_margin"
+                            android:textColor="@color/black"
+                            android:textSize="@dimen/sp_size_14"
+                            android:layout_centerInParent="true"/>
+                    <TextView android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:layout_margin="@dimen/activity_horizontal_margin"
+                            android:text="@string/upcoming_complete_order"
+                            android:textSize="@dimen/sp_size_12"
+                            android:layout_centerInParent="true"/>
+                    <View
+                            android:layout_width="match_parent"
+                            android:layout_height="@dimen/dimen_1"
+                            android:layout_marginTop="@dimen/dimen_30"
+                            android:background="@color/dark_gray"/>
+                </LinearLayout>
+            </RelativeLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
+
+
+    </LinearLayout>
+    <ProgressBar android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/progress_bar"
+            android:visibility="gone"
+            android:layout_centerInParent="true"/>
+    <Button
+            style="@style/color_primary_round_button"
+            android:id="@+id/get_order_button"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:layout_marginRight="@dimen/activity_horizontal_margin"
+            android:text="@string/get_order"/>
+</RelativeLayout>

@@ -1,0 +1,364 @@
+<resources>
+    <!--https://stackoverflow.com/questions/55255130/android-afollestad-material-dialog-action-button-text-color-->
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="toolbarStyle">@style/custom_toolbar</item>
+        <item name="md_color_button_text">@color/colorAccent</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="custom_toolbar" parent="@style/Widget.AppCompat.Toolbar">
+        <item name="titleTextColor">@color/colorAccent</item>
+    </style>
+    <style name="AppCompatAlertDialogStyle" parent="android:Theme.Dialog">
+        <!--<item name="android:windowBackground">@drawable/dialog_bg_shadow</item>-->
+        <item name="android:backgroundDimEnabled">true</item>
+    </style>
+    <style name="Toolbar.TitleText" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
+        <item name="android:textSize">@dimen/sp_size_16</item>
+    </style>
+    <style name="AppTheme.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="toolbarStyle">@style/custom_toolbar</item>
+        <item name="android:windowLightStatusBar">true</item>
+        <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
+    </style>
+    <style name="DrawerArrowStyle" parent="@style/Widget.AppCompat.DrawerArrowToggle">
+        <item name="spinBars">true</item>
+        <item name="color">@color/blue_color</item>
+    </style>
+    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="AppTheme.NoAnimTheme">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:screenOrientation">portrait</item>
+        <item name="android:windowAnimationStyle">@null</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="android:Theme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/white</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:windowMinWidthMajor">95%</item>
+        <item name="android:windowMinWidthMinor">95%</item>
+    </style>
+
+    <style name="common_edit" parent="android:Widget.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_40</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="android:textSize">@dimen/sp_size_14</item>
+        <item name="android:textStyle">bold</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+    <style name="marketing_coupon_edit" parent="android:Widget.EditText">
+        <item name="android:layout_width">@dimen/dimen_60</item>
+        <item name="android:layout_height">@dimen/dimen_30</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/white_darkgray_round_corner</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="android:textSize">@dimen/sp_size_10</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:inputType">numberDecimal</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="marketing_coupon_text" parent="android:Widget.TextView">
+        <item name="android:layout_width">@dimen/dimen_60</item>
+        <item name="android:layout_height">@dimen/dimen_30</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/white_darkgray_round_corner</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColorHint">@color/black</item>
+        <item name="android:textSize">@dimen/sp_size_10</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:inputType">numberDecimal</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="items_edit" parent="android:Widget.EditText">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_40</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/white_darkgray_round_corner</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center_vertical|left</item>
+        <item name="android:textColorHint">@color/dark_gray</item>
+        <item name="android:textSize">@dimen/sp_size_10</item>
+        <item name="android:textStyle">normal</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="setting_text" parent="android:Widget.TextView">
+        <item name="android:layout_width">@dimen/dimen_50</item>
+        <item name="android:layout_height">@dimen/dimen_50</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/blue_circle</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_30</item>
+        <item name="android:textStyle">bold</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+    <style name="plus_text" parent="android:Widget.TextView">
+        <item name="android:layout_width">@dimen/dimen_40</item>
+        <item name="android:layout_height">@dimen/dimen_40</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/blue_whale</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_30</item>
+        <item name="android:textStyle">bold</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="minus_text_img">
+        <item name="android:layout_width">@dimen/dimen_40</item>
+        <item name="android:layout_height">@dimen/dimen_40</item>
+        <item name="android:background">@color/blue_whale</item>
+        <item name="android:src">@drawable/ic_minus</item>
+        <item name="android:paddingLeft">@dimen/dimen_10</item>
+        <item name="android:paddingRight">@dimen/dimen_10</item>
+        <item name="android:scaleType">centerInside</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+    <style name="plus_text_img">
+        <item name="android:layout_width">@dimen/dimen_40</item>
+        <item name="android:layout_height">@dimen/dimen_40</item>
+        <item name="android:background">@color/blue_whale</item>
+        <item name="android:src">@drawable/ic_plus</item>
+        <item name="android:padding">@dimen/dimen_8</item>
+        <item name="android:scaleType">centerInside</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+    <style name="minus_text" parent="android:Widget.TextView">
+        <item name="android:layout_width">@dimen/dimen_40</item>
+        <item name="android:layout_height">@dimen/dimen_40</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/dark_blue</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_30</item>
+        <item name="android:textStyle">bold</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="home_text" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/sp_size_35</item>
+        <item name="android:textStyle">bold</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="normal_text_14" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/sp_size_14</item>
+        <item name="android:textStyle">normal</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="normal_text_12" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/sp_size_12</item>
+        <item name="android:textStyle">normal</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="normal_text_16" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/sp_size_16</item>
+        <item name="android:textStyle">normal</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="header_title" parent="android:Widget.TextView">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:gravity">left</item>
+        <item name="android:textSize">@dimen/sp_size_14</item>
+        <item name="android:textStyle">bold</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="NavigationDrawerStyle">
+
+        <item name="android:textSize">@dimen/sp_size_16</item>
+        <item name="android:textStyle">normal</item>
+        <!-- text size in menu-->
+
+<!--        &lt;!&ndash; item size in menu&ndash;&gt;-->
+<!--        <item name="android:listPreferredItemHeightSmall">40dp</item>-->
+<!--        <item name="listPreferredItemHeightSmall">40dp</item>-->
+
+<!--        &lt;!&ndash; item padding left in menu&ndash;&gt;-->
+<!--        <item name="android:listPreferredItemPaddingLeft">8dp</item>-->
+<!--        <item name="listPreferredItemPaddingLeft">8dp</item>-->
+
+<!--        &lt;!&ndash; item padding right in menu&ndash;&gt;-->
+<!--        <item name="android:listPreferredItemPaddingRight">8dp</item>-->
+<!--        <item name="listPreferredItemPaddingRight">8dp</item>-->
+    </style>
+
+
+    <style name="login_button" parent="android:Widget.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_50</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@color/colorPrimary_one</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_20</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="blue_corner_white_button" parent="android:Widget.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_30</item>
+        <item name="android:textColor">@color/blue_color</item>
+        <item name="android:background">@drawable/white_blue_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_10</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="dot9_png_button" parent="android:Widget.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_30</item>
+        <item name="android:textColor">@color/blue_color</item>
+        <item name="android:background">@drawable/gray_bg_one</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_12</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="blue_round_button" parent="android:Widget.Button">
+        <item name="android:layout_width">@dimen/dimen_120</item>
+        <item name="android:layout_height">@dimen/dimen_30</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/blue_round_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_12</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="blue_button" parent="android:Widget.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_30</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/blue_round_corner_dim5</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_12</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="red_round_button" parent="android:Widget.Button">
+        <item name="android:layout_width">@dimen/dimen_120</item>
+        <item name="android:layout_height">@dimen/dimen_30</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/red_round_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_12</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="color_primary_round_button" parent="android:Widget.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_40</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/colorprimary_round_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_16</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:textAllCaps">false</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+    <style name="black_round_button" parent="android:Widget.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_40</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/black_round_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_14</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="gray_round_button" parent="android:Widget.Button">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/dimen_50</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:background">@drawable/gray_round_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_14</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+    <style name="marketing_button" parent="android:Widget.Button">
+        <item name="android:layout_width">@dimen/dimen_80</item>
+        <item name="android:layout_height">@dimen/dimen_30</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:background">@drawable/button_color_round_corner</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">@dimen/sp_size_14</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <!--  <item name="android:drawableLeft">@drawable/facebook_icon</item>-->
+    </style>
+
+    <style name="MyCustomTabText" parent="TextAppearance.Design.Tab">
+        <item name="android:textSize">@dimen/sp_size_12</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="textAllCaps">false</item>
+    </style>
+
+</resources>

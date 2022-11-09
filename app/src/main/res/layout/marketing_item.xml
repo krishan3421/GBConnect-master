@@ -1,0 +1,89 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dimen_20"
+        android:paddingRight="@dimen/dimen_20">
+    <LinearLayout
+            android:id="@+id/one_offer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:background="@drawable/white_blue_round_corner"
+            android:orientation="vertical">
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView android:id="@+id/offer_num_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_12"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_alignParentLeft="true"
+                    android:text="Offer 1"/>
+            <TextView android:id="@+id/status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_12"
+                    android:textColor="@color/green"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:drawableLeft="@drawable/active_icon"
+                    android:textStyle="bold"
+                    android:layout_alignParentRight="true"
+                    android:text="Active"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/dimen_3"
+                android:layout_height="@dimen/dimen_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView android:id="@+id/spend_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/sp_size_14"
+                    android:textColor="@color/black"
+                    android:text="Spend Minimum $"/>
+
+            <TextView android:id="@+id/min_text"
+                    style="@style/marketing_coupon_text"
+                    android:layout_marginLeft="@dimen/dimen_30"
+                    android:text="35"/>
+            <Button  android:id="@+id/edit_button"
+                    style="@style/marketing_button"
+                    android:text="@string/edit"
+                    android:layout_marginLeft="@dimen/dimen_30"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView android:id="@+id/get_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/sp_size_14"
+                    android:textColor="@color/black"
+                    android:text="Get $ off"/>
+
+            <TextView android:id="@+id/off_text"
+                    style="@style/marketing_coupon_text"
+                    android:layout_marginLeft="@dimen/dimen_30"
+                    android:text="5"/>
+            <Button android:id="@+id/reset_button"
+                    style="@style/marketing_button"
+                    android:text="@string/reset"
+                    android:layout_marginLeft="@dimen/dimen_30"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

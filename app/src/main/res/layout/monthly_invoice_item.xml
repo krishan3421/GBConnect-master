@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:minHeight="@dimen/dimen_50"
+        android:layout_marginTop="@dimen/dimen_5"
+        android:background="@color/white"
+        android:clickable="true"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:focusable="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_size_14"
+            android:id="@+id/week_text"
+            android:textColor="@color/black"/>
+    <TextView android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_size_14"
+            android:id="@+id/status_text"
+            android:textColor="@color/black"/>
+    <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/sp_size_14"
+            android:id="@+id/view_text"
+            android:textColor="@color/green"/>
+
+<ImageView android:id="@+id/next_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_next"/>
+
+</LinearLayout>

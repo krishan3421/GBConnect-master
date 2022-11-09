@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:gravity="center_horizontal"
+        android:background="@drawable/cutom_dialog_bg"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+<LinearLayout
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_60"
+            android:gravity="center_vertical"
+            android:padding="@dimen/dimen_10"
+            android:background="@drawable/cutom_dialog_title_bg"
+            android:orientation="horizontal">
+        <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:id="@+id/title_dialog_text"
+                android:textSize="@dimen/sp_size_16"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:text="Enter Card Detail"/>
+        <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/close_dialog"
+                android:src="@drawable/ic_cancel"
+                android:layout_gravity="end|center_vertical"/>
+    </LinearLayout>
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/dimen_30"
+            android:layout_marginRight="@dimen/dimen_30">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/sp_size_16"
+                android:gravity="left"
+                android:textColor="@color/black"
+                android:text="@string/card_number"/>
+        <EditText android:id="@+id/card_edittext"
+                style="@style/common_edit"
+                android:padding="@dimen/dimen_3"
+                android:layout_marginTop="@dimen/dimen_5"
+                android:maxLength="16"
+                android:inputType="numberDecimal"
+                android:gravity="center_vertical"/>
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/dimen_30"
+            android:layout_marginRight="@dimen/dimen_30">
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginRight="@dimen/dimen_10"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/sp_size_16"
+                    android:gravity="left"
+                    android:textColor="@color/black"
+                    android:text="@string/exp"/>
+            <EditText android:id="@+id/exp_edittext"
+                    style="@style/common_edit"
+                    android:padding="@dimen/dimen_3"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:maxLength="5"
+                    android:inputType="numberDecimal"
+                    android:textColorHint="@color/dark_gray"
+                    android:textSize="@dimen/sp_size_14"
+                    android:hint="MMYY"
+                    android:gravity="center_vertical"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/sp_size_16"
+                    android:gravity="left"
+                    android:textColor="@color/black"
+                    android:text="@string/cvv"/>
+            <EditText android:id="@+id/cvv_edittext"
+                    style="@style/common_edit"
+                    android:padding="@dimen/dimen_3"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:maxLength="3"
+                    android:inputType="numberDecimal"
+                    android:gravity="center_vertical"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginLeft="@dimen/dimen_10"
+                android:orientation="vertical">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textSize="@dimen/sp_size_16"
+                    android:gravity="left"
+                    android:textColor="@color/black"
+                    android:text="@string/zipcode"/>
+            <EditText android:id="@+id/zip_edittext"
+                    style="@style/common_edit"
+                    android:padding="@dimen/dimen_3"
+                    android:layout_marginTop="@dimen/dimen_5"
+                    android:maxLength="6"
+                    android:inputType="numberDecimal"
+                    android:gravity="center_vertical"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:layout_marginLeft="@dimen/dimen_30"
+            android:layout_marginRight="@dimen/dimen_30">
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="@dimen/sp_size_16"
+                android:gravity="left"
+                android:textColor="@color/black"
+                android:text="@string/card_holder_name"/>
+        <EditText android:id="@+id/card_holder_edittext"
+                style="@style/common_edit"
+                android:padding="@dimen/dimen_3"
+                android:layout_marginTop="@dimen/dimen_5"
+                android:inputType="textCapSentences"
+                android:gravity="center_vertical"/>
+    </LinearLayout>
+
+    <Button   android:id="@+id/continue_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/dimen_50"
+            android:layout_margin="@dimen/dimen_30"
+            android:textSize="@dimen/sp_size_18"
+            android:textStyle="bold"
+            android:textColor="@color/white"
+            android:text="@string/continue_text"
+            android:background="@drawable/blue_round_corner"/>
+
+</LinearLayout>
+    <ProgressBar android:id="@+id/card_progress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone"/>
+</RelativeLayout>

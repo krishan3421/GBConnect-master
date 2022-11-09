@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:padding="@dimen/activity_horizontal_margin"
+        tools:context=".ui.fragments.MonthlyMealFragment">
+<LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+ <TextView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content"
+         android:textStyle="bold"
+         android:text="@string/monthly_meal"
+         android:textSize="@dimen/sp_size_14"
+         android:gravity="center"
+         android:background="@color/light_gray"
+         android:textColor="@color/black"
+         android:padding="@dimen/dimen_10"
+         />
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_horizontal_margin"
+            android:orientation="horizontal">
+        <Button android:id="@+id/year_button"
+                style="@style/gray_round_button"
+                android:text="2020"
+                android:drawableRight="@drawable/double_arrow_bottom"
+                android:paddingRight="@dimen/dimen_10"
+                android:layout_marginRight="@dimen/dimen_20"
+                android:layout_weight="1"/>
+        <Button android:id="@+id/month_button"
+                style="@style/gray_round_button"
+                android:text="January"
+                android:drawableRight="@drawable/double_arrow_bottom"
+                android:paddingRight="@dimen/dimen_10"
+                android:layout_marginLeft="@dimen/dimen_20"
+                android:layout_weight="1"/>
+    </LinearLayout>
+
+    <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/monthly_meal_recycler"/>
+        <TextView android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/no_order_text"
+                android:text="@string/no_report"
+                android:textStyle="bold"
+                android:textSize="@dimen/sp_size_14"
+                android:visibility="gone"
+                android:layout_centerInParent="true"/>
+    </RelativeLayout>
+
+</LinearLayout>
+    <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:layout_centerInParent="true"
+            android:id="@+id/progressBar"/>
+</RelativeLayout>

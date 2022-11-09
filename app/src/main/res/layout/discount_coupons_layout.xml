@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_20">
+    <LinearLayout
+            android:id="@+id/one_offer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:background="@drawable/white_blue_round_corner"
+            android:orientation="vertical">
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_12"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_alignParentLeft="true"
+                    android:text="Offer 1"/>
+            <TextView android:id="@+id/one_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_12"
+                    android:textColor="@color/green"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:drawableLeft="@drawable/active_icon"
+                    android:textStyle="bold"
+                    android:layout_alignParentRight="true"
+                    android:text="Active"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/dimen_3"
+                android:layout_height="@dimen/dimen_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView android:id="@+id/one_spend_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/sp_size_14"
+                    android:textColor="@color/black"
+                    android:text="Spend Minimum $"/>
+
+            <EditText android:id="@+id/one_min_edittext"
+                    style="@style/marketing_coupon_edit"
+                    android:layout_marginLeft="@dimen/dimen_30"
+                    android:text="35"/>
+            <Button  android:id="@+id/one_es_button"
+                    style="@style/marketing_button"
+                    android:text="@string/save_lower"
+                    android:layout_marginLeft="@dimen/dimen_30"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView android:id="@+id/one_get_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/sp_size_14"
+                    android:textColor="@color/black"
+                    android:text="Get $ off"/>
+
+            <EditText android:id="@+id/one_off_edittext"
+                    style="@style/marketing_coupon_edit"
+                    android:layout_marginLeft="@dimen/dimen_30"
+                    android:text="5"/>
+            <Button android:id="@+id/one_reset_button"
+                    style="@style/marketing_button"
+                    android:text="@string/reset"
+                    android:layout_marginLeft="@dimen/dimen_30"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/two_offer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_20"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:background="@drawable/white_blue_round_corner"
+            android:orientation="vertical">
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_12"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_alignParentLeft="true"
+                    android:text="Offer 2"/>
+            <TextView android:id="@+id/two_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_12"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:drawableLeft="@drawable/active_icon"
+                    android:textColor="@color/green"
+                    android:layout_alignParentRight="true"
+                    android:text="Active"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView android:id="@+id/two_spend_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/sp_size_14"
+                    android:textColor="@color/black"
+                    android:text="Spend Minimum $"/>
+
+            <EditText android:id="@+id/two_min_edittext"
+                    style="@style/marketing_coupon_edit"
+                    android:layout_marginLeft="@dimen/dimen_30"
+                    android:text="35"/>
+            <Button android:id="@+id/two_es_button"
+                    style="@style/marketing_button"
+                    android:text="@string/save_lower"
+                    android:layout_marginLeft="@dimen/dimen_30"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView android:id="@+id/two_get_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/sp_size_14"
+                    android:textColor="@color/black"
+                    android:text="Get $ off"/>
+
+            <EditText android:id="@+id/two_off_edittext"
+                    style="@style/marketing_coupon_edit"
+                    android:layout_marginLeft="@dimen/dimen_30"
+                    android:text="5"/>
+            <Button android:id="@+id/two_reset_button"
+                    style="@style/marketing_button"
+                    android:text="@string/reset"
+                    android:layout_marginLeft="@dimen/dimen_30"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/three_offer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_20"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:background="@drawable/white_blue_round_corner"
+            android:orientation="vertical">
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_12"
+                    android:textColor="@color/black"
+                    android:textStyle="bold"
+                    android:layout_alignParentLeft="true"
+                    android:text="Offer 3"/>
+            <TextView android:id="@+id/three_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_12"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:drawableLeft="@drawable/active_icon"
+                    android:textColor="@color/green"
+                    android:layout_alignParentRight="true"
+                    android:text="Active"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView android:id="@+id/three_spend_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/sp_size_14"
+                    android:textColor="@color/black"
+                    android:text="Spend Minimum $"/>
+
+            <EditText android:id="@+id/three_min_edittext"
+                    style="@style/marketing_coupon_edit"
+                    android:layout_marginLeft="@dimen/dimen_30"
+                    android:text="35"/>
+            <Button android:id="@+id/three_es_button"
+                    style="@style/marketing_button"
+                    android:text="@string/save_lower"
+                    android:layout_marginLeft="@dimen/dimen_30"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView android:id="@+id/three_get_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/sp_size_14"
+                    android:textColor="@color/black"
+                    android:text="Get $ off"/>
+
+            <EditText android:id="@+id/three_off_edittext"
+                    style="@style/marketing_coupon_edit"
+                    android:layout_marginLeft="@dimen/dimen_30"
+                    android:text="5"/>
+            <Button android:id="@+id/three_reset_button"
+                    style="@style/marketing_button"
+                    android:text="@string/reset"
+                    android:layout_marginLeft="@dimen/dimen_30"/>
+        </LinearLayout>
+    </LinearLayout>
+    <LinearLayout
+            android:id="@+id/four_offer_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_20"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:background="@drawable/white_blue_round_corner"
+            android:orientation="vertical">
+        <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_12"
+                    android:textStyle="bold"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/black"
+                    android:layout_alignParentLeft="true"
+                    android:text="Offer 4"/>
+            <TextView android:id="@+id/four_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/sp_size_12"
+                    android:textStyle="bold"
+                    android:gravity="center"
+                    android:layout_centerVertical="true"
+                    android:drawableLeft="@drawable/active_icon"
+                    android:textColor="@color/green"
+                    android:layout_alignParentRight="true"
+                    android:text="Active"/>
+        </RelativeLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView android:id="@+id/four_spend_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/sp_size_14"
+                    android:textColor="@color/black"
+                    android:text="Spend Minimum $"/>
+
+            <EditText android:id="@+id/four_min_edittext"
+                    style="@style/marketing_coupon_edit"
+                    android:layout_marginLeft="@dimen/dimen_30"
+                    android:text="35"/>
+            <Button android:id="@+id/four_es_button"
+                    style="@style/marketing_button"
+                    android:text="@string/save_lower"
+                    android:layout_marginLeft="@dimen/dimen_30"/>
+        </LinearLayout>
+        <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/dimen_40"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+            <TextView android:id="@+id/four_get_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_weight="2"
+                    android:textSize="@dimen/sp_size_14"
+                    android:textColor="@color/black"
+                    android:text="Get $ off"/>
+
+            <EditText android:id="@+id/four_off_edittext"
+                    style="@style/marketing_coupon_edit"
+                    android:layout_marginLeft="@dimen/dimen_30"
+                    android:text="5"/>
+            <Button android:id="@+id/four_reset_button"
+                    style="@style/marketing_button"
+                    android:text="@string/reset"
+                    android:layout_marginLeft="@dimen/dimen_30"/>
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

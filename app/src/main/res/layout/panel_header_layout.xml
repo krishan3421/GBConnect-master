@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_height="wrap_content">
+    <TextView android:id="@+id/restaurant_name_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:gravity="left"
+            android:textSize="@dimen/sp_size_18"/>
+
+    <TextView android:id="@+id/address_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:text="36 Commerce Way Woburn California 01101"
+            android:gravity="left"
+            android:textSize="@dimen/sp_size_14"/>
+
+    <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/dimen_20"
+            android:text="Your Packages"
+            android:gravity="left"
+            android:textSize="@dimen/sp_size_16"/>
+    <TextView android:id="@+id/del_pckg_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:text="Delivery Orders - 5%"
+            android:gravity="left"
+            android:textSize="@dimen/sp_size_14"/>
+    <TextView android:id="@+id/pickup_pckg_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:text="Pickup Orders - 5%"
+            android:gravity="left"
+            android:textSize="@dimen/sp_size_14"/>
+
+    <TextView android:id="@+id/create_user_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/blue_color"
+            android:textStyle="bold"
+            android:layout_marginTop="@dimen/dimen_50"
+            android:text="@string/create_user"
+            android:gravity="left"
+            android:textSize="@dimen/sp_size_16"/>
+
+</LinearLayout>
