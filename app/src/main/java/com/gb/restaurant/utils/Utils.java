@@ -35,6 +35,7 @@ import java.lang.reflect.Method;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.content.Context.BIND_AUTO_CREATE;
 import static com.gb.restaurant.CATPrintSDK.Canvas.FONTSTYLE_BOLD;
@@ -156,30 +157,30 @@ public class Utils {
             // changes by krishan
            // canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             String headingData = receiptData.getItems().get(i).getHeading();
-            String[] listString= headingData.split("\\(");
-            if(listString.length==2){
-                headingData = listString[0]+"\n "+"("+listString[1];
-                for(String line:headingData.split("\n")){
-                    canvas.DrawText("" + line, 60, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-                    lineHeight+=20;
+            if(headingData !=null && !headingData.isEmpty()){
+                List<String> headingList = wrapLines(headingData, 25);
+                for(int k= 0; k<headingList.size();k++){
+                    canvas.DrawText("" + headingList.get(k), 60, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                    if(k==0){
+                        canvas.DrawText("$" + receiptData.getItems().get(i).getPrice(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                    }
+                    lineHeight+=30;
                 }
             }
-            canvas.DrawText("$" + receiptData.getItems().get(i).getPrice(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
 
-            lineHeight += 40;
 
             ArrayList<String> extraList;
             if (receiptData.getItems().get(i).getExtra() != null) {
                 if (!receiptData.getItems().get(i).getExtra().isEmpty()) {
                     extraList = wrapLines(receiptData.getItems().get(i).getExtra(), 33);
                     for (String li : extraList) {
-                        canvas.DrawText(li, 50, lineHeight, 0, defaultFont, 23, 0);
-                        lineHeight += 35;
+                        canvas.DrawText(li, 60, lineHeight, 0, defaultFont, 23, 0);
+                        lineHeight += 30;
                     }
                 }
             }
 
-
+            lineHeight += 30;
             ArrayList<String> instructionList;
 
             if (receiptData.getItems().get(i).getInstruction() != null) {
@@ -271,35 +272,36 @@ public class Utils {
         }
 
         if (!receiptData.getName().isEmpty()) {
-            canvas.DrawText(receiptData.getName(), -2, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText(receiptData.getName(), 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 40;
         }
         if (!receiptData.getMobile().isEmpty()) {
-            canvas.DrawText(receiptData.getMobile(), -2, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText(receiptData.getMobile(), 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 40;
         }
         if (receiptData.getType().equalsIgnoreCase("Pickup")) {
-            canvas.DrawText("Order: Pickup", -2, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText("Order: Pickup", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 40;
         }else{
-            canvas.DrawText("Order: Delivery", -2, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText("Order: Delivery", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 40;
-        }
-        canvas.DrawText("Delivery address", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-        lineHeight += 30;
-        ArrayList<String> addressList;
-        if (receiptData.getDelivery() != null) {
-            if (!receiptData.getDelivery().isEmpty()) {
-                addressList = wrapLines(receiptData.getDelivery(), 35);
-                int i = 0;
-                for (String li : addressList) {
-                    canvas.DrawText(li, 0, lineHeight, 0, defaultFont, 30, 0);
-                    i++;
-                    lineHeight += 40;
-                }
+            canvas.DrawText("Delivery address", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            lineHeight += 30;
+            ArrayList<String> addressList;
+            if (receiptData.getDelivery() != null) {
+                if (!receiptData.getDelivery().isEmpty()) {
+                    addressList = wrapLines(receiptData.getDelivery(), 35);
+                    int i = 0;
+                    for (String li : addressList) {
+                        canvas.DrawText(li, 0, lineHeight, 0, defaultFont, 30, 0);
+                        i++;
+                        lineHeight += 40;
+                    }
 
+                }
             }
         }
+
 
 
 //        if (!receiptData.getrest().isEmpty()) {

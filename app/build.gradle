@@ -6,13 +6,13 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.gms.google-services'
 android {
-    compileSdkVersion 30
+    compileSdkVersion 32
     defaultConfig {
         applicationId "com.gb.restaurant"
         minSdkVersion 19
-        targetSdkVersion 30
-        versionCode 11
-        versionName '3.8'
+        targetSdkVersion 32
+        versionCode 13
+        versionName '4.0'
         multiDexEnabled true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
