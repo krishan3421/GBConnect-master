@@ -2,11 +2,14 @@ package com.gb.restaurant.ui.fragments
 
 import android.Manifest
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -36,6 +39,7 @@ import com.gb.restaurant.utils.Utils
 import com.gb.restaurant.viewmodel.OrderViewModel
 import com.grabull.session.SessionManager
 import kotlinx.android.synthetic.main.fragment_new.*
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -71,7 +75,7 @@ class NewFragment : BaseFragment() {
 
     var sessionManager: SessionManager? = null
 
-
+    var confirmData:Data?=null
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         if (activity is OrdersActivity)
@@ -194,11 +198,11 @@ class NewFragment : BaseFragment() {
                 }
                 var reservationCount = it.reservation ?: 0
                 reservationListener?.onStartStop(reservationCount)
-                stopListener?.onStop(Constant.TAB.NEW, orderAdapter.itemCount)
             }
         })
 
         viewModel.printLastOrder.observe(fragmentBaseActivity, Observer<Boolean> {
+            stopListener?.onStop(Constant.TAB.NEW, orderAdapter.itemCount)
             it?.let {
 
                 if (it) {
@@ -219,14 +223,15 @@ class NewFragment : BaseFragment() {
                     } else {
                         if (Utils.isLocationEnabled(context)!!) {
                             if (sessionManager!!.getPrinterAddress().isNotEmpty()) {
-                                print(
-                                    sessionManager!!.getPrinterType(),
-                                    sessionManager!!.getPrinterAddress(),
-                                    viewModel.getOrderAt(0)
-                                )
-
-
+                                Handler().postDelayed({
+                                    print(
+                                        sessionManager!!.getPrinterType(),
+                                        sessionManager!!.getPrinterAddress(),
+                                        viewModel.getOrderAt(0)
+                                    )
+                                }, 5*1000)
                             }
+                            stopListener?.onStop(Constant.TAB.NEW, orderAdapter.itemCount)
                         }
 
                     }
@@ -315,7 +320,9 @@ class NewFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-
+        fragmentBaseActivity?.registerReceiver(printStatusBroadcast,
+            IntentFilter("com.gb.restaurant.utils.returnPrintStatus")
+        );
         Utils.setBluetooth(true)
 
         orderAdapter.setOnItemClickListener(object : NewAdapter.NewOrClickListener {
@@ -333,6 +340,11 @@ class NewFragment : BaseFragment() {
             }
 
         })
+    }
+
+    override fun onPause() {
+        super.onPause()
+        fragmentBaseActivity?.unregisterReceiver(printStatusBroadcast);
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -443,19 +455,31 @@ class NewFragment : BaseFragment() {
         mCanvas = Canvas(canvasBitmap)
         mBitmap = Utils.createOrderReceipt(context, mCanvas, 576, data)
         if (mBitmap != null) {
-
-            confirmNewOrder("" + data!!.orderid, "" + data.type!!)
-
+            confirmData = data
             //Print Munbyn
-            Utils.munbynPrinting(
+          Utils.munbynPrinting(
                 context,
                 mBitmap,
                 printer_type,
                 printer_id
             )
 
+
         }
 
+    }
+    private val printStatusBroadcast:BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            p1?.let {
+                println("printStatusBroadcast>>>>")
+                val status = it.getIntExtra("PRINT_STATUS",0)
+                println("printStatusBroadcast>>>> $status")
+                if(status==1){
+                    confirmNewOrder("" + confirmData!!.orderid, "" + confirmData!!.type!!)
+                }
+            }
+
+        }
     }
 
 }

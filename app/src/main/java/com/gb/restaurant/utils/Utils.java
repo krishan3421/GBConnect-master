@@ -2,6 +2,7 @@ package com.gb.restaurant.utils;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -70,11 +71,13 @@ public class Utils {
         Bitmap icon = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.receipt_logo);
 
         if (icon != null) {
+            lineHeight += 40;
             canvas.DrawBitmap(icon, -2, lineHeight, 0);
+            lineHeight += 20;
             lineHeight += icon.getHeight();
         }
 
-        lineHeight += 10;
+        lineHeight += 20;
 
         canvas.DrawText(receiptData.getDate2(), -2, lineHeight, 0, defaultFont, 30, 0);
 
@@ -362,6 +365,7 @@ public class Utils {
                             public void onMunbynWriteStatus(int status, String msg) {
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                     public void run() {
+                                        returnPrintStatus(status,mContext);
                                         if (status == 1) {
                                             MunbynPrinter.getInstance().disConnect();
                                         }
@@ -373,7 +377,7 @@ public class Utils {
 
                             @Override
                             public void onPrintFail(int status, String reason) {
-
+                                returnPrintStatus(status,mContext);
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                     public void run() {
                                         MunbynPrinter.getInstance().disConnect();
@@ -389,6 +393,12 @@ public class Utils {
         return bPrintResult;
     }
 
+    private static void returnPrintStatus(int status,Context context){
+        Intent printStatus = new Intent("com.gb.restaurant.utils.returnPrintStatus");
+        printStatus.putExtra("PRINT_STATUS",status);
+         context.sendBroadcast(printStatus);
+        //LocalBroadcastManager.getInstance(context).sendBroadcast(printStatus);
+    }
 
     public static int calculateHeight(Data printOrder) {
         int lineHeight = 0;

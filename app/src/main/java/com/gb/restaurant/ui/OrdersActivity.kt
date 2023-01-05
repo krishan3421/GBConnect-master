@@ -1,6 +1,8 @@
 package com.gb.restaurant.ui
 
 import android.app.Activity
+import android.bluetooth.BluetoothClass
+import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -30,6 +32,7 @@ import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
 import com.gb.restaurant.di.ComponentInjector
+import com.gb.restaurant.model.PrinterModel
 import com.gb.restaurant.model.order.OrderRequest
 import com.gb.restaurant.model.order.OrderResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
@@ -37,12 +40,17 @@ import com.gb.restaurant.push.MyFirebaseMessagingService
 import com.gb.restaurant.push.PushMessage
 import com.gb.restaurant.push.TYPE
 import com.gb.restaurant.ui.fragments.*
+import com.gb.restaurant.utils.BluetoothDiscovery
+import com.gb.restaurant.utils.IpScanner
 import com.gb.restaurant.utils.Util
+import com.gb.restaurant.utils.Utils
 import com.gb.restaurant.viewmodel.OrderViewModel
+import com.grabull.session.SessionManager
 import kotlinx.android.synthetic.main.activity_orders.progress_bar
 import kotlinx.android.synthetic.main.content_orders.*
 import kotlinx.android.synthetic.main.custom_appbar.*
 import kotlinx.android.synthetic.main.fragment_new.*
+import java.util.ArrayList
 
 //https://stackoverflow.com/questions/17685787/access-a-method-of-a-fragment-from-the-viewpager-activity
 class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
@@ -62,7 +70,8 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
     var rsLoginResponse: RsLoginResponse? = null
     lateinit var orderViewPager: ViewPager
     private lateinit var viewModel: OrderViewModel
-
+    var sessionManager: SessionManager? = null
+    lateinit var mainHandler: Handler
     companion object {
         private val TAG: String = OrdersActivity::class.java.simpleName
         var isPageVisible: Boolean = false
@@ -79,10 +88,11 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
 
     private fun initView() {
         try {
+            sessionManager = SessionManager(this)
             viewModel = createViewModel()
             attachObserver()
             rsLoginResponse = MyApp.instance.rsLoginResponse
-
+            mainHandler = Handler(Looper.getMainLooper())
             /* toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
              toolbar.title = getString(R.string.back)
              toolbar.setNavigationOnClickListener { onBackPressed() }
@@ -111,7 +121,6 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             }
             mediaPlayer = MediaPlayer.create(this, R.raw.sound);
             mediaPlayer.isLooping = true
-
             //blinkTab(1)
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
@@ -194,12 +203,14 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             pushBroadcastReceiver,
             IntentFilter(MyFirebaseMessagingService.PUSHBROADCAST)
         )
-    }
+       // mainHandler.post(updateTextTask)
 
+    }
     override fun onPause() {
         super.onPause()
         isPageVisible = false
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver)
+       // mainHandler.removeCallbacks(updateTextTask)
     }
 
 
@@ -362,7 +373,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
         }
     }
 
-    fun stopMedia() {
+    private fun stopMedia() {
         try {
             if (mediaPlayer != null) {
                 if (mediaPlayer.isPlaying) {
@@ -395,13 +406,13 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
                 order_tab_layout.getTabAt(fragment)!!.text = "In House";
             }
         }
-        var totalCount = newCount//+scheduleCount
+        val totalCount = newCount//+scheduleCount
         if (totalCount == 0)
 
             Handler(Looper.getMainLooper()).postDelayed({
                 //Do something after X*1000 seconds
                 stopMedia()
-            }, 10 * 1000)
+            }, 5 * 1000)
 
     }
 
@@ -450,7 +461,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
 
     private fun handlePushMessage(pushMessage: PushMessage) {
         try {
-            pushMessage?.let {
+            pushMessage.let {
                 if (it.type.equals(
                         TYPE.OrderNew.toString(),
                         true
@@ -473,9 +484,9 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
                     }
                     //fragment.callService()
                 }
-//                 if(it.type.equals(TYPE.OrderHold.toString(),true)){
-//                     ActiveFragment.getInstance()?.callService()
-//                }
+        //                 if(it.type.equals(TYPE.OrderHold.toString(),true)){
+        //                     ActiveFragment.getInstance()?.callService()
+        //                }
             }
         } catch (e: Exception) {
             e.printStackTrace()
