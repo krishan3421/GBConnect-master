@@ -183,7 +183,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
     override fun onResume() {
         super.onResume()
 
-        Utils.setBluetooth(true)
+        Utils.setBluetooth(true,fragmentBaseActivity)
 
 
         compAdapter.setOnItemClickListener(object : CompletedAdapter.NewOrClickListener {

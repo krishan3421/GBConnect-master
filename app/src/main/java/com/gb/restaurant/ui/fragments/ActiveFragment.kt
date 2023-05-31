@@ -174,7 +174,7 @@ class ActiveFragment : BaseFragment() {
     override fun onResume() {
         super.onResume()
 
-        Utils.setBluetooth(true)
+        Utils.setBluetooth(true,fragmentBaseActivity)
 
         activeAdapter.setOnItemClickListener(object : ActiveAdapter.NewOrClickListener {
             override fun onItemClick(data: Data, postion: Int, v: View) {

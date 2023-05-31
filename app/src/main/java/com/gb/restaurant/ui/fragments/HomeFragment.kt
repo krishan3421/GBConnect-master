@@ -1,9 +1,13 @@
 package com.gb.restaurant.ui.fragments
 
+import android.Manifest
+import android.Manifest.permission.BLUETOOTH_SCAN
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Spannable
 import android.text.SpannableString
@@ -15,13 +19,13 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.afollestad.materialdialogs.MaterialDialog
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.ui.*
 import com.gb.restaurant.utils.Util
-import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.InstallState
@@ -31,15 +35,16 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
 import kotlinx.android.synthetic.main.home_fragment.*
 
-
 class HomeFragment : BaseFragment() ,View.OnClickListener,InstallStateUpdatedListener{
     var rsLoginResponse: RsLoginResponse? = null
     lateinit var  appUpdateManager: AppUpdateManager
+    var isFromOrder:Boolean=false
     companion object {
         fun newInstance() = HomeFragment()
         private val TAG = HomeFragment::class.java.simpleName
         private const val RC_APP_UPDATE = 11
     }
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,12 +132,15 @@ class HomeFragment : BaseFragment() ,View.OnClickListener,InstallStateUpdatedLis
     override fun onClick(p0: View?) {
         when(p0){
             orders_layout->{
-                openActivity(OrdersActivity::class.java)
+                //openActivity(OrdersActivity::class.java)
+                isFromOrder =true
+                checkBlueToothPermission()
             }
             report_layout->{
                 openActivity(NewReportActivity::class.java)
             }
             setting_layout->{
+                isFromOrder=false
                 openActivity(SettingActivity::class.java)
             }
             support_layout->{
@@ -145,6 +153,46 @@ class HomeFragment : BaseFragment() ,View.OnClickListener,InstallStateUpdatedLis
                // fragmentBaseActivity.showToast("Comming soon")
             }
         }
+    }
+
+    private fun checkBlueToothPermission(){
+        if (ContextCompat.checkSelfPermission(fragmentBaseActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(fragmentBaseActivity, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)
+        {
+            makeRequest()
+        }else{
+            if(isFromOrder){
+                openActivity(OrdersActivity::class.java)
+            }else{
+                openActivity(SettingActivity::class.java)
+            }
+
+        }
+    }
+
+    private fun makeRequest() {
+        requestPermissions(
+            arrayOf(Manifest.permission.BLUETOOTH_CONNECT,Manifest.permission.BLUETOOTH_SCAN,Manifest.permission.ACCESS_COARSE_LOCATION,Manifest.permission.ACCESS_FINE_LOCATION),
+            2222)
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            2222 -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED && grantResults[2] == PackageManager.PERMISSION_GRANTED) {
+                    if(isFromOrder){
+                        openActivity(OrdersActivity::class.java)
+                    }else{
+                        openActivity(SettingActivity::class.java)
+                    }
+                } else {
+                    fragmentBaseActivity?.showToast("Bluetooth Permission not granted")
+
+                }
+            }
+        }
+
     }
 
     private fun openActivity(cls:Class<*>?){

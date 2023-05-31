@@ -1,5 +1,6 @@
 package com.gb.restaurant.utils;
 
+import android.Manifest;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
@@ -7,6 +8,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Paint;
@@ -19,7 +21,7 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-
+import androidx.core.content.ContextCompat;
 import com.gb.restaurant.CATPrintSDK.Canvas;
 import com.gb.restaurant.R;
 import com.gb.restaurant.model.PrinterModel;
@@ -147,27 +149,27 @@ public class Utils {
 
 
             if (receiptData.getItems().get(i).getQty() != null) {
-                canvas.DrawBoxLight(5, lineHeight-7, 55, lineHeight + 30);
+                canvas.DrawBoxLight(5, lineHeight - 7, 55, lineHeight + 30);
                 if (receiptData.getItems().get(i).getQty().length() == 1) {
-                    canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 25, lineHeight-5, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                    canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 25, lineHeight - 5, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 } else if (receiptData.getItems().get(i).getQty().length() == 2) {
-                    canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 15, lineHeight-5, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                    canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 15, lineHeight - 5, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 } else if (receiptData.getItems().get(i).getQty().length() == 3) {
-                    canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 10, lineHeight-5, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                    canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 10, lineHeight - 5, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 }
             }
 
             // changes by krishan
-           // canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            // canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             String headingData = receiptData.getItems().get(i).getHeading();
-            if(headingData !=null && !headingData.isEmpty()){
+            if (headingData != null && !headingData.isEmpty()) {
                 List<String> headingList = wrapLines(headingData, 25);
-                for(int k= 0; k<headingList.size();k++){
+                for (int k = 0; k < headingList.size(); k++) {
                     canvas.DrawText("" + headingList.get(k), 60, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-                    if(k==0){
+                    if (k == 0) {
                         canvas.DrawText("$" + receiptData.getItems().get(i).getPrice(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
                     }
-                    lineHeight+=30;
+                    lineHeight += 30;
                 }
             }
 
@@ -285,7 +287,7 @@ public class Utils {
         if (receiptData.getType().equalsIgnoreCase("Pickup")) {
             canvas.DrawText("Order: Pickup", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 40;
-        }else{
+        } else {
             canvas.DrawText("Order: Delivery", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 40;
             canvas.DrawText("Delivery address", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
@@ -304,7 +306,6 @@ public class Utils {
                 }
             }
         }
-
 
 
 //        if (!receiptData.getrest().isEmpty()) {
@@ -365,7 +366,7 @@ public class Utils {
                             public void onMunbynWriteStatus(int status, String msg) {
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                     public void run() {
-                                        returnPrintStatus(status,mContext);
+                                        returnPrintStatus(status, mContext);
                                         if (status == 1) {
                                             MunbynPrinter.getInstance().disConnect();
                                         }
@@ -377,7 +378,7 @@ public class Utils {
 
                             @Override
                             public void onPrintFail(int status, String reason) {
-                                returnPrintStatus(status,mContext);
+                                returnPrintStatus(status, mContext);
                                 new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                     public void run() {
                                         MunbynPrinter.getInstance().disConnect();
@@ -393,10 +394,10 @@ public class Utils {
         return bPrintResult;
     }
 
-    private static void returnPrintStatus(int status,Context context){
+    private static void returnPrintStatus(int status, Context context) {
         Intent printStatus = new Intent("com.gb.restaurant.utils.returnPrintStatus");
-        printStatus.putExtra("PRINT_STATUS",status);
-         context.sendBroadcast(printStatus);
+        printStatus.putExtra("PRINT_STATUS", status);
+        context.sendBroadcast(printStatus);
         //LocalBroadcastManager.getInstance(context).sendBroadcast(printStatus);
     }
 
@@ -499,12 +500,22 @@ public class Utils {
         }
     }
 
-    public static void setBluetooth(boolean enable) {
+    public static void setBluetooth(boolean enable,Context ctx) {
         BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (mBluetoothAdapter != null) {
             if (enable) {
                 //Enable bluetooth
                 if (!mBluetoothAdapter.isEnabled()) {
+                    if (ContextCompat.checkSelfPermission(ctx, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    Activity#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for Activity#requestPermissions for more details.
+                        return;
+                    }
                     mBluetoothAdapter.enable();
                 }
             } else {

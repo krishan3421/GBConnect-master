@@ -323,7 +323,7 @@ class NewFragment : BaseFragment() {
         fragmentBaseActivity?.registerReceiver(printStatusBroadcast,
             IntentFilter("com.gb.restaurant.utils.returnPrintStatus")
         );
-        Utils.setBluetooth(true)
+        Utils.setBluetooth(true,fragmentBaseActivity)
 
         orderAdapter.setOnItemClickListener(object : NewAdapter.NewOrClickListener {
             override fun onItemClick(data: Data, position: Int, v: View) {
