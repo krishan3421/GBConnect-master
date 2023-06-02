@@ -141,7 +141,7 @@ class HomeFragment : BaseFragment() ,View.OnClickListener,InstallStateUpdatedLis
             }
             setting_layout->{
                 isFromOrder=false
-                openActivity(SettingActivity::class.java)
+                checkBlueToothPermission()
             }
             support_layout->{
                 openActivity(SupportActivity::class.java)
@@ -156,17 +156,31 @@ class HomeFragment : BaseFragment() ,View.OnClickListener,InstallStateUpdatedLis
     }
 
     private fun checkBlueToothPermission(){
-        if (ContextCompat.checkSelfPermission(fragmentBaseActivity, Manifest.permission.BLUETOOTH_CONNECT) != PackageManager.PERMISSION_GRANTED &&
-            ContextCompat.checkSelfPermission(fragmentBaseActivity, Manifest.permission.BLUETOOTH_SCAN) != PackageManager.PERMISSION_GRANTED)
-        {
-            makeRequest()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            if (ContextCompat.checkSelfPermission(
+                    fragmentBaseActivity,
+                    Manifest.permission.BLUETOOTH_CONNECT
+                ) != PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(
+                    fragmentBaseActivity,
+                    Manifest.permission.BLUETOOTH_SCAN
+                ) != PackageManager.PERMISSION_GRANTED
+            ) {
+                makeRequest()
+            } else {
+                if (isFromOrder) {
+                    openActivity(OrdersActivity::class.java)
+                } else {
+                    openActivity(SettingActivity::class.java)
+                }
+
+            }
         }else{
-            if(isFromOrder){
+            if (isFromOrder) {
                 openActivity(OrdersActivity::class.java)
-            }else{
+            } else {
                 openActivity(SettingActivity::class.java)
             }
-
         }
     }
 
