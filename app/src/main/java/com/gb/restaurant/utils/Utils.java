@@ -319,9 +319,11 @@ public class Utils {
         canvas.CanvasEnd();
         System.gc();
         Bitmap bmpp = canvas.getBitmap().copy(Bitmap.Config.RGB_565, true);
-
-        bitmap = Bitmap.createBitmap(bmpp, 0, 0, nPrintWidth, lineHeight);
-
+        try {
+            bitmap = Bitmap.createBitmap(bmpp, 0, 0, nPrintWidth, lineHeight);
+        }catch(Exception e) {
+            bitmap= bmpp;
+        }
         return bitmap;
 
     }
