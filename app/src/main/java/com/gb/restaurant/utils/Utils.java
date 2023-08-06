@@ -81,8 +81,13 @@ public class Utils {
 
         lineHeight += 20;
 
-        canvas.DrawText(receiptData.getDate2(), -2, lineHeight, 0, defaultFont, 30, 0);
-
+        if(receiptData.getHolddate2() ==null || receiptData.getHolddate2().isEmpty()){
+            canvas.DrawText(receiptData.getDate2(), -2, lineHeight, 0, defaultFont, 30, 0);
+        }else {
+            canvas.DrawText("Future Order", -2, lineHeight, 0, defaultFont, 40, FONTSTYLE_BOLD);
+            lineHeight += 40;
+            canvas.DrawText("( For: "+receiptData.getHolddate2()+" )", -2, lineHeight, 0, defaultFont, 30, 0);
+        }
         lineHeight += 40;
 
         canvas.DrawText("Order # " + receiptData.getId(), -2, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
