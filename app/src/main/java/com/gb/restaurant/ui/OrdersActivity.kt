@@ -1,8 +1,6 @@
 package com.gb.restaurant.ui
 
 import android.app.Activity
-import android.bluetooth.BluetoothClass
-import android.bluetooth.BluetoothDevice
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -31,8 +29,8 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityOrdersBinding
 import com.gb.restaurant.di.ComponentInjector
-import com.gb.restaurant.model.PrinterModel
 import com.gb.restaurant.model.order.OrderRequest
 import com.gb.restaurant.model.order.OrderResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
@@ -40,17 +38,9 @@ import com.gb.restaurant.push.MyFirebaseMessagingService
 import com.gb.restaurant.push.PushMessage
 import com.gb.restaurant.push.TYPE
 import com.gb.restaurant.ui.fragments.*
-import com.gb.restaurant.utils.BluetoothDiscovery
-import com.gb.restaurant.utils.IpScanner
 import com.gb.restaurant.utils.Util
-import com.gb.restaurant.utils.Utils
 import com.gb.restaurant.viewmodel.OrderViewModel
-import com.grabull.session.SessionManager
-import kotlinx.android.synthetic.main.activity_orders.progress_bar
-import kotlinx.android.synthetic.main.content_orders.*
-import kotlinx.android.synthetic.main.custom_appbar.*
-import kotlinx.android.synthetic.main.fragment_new.*
-import java.util.ArrayList
+import com.gb.restaurant.session.SessionManager
 
 //https://stackoverflow.com/questions/17685787/access-a-method-of-a-fragment-from-the-viewpager-activity
 class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
@@ -72,6 +62,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
     private lateinit var viewModel: OrderViewModel
     var sessionManager: SessionManager? = null
     lateinit var mainHandler: Handler
+    private lateinit var binding: ActivityOrdersBinding
     companion object {
         private val TAG: String = OrdersActivity::class.java.simpleName
         var isPageVisible: Boolean = false
@@ -81,7 +72,9 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_orders)
+       // setContentView(R.layout.activity_orders)
+        binding = ActivityOrdersBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         //setSupportActionBar(toolbar)
         initView()
     }
@@ -97,24 +90,24 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
              toolbar.title = getString(R.string.back)
              toolbar.setNavigationOnClickListener { onBackPressed() }
              toolbar.setTitleTextColor(ContextCompat.getColor(this,R.color.colorAccent))*/
-            back_layout.setOnClickListener {
+            binding.customAppbar.backLayout.setOnClickListener {
                 onBackPressed()
             }
 
-            back_layout.visibility = View.INVISIBLE
+            binding.customAppbar.backLayout.visibility = View.INVISIBLE
             samplePagerAdapter = SamplePagerAdapter(supportFragmentManager)
-            order_view_pager.adapter = samplePagerAdapter
-            order_tab_layout.setupWithViewPager(order_view_pager)
-            order_view_pager.addOnPageChangeListener(this)
-            orderViewPager = order_view_pager
-            tabNew = (order_tab_layout.getChildAt(0) as ViewGroup).getChildAt(Constant.TAB.NEW)
+            binding.contentOrders.orderViewPager.adapter = samplePagerAdapter
+            binding.contentOrders.orderTabLayout.setupWithViewPager(binding.contentOrders.orderViewPager)
+            binding.contentOrders.orderViewPager.addOnPageChangeListener(this)
+            orderViewPager = binding.contentOrders.orderViewPager
+            tabNew = (binding.contentOrders.orderTabLayout.getChildAt(0) as ViewGroup).getChildAt(Constant.TAB.NEW)
 //             tabNewText =
 //                order_tab_layout.getChildAt(0).findViewById(id.title) as TextView
 //             tabNewText.setTextColor(ContextCompat.getColor(this,R.color.colorAccent))
             //tabSchedule = (order_tab_layout.getChildAt(0) as ViewGroup).getChildAt(Constant.TAB.SCHEDULE)
 
-            for (i in 0 until order_tab_layout.tabCount) {
-                val tab = (order_tab_layout.getChildAt(0) as ViewGroup).getChildAt(i)
+            for (i in 0 until binding.contentOrders.orderTabLayout.tabCount) {
+                val tab = (binding.contentOrders.orderTabLayout.getChildAt(0) as ViewGroup).getChildAt(i)
                 val p = tab.layoutParams as ViewGroup.MarginLayoutParams
                 p.setMargins(0, 0, 10, 0)
                 tab.requestLayout()
@@ -263,11 +256,11 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
         try {
             when (position) {
                 Constant.TAB.NEW -> {
-                    order_tab_layout.getTabAt(position)!!.text = "NEW($count)";
+                    binding.contentOrders.orderTabLayout.getTabAt(position)!!.text = "NEW($count)";
                     blinkTab(tabNew, Constant.TAB.NEW)
                 }
                 Constant.TAB.ACTIVE -> {
-                    order_tab_layout.getTabAt(position)!!.text = "In House($count)";
+                    binding.contentOrders.orderTabLayout.getTabAt(position)!!.text = "In House($count)";
                     //blinkTab(tabSchedule,Constant.TAB.SCHEDULE)
                 }
                 else -> {
@@ -305,8 +298,8 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
         try {
             val aniRotate: Animation =
                 AnimationUtils.loadAnimation(applicationContext, R.anim.rotate_anti_clockwise)
-            refresh_image.startAnimation(aniRotate)
-            order_view_pager.adapter?.notifyDataSetChanged()
+            binding.contentOrders.refreshImage.startAnimation(aniRotate)
+            binding.contentOrders.orderViewPager.adapter?.notifyDataSetChanged()
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -320,7 +313,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_refresh -> {
-                order_view_pager.adapter?.notifyDataSetChanged()
+                binding.contentOrders.orderViewPager.adapter?.notifyDataSetChanged()
             }
             R.id.action_search -> {
                 searchPage()
@@ -394,16 +387,16 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             newCount = count;
             if (count == 0 && tabNew != null) {
                 tabNew.clearAnimation()
-                order_tab_layout.getTabAt(fragment)!!.text = "NEW";
+                binding.contentOrders.orderTabLayout.getTabAt(fragment)!!.text = "NEW";
                 tabNew.background = ContextCompat.getDrawable(this, R.drawable.tab_selector)
-                order_tab_layout.setTabTextColors(
+                binding.contentOrders.orderTabLayout.setTabTextColors(
                     Color.parseColor("#108AE5"),
                     Color.parseColor("#FFFFFF")
                 );
             }
         } else if (fragment == Constant.TAB.ACTIVE) {
             if (count == 0) {
-                order_tab_layout.getTabAt(fragment)!!.text = "In House";
+                binding.contentOrders.orderTabLayout.getTabAt(fragment)!!.text = "In House";
             }
         }
         val totalCount = newCount//+scheduleCount
@@ -434,16 +427,16 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
 
     override fun onStartStop(count: Int) {
         if (count > 0) {
-            reservation_button.setBackgroundColor(Color.RED)
+            binding.contentOrders.reservationButton.setBackgroundColor(Color.RED)
             val anim = AlphaAnimation(0.0f, 1.0f)
             anim.duration = 300 //You can manage the blinking time with this parameter
             anim.startOffset = 20
             anim.repeatMode = Animation.REVERSE
             anim.repeatCount = Animation.INFINITE
-            reservation_button.startAnimation(anim)
+            binding.contentOrders.reservationButton.startAnimation(anim)
         } else {
-            reservation_button.clearAnimation()
-            reservation_button.background = getDrawable(R.drawable.gray_bg_one)
+            binding.contentOrders.reservationButton.clearAnimation()
+            binding.contentOrders.reservationButton.background = getDrawable(R.drawable.gray_bg_one)
         }
     }
 
@@ -500,7 +493,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar?.visibility = View.VISIBLE else progress_bar?.visibility = View.GONE
+        if (show) binding.progressBar?.visibility = View.VISIBLE else binding.progressBar?.visibility = View.GONE
     }
 
     private fun attachObserver() {
@@ -508,9 +501,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            if (new_swipe_refresh != null)
-                new_swipe_refresh.isRefreshing = false
-            it?.let { this.showSnackBar(progress_bar, it) }
+            it?.let { this.showSnackBar(binding.progressBar, it) }
         })
         viewModel.orderResponse.observe(this, Observer<OrderResponse> {
             it?.let {

@@ -1,9 +1,9 @@
 package com.gb.restaurant.model.users
 
-
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import kotlinx.android.parcel.Parcelize
+import kotlinx.parcelize.Parcelize
+
 
 @Parcelize
 data class User(
@@ -19,4 +19,4 @@ data class User(
     val rid: String?,
     @SerializedName("status")
     val status: String?
-):Parcelable
+): Parcelable

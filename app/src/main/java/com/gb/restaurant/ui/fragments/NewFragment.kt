@@ -24,6 +24,8 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.FragmentMonthlyInvoiceBinding
+import com.gb.restaurant.databinding.FragmentNewBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.confirmorder.OrderStatusRequest
 import com.gb.restaurant.model.confirmorder.OrderStatusResponse
@@ -37,9 +39,7 @@ import com.gb.restaurant.ui.adapter.NewAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.utils.Utils
 import com.gb.restaurant.viewmodel.OrderViewModel
-import com.grabull.session.SessionManager
-import kotlinx.android.synthetic.main.fragment_new.*
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.gb.restaurant.session.SessionManager
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -76,6 +76,8 @@ class NewFragment : BaseFragment() {
     var sessionManager: SessionManager? = null
 
     var confirmData:Data?=null
+    private var _binding: FragmentNewBinding? = null
+    private val binding get() = _binding!!
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         if (activity is OrdersActivity)
@@ -104,16 +106,21 @@ class NewFragment : BaseFragment() {
     ): View? {
         // Inflate the layout for this fragment
         println("page call>>>>>>>>>>>fragment_new")
-        return inflater.inflate(R.layout.fragment_new, container, false)
+        _binding = FragmentNewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         try {
-            sessionManager = SessionManager(context!!)
+            sessionManager = SessionManager(requireContext())
 
             orderAdapter = NewAdapter(fragmentBaseActivity as OrdersActivity, viewModel)
-            new_order_recycler.apply {
+            binding.newOrderRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(fragmentBaseActivity)
                 adapter = orderAdapter
@@ -123,7 +130,7 @@ class NewFragment : BaseFragment() {
 
             callService(false)
 
-            new_swipe_refresh.setOnRefreshListener {
+            binding.newSwipeRefresh.setOnRefreshListener {
                 callService(false)
             }
         } catch (e: Exception) {
@@ -145,7 +152,7 @@ class NewFragment : BaseFragment() {
                 viewModel.getOrderResponse(orderRequest, isPrintLastOrder)
             } else {
                 fragmentBaseActivity.showSnackBar(
-                    progress_bar,
+                    binding.progressBar,
                     getString(R.string.internet_connected)
                 )
             }
@@ -178,23 +185,23 @@ class NewFragment : BaseFragment() {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(fragmentBaseActivity, Observer<String> {
-            if (new_swipe_refresh != null)
-                new_swipe_refresh.isRefreshing = false
-            it?.let { fragmentBaseActivity.showSnackBar(progress_bar, it) }
+            if (binding.newSwipeRefresh != null)
+                binding.newSwipeRefresh.isRefreshing = false
+            it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar, it) }
         })
         viewModel.orderResponse.observe(fragmentBaseActivity, Observer<OrderResponse> {
-            if (new_swipe_refresh != null)
-                new_swipe_refresh.isRefreshing = false
+            if (binding.newSwipeRefresh != null)
+                binding.newSwipeRefresh.isRefreshing = false
             it?.let {
                 orderAdapter.notifyDataSetChanged()
                 if (orderAdapter.itemCount > 0) {
-                    new_order_recycler?.visibility = View.VISIBLE
-                    no_order_text?.visibility = View.GONE
-                    onButtonPressed(Constant.TAB.NEW, orderAdapter?.itemCount)
+                    binding.newOrderRecycler?.visibility = View.VISIBLE
+                    binding.noOrderText?.visibility = View.GONE
+                    orderAdapter?.itemCount?.let { it1 -> onButtonPressed(Constant.TAB.NEW, it1) }
 
                 } else {
-                    new_order_recycler?.visibility = View.GONE
-                    no_order_text?.visibility = View.VISIBLE
+                    binding.newOrderRecycler?.visibility = View.GONE
+                    binding.noOrderText?.visibility = View.VISIBLE
                 }
                 var reservationCount = it.reservation ?: 0
                 reservationListener?.onStartStop(reservationCount)
@@ -207,10 +214,10 @@ class NewFragment : BaseFragment() {
 
                 if (it) {
                     if (checkSelfPermission(
-                            activity!!,
+                            requireActivity(),
                             Manifest.permission.ACCESS_FINE_LOCATION
                         ) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
-                            activity!!,
+                            requireActivity(),
                             Manifest.permission.ACCESS_COARSE_LOCATION
                         ) != PackageManager.PERMISSION_GRANTED
                     ) {
@@ -244,7 +251,7 @@ class NewFragment : BaseFragment() {
 
 
 
-        viewModel.orderStatusResponse.observe(this, Observer<OrderStatusResponse> {
+        viewModel.orderStatusResponse.observe(viewLifecycleOwner, Observer<OrderStatusResponse> {
             it?.let {
                 if (it.status == Constant.STATUS.FAIL) {
                     fragmentBaseActivity.showToast(it.result!!)
@@ -263,7 +270,7 @@ class NewFragment : BaseFragment() {
 
     private fun confirmNewOrder(orderId: String, orderType: String) {
         var orderStatusRequest = OrderStatusRequest()
-        orderStatusRequest.deviceversion = Util.getVersionName(context!!)
+        orderStatusRequest.deviceversion = Util.getVersionName(requireContext())
         orderStatusRequest.status = Constant.ORDER_STATUS.CONFIRMED
         orderStatusRequest.order_id = orderId
         if (orderType.equals("Delivery", true)) {
@@ -273,7 +280,7 @@ class NewFragment : BaseFragment() {
         }
 
         try {
-            if (Validation.isOnline(context!!)) {
+            if (Validation.isOnline(requireContext())) {
                 orderStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 println("request>>>>> ${Util.getStringFromBean(orderStatusRequest)}")
                 viewModel.orderStatus(orderStatusRequest)
@@ -425,7 +432,7 @@ class NewFragment : BaseFragment() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar?.visibility = View.VISIBLE else progress_bar?.visibility = View.GONE
+        if (show) binding.progressBar?.visibility = View.VISIBLE else binding.progressBar?.visibility = View.GONE
     }
 
 

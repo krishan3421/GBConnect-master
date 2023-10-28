@@ -15,16 +15,15 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.afollestad.materialdialogs.MaterialDialog
-import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityEventEnquiryBinding
+import com.gb.restaurant.databinding.ActivityHomeBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.logout.LogoutRequest
 import com.gb.restaurant.model.logout.LogoutResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
-import com.gb.restaurant.model.rslogin.RsLoginRq
-import com.gb.restaurant.push.MyFirebaseMessagingService
 import com.gb.restaurant.push.NotificationHelper
 import com.gb.restaurant.push.PushMessage
 import com.gb.restaurant.ui.fragments.FragmentTags
@@ -32,14 +31,9 @@ import com.gb.restaurant.ui.fragments.HomeFragment
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.RsLoginViewModel
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.messaging.FirebaseMessaging
-import com.grabull.session.SessionManager
-import kotlinx.android.synthetic.main.activity_home.*
-import kotlinx.android.synthetic.main.activity_restaurant_login.*
-import kotlinx.android.synthetic.main.app_bar_home.*
-import kotlinx.android.synthetic.main.content_home.*
-import kotlinx.android.synthetic.main.content_restaurant_login.*
+import com.gb.restaurant.session.SessionManager
+import com.gb.restaurant.ui.fragments.BlankFragment
 
 
 class HomeActivity : BaseActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -55,11 +49,14 @@ companion object{
    var fromLogout:Boolean=false
 
     var loginResponse:RsLoginResponse?=null
+    private lateinit var binding: ActivityHomeBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_home)
-        loginResponse =MyApp.instance.rsLoginResponse
+        //setContentView(R.layout.activity_home)
+        binding = ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        loginResponse = MyApp.instance.rsLoginResponse
         val toolbar: Toolbar = findViewById(R.id.toolbar)
         toolbar.title = ""
         setSupportActionBar(toolbar)
@@ -96,13 +93,13 @@ companion object{
             intent.putExtra(CreateUserActivity.TYPE,0)//Create USER-0
             startActivity(intent)
         }
-        notification_image.setOnClickListener {
+        binding.appBarHome.notificationImage.setOnClickListener {
             if(MyApp.instance.isAlarm){
-                notification_image.setImageResource(R.drawable.ic_notification_off)
+                binding.appBarHome.notificationImage.setImageResource(R.drawable.ic_notification_off)
                 MyApp.instance.isAlarm =false
 
             }else{
-                notification_image.setImageResource(R.drawable.ic_notification_active)
+                binding.appBarHome.notificationImage.setImageResource(R.drawable.ic_notification_active)
                 MyApp.instance.isAlarm =true
             }
 
@@ -290,7 +287,7 @@ companion object{
         try {
             val fragmentManager = supportFragmentManager
             val fragmentTransaction = fragmentManager.beginTransaction()
-            fragmentTransaction.replace(R.id.container, fragment, TAG)
+            fragmentTransaction.replace(binding.contentHome.containerHome.id, fragment, TAG)
             fragmentTransaction.commit()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -326,7 +323,7 @@ companion object{
 
             MyApp.instance.rsLoginResponse=null
             if(fromLogout){
-                var sessionManager=SessionManager(this)
+                var sessionManager= SessionManager(this)
                 sessionManager.logout()
                 try{
                     //https://stackoverflow.com/questions/38237559/how-do-you-send-a-firebase-notification-to-all-devices-via-curl
@@ -351,6 +348,6 @@ companion object{
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 }

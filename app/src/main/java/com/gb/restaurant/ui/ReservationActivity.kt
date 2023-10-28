@@ -18,6 +18,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.PagerAdapter
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
+import com.gb.restaurant.databinding.ActivityReportsDetailBinding
+import com.gb.restaurant.databinding.ActivityReservationBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.push.MyFirebaseMessagingService
@@ -26,22 +28,23 @@ import com.gb.restaurant.ui.fragments.*
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.ReservationViewModel
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.activity_reservation.*
-import kotlinx.android.synthetic.main.content_reservation.*
 
 class ReservationActivity : BaseActivity(),TabLayout.OnTabSelectedListener {
 
 
     var rsLoginResponse: RsLoginResponse? = null
     private lateinit var samplePagerAdapter: SamplePagerAdapter
+    private lateinit var binding: ActivityReservationBinding
     companion object{
         private val TAG:String = ReservationActivity::class.java.simpleName
         var isReservationVisible:Boolean =false
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reservation)
-        setSupportActionBar(toolbar)
+        //setContentView(R.layout.activity_reservation)
+        binding = ActivityReservationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
         initData()
         initView()
     }
@@ -57,19 +60,20 @@ class ReservationActivity : BaseActivity(),TabLayout.OnTabSelectedListener {
 
     private fun initView(){
         try{
-            toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
-            toolbar.title = ""//getString(R.string.back)
-            title_reser.setOnClickListener { onBackPressed() }
-            toolbar.setNavigationOnClickListener { onBackPressed() }
-            tab_layout.addTab(tab_layout.newTab().setText("Today"))
-            tab_layout.addTab(tab_layout.newTab().setText("Pending"))
-            tab_layout.addTab(tab_layout.newTab().setText("Search"))
-            tab_layout.addOnTabSelectedListener(this)
+            binding.toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
+            binding.toolbar.title = ""//getString(R.string.back)
+            binding.titleReser.setOnClickListener { onBackPressed() }
+            binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            binding.contentReservation.tabLayout.addTab(binding.contentReservation.tabLayout.newTab().setText("Today"))
+            binding.contentReservation.tabLayout.addTab(binding.contentReservation.tabLayout.newTab().setText("Pending"))
+            binding.contentReservation.tabLayout.addTab(binding.contentReservation.tabLayout.newTab().setText("Search"))
+            binding.contentReservation.tabLayout.addOnTabSelectedListener(this)
             samplePagerAdapter = SamplePagerAdapter(supportFragmentManager)
-            reservation_view_pager.adapter = samplePagerAdapter
-            tab_layout.setupWithViewPager(reservation_view_pager)
-            for (i in 0 until tab_layout.tabCount) {
-                val tab = (tab_layout.getChildAt(0) as ViewGroup).getChildAt(i)
+            binding.contentReservation.reservationViewPager.adapter = samplePagerAdapter
+            binding.contentReservation.tabLayout.setupWithViewPager(binding.contentReservation.reservationViewPager)
+            for (i in 0 until binding.contentReservation.tabLayout.tabCount) {
+                val tab = (binding.contentReservation.tabLayout.getChildAt(0) as ViewGroup).getChildAt(i)
                 val p = tab.layoutParams as ViewGroup.MarginLayoutParams
                 p.setMargins(0, 0, 3, 0)
                 tab.requestLayout()
@@ -146,7 +150,7 @@ class ReservationActivity : BaseActivity(),TabLayout.OnTabSelectedListener {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 

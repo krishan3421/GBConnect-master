@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityViewInvoiceBinding
+import com.gb.restaurant.databinding.ActivityViewReportBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.report.ReportRequest
 import com.gb.restaurant.model.report.ReportResponse
@@ -17,8 +19,6 @@ import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.ui.adapter.ViewReportAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.ReportViewModel
-import kotlinx.android.synthetic.main.activity_view_report.*
-import kotlinx.android.synthetic.main.content_view_report.*
 
 
 class ViewReportActivity : BaseActivity() {
@@ -27,13 +27,15 @@ class ViewReportActivity : BaseActivity() {
     private var list:MutableList<String> = ArrayList()
     var rsLoginResponse: RsLoginResponse? = null
     private lateinit var viewModel: ReportViewModel
-
+    private lateinit var binding: ActivityViewReportBinding
     companion object{
         private val TAG:String = ViewReportActivity::class.java.simpleName
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_view_report)
+        //setContentView(R.layout.activity_view_report)
+        binding = ActivityViewReportBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
     }
@@ -46,22 +48,25 @@ class ViewReportActivity : BaseActivity() {
     }
     private fun initView(){
         try{
-            setSupportActionBar(toolbar)
-            toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
-            toolbar.setNavigationOnClickListener { onBackPressed() }
-            toolbar.title = "${rsLoginResponse?.data?.name}"
+            setSupportActionBar(binding.toolbar)
+            binding.toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
+            binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+            binding.toolbar.title = "${rsLoginResponse?.data?.name}"
             attachObserver()
             viewReportAdapter = ViewReportAdapter(this,list)
-            view_report_recycler.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(this@ViewReportActivity)
-                adapter = viewReportAdapter
-            }
-            callService()
-
-            reports_swipe_refresh.setOnRefreshListener {
+            binding.contentViewReport.apply {
+                viewReportRecycler.apply {
+                    setHasFixedSize(true)
+                    layoutManager = LinearLayoutManager(this@ViewReportActivity)
+                    adapter = viewReportAdapter
+                }
                 callService()
+
+                reportsSwipeRefresh.setOnRefreshListener {
+                    callService()
+                }
             }
+
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
@@ -79,8 +84,8 @@ class ViewReportActivity : BaseActivity() {
                 println("request date>>>>>> ${Util.getStringFromBean(reportRequest)}")
                 viewModel.getReportResponse(reportRequest)
             }else{
-                reports_swipe_refresh.isRefreshing = false
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                binding.contentViewReport.reportsSwipeRefresh.isRefreshing = false
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -104,19 +109,19 @@ class ViewReportActivity : BaseActivity() {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            reports_swipe_refresh.isRefreshing = false
-            it?.let { showSnackBar(progress_bar,it) }
+            binding.contentViewReport.reportsSwipeRefresh.isRefreshing = false
+            it?.let { showSnackBar(binding.progressBar,it) }
         })
         viewModel.reportResponse.observe(this, Observer<ReportResponse> {
-            reports_swipe_refresh.isRefreshing = false
+            binding.contentViewReport.reportsSwipeRefresh.isRefreshing = false
             it?.let {
                 viewReportAdapter.notifyDataSetChanged()
                 if(viewReportAdapter.itemCount >0){
-                    view_report_recycler.visibility = View.VISIBLE
-                    no_order_text.visibility = View.GONE}
+                    binding.contentViewReport.viewReportRecycler.visibility = View.VISIBLE
+                    binding.contentViewReport.noOrderText.visibility = View.GONE}
                 else{
-                    view_report_recycler.visibility = View.GONE
-                    no_order_text.visibility = View.VISIBLE
+                    binding.contentViewReport.viewReportRecycler.visibility = View.GONE
+                    binding.contentViewReport.noOrderText.visibility = View.VISIBLE
                 }
             }
         })
@@ -130,7 +135,7 @@ class ViewReportActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 }

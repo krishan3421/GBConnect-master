@@ -18,6 +18,7 @@ import com.gb.restaurant.MyApp
 
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.FragmentCompletedBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.order.CompOrderRequest
 import com.gb.restaurant.model.order.Data
@@ -28,8 +29,6 @@ import com.gb.restaurant.ui.adapter.CompletedAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.utils.Utils
 import com.gb.restaurant.viewmodel.OrderViewModel
-import kotlinx.android.synthetic.main.fragment_completed.*
-import kotlinx.android.synthetic.main.fragment_completed.progress_bar
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -59,7 +58,8 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
     var strtDateCalendar: Calendar? = null
     var endDateCalendar: Calendar? = null
 
-
+    private var _binding: FragmentCompletedBinding? = null
+    private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -79,21 +79,28 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        println("page call>>>>>>>>>>>fragment_completed")
-        return inflater.inflate(R.layout.fragment_completed, container, false)
+        _binding = FragmentCompletedBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         strtDateCalendar = Calendar.getInstance()
         endDateCalendar = Calendar.getInstance()
-        startDateLayout.setOnClickListener(this)
-        endDateLayout.setOnClickListener(this)
-        get_order_button.setOnClickListener(this)
-        start_date_text.text = Util.get_yyyy_mm_dd(strtDateCalendar!!)
-        end_date_text.text = Util.get_yyyy_mm_dd(endDateCalendar!!)
+        binding.apply {
+            startDateLayout.setOnClickListener(this@CompletedFragment)
+            endDateLayout.setOnClickListener(this@CompletedFragment)
+            getOrderButton.setOnClickListener(this@CompletedFragment)
+            startDateText.text = Util.get_yyyy_mm_dd(strtDateCalendar!!)
+            endDateText.text = Util.get_yyyy_mm_dd(endDateCalendar!!)
+        }
+
         compAdapter = CompletedAdapter(fragmentBaseActivity, viewModel)
-        comp_recycler.apply {
+        binding.compRecycler.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(fragmentBaseActivity)
             adapter = compAdapter
@@ -103,7 +110,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
 
         callService()
 
-        comp_swipe_refresh.setOnRefreshListener {
+        binding.compSwipeRefresh.setOnRefreshListener {
             callService()
         }
     }
@@ -114,14 +121,14 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
                 var orderRequest = CompOrderRequest()
                 orderRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 orderRequest.service_type = Constant.SERVICE_TYPE.GET_ALL_ORDER
-                orderRequest.date_from = start_date_text.text.toString()
-                orderRequest.date_to = end_date_text.text.toString()
+                orderRequest.date_from = binding.startDateText.text.toString()
+                orderRequest.date_to = binding.endDateText.text.toString()
                 orderRequest.deviceversion = Util.getVersionName(fragmentBaseActivity)
-                println("request>>>> ${Util.getStringFromBean(orderRequest)}")
+                //println("request>>>> ${Util.getStringFromBean(orderRequest)}")
                 viewModel.getCompOrderResponse(orderRequest)
             } else {
                 fragmentBaseActivity.showSnackBar(
-                    progress_bar,
+                    binding.progressBar,
                     getString(R.string.internet_connected)
                 )
             }
@@ -136,23 +143,23 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(fragmentBaseActivity, Observer<String> {
-            if (comp_swipe_refresh != null)
-                comp_swipe_refresh.isRefreshing = false
-            it?.let { fragmentBaseActivity.showSnackBar(progress_bar, it) }
+            if (binding.compSwipeRefresh != null)
+                binding.compSwipeRefresh.isRefreshing = false
+            it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar, it) }
         })
         viewModel.orderResponse.observe(fragmentBaseActivity, Observer<OrderResponse> {
-            if (comp_swipe_refresh != null)
-                comp_swipe_refresh.isRefreshing = false
+            if (binding.compSwipeRefresh != null)
+                binding.compSwipeRefresh.isRefreshing = false
 
             it?.let {
                 compAdapter.notifyDataSetChanged()
                 if (compAdapter.itemCount > 0) {
-                    comp_recycler?.visibility = View.VISIBLE
-                    no_order_text?.visibility = View.GONE
+                    binding.compRecycler?.visibility = View.VISIBLE
+                    binding.noOrderText?.visibility = View.GONE
 
                 } else {
-                    comp_recycler?.visibility = View.GONE
-                    no_order_text?.visibility = View.VISIBLE
+                    binding.compRecycler?.visibility = View.GONE
+                    binding.noOrderText?.visibility = View.VISIBLE
                 }
             }
         })
@@ -249,19 +256,19 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar?.visibility = View.VISIBLE else progress_bar?.visibility = View.GONE
+        if (show) binding.progressBar?.visibility = View.VISIBLE else binding.progressBar?.visibility = View.GONE
     }
 
     override fun onClick(p0: View?) {
         try {
             when (p0) {
-                startDateLayout -> {
+                binding.startDateLayout -> {
                     startDateMethod()
                 }
-                endDateLayout -> {
+                binding.endDateLayout -> {
                     endDateMethod()
                 }
-                get_order_button -> {
+                binding.getOrderButton -> {
                     callService()
                 }
             }
@@ -287,7 +294,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
                     strtDateCalendar = date
                     var dateText = Util.get_yyyy_mm_dd(date)
                     //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                    fragmentBaseActivity.start_date_text.setText(dateText)
+                    binding.startDateText.setText(dateText)
 
                 }
 
@@ -317,17 +324,17 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
                             endDateCalendar = date
                             var dateText = Util.get_yyyy_mm_dd(date)
                             //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                            fragmentBaseActivity.end_date_text.setText(dateText)
+                            binding.endDateText.setText(dateText)
                             //callService()
                         } else {
                             fragmentBaseActivity.showSnackBar(
-                                fragmentBaseActivity.end_date_text,
+                                binding.endDateText,
                                 "start-Date should be equal or less then end-Date"
                             )
                         }
                     } else {
                         fragmentBaseActivity.showSnackBar(
-                            fragmentBaseActivity.end_date_text,
+                            binding.endDateText,
                             "Please select start-Date"
                         )
                     }

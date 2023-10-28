@@ -1,2 +1,0 @@
-# GBConnect
-GB for Restaurant

@@ -38,6 +38,8 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityHomeBinding
+import com.gb.restaurant.databinding.HomeDetailActivityBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.PrinterModel
 import com.gb.restaurant.model.additem.AddOrderItemRequest
@@ -62,23 +64,7 @@ import com.gb.restaurant.utils.IpScanner
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.utils.Utils
 import com.gb.restaurant.viewmodel.TipsViewModel
-import com.grabull.session.SessionManager
-import kotlinx.android.synthetic.main.card_detail_layout.*
-import kotlinx.android.synthetic.main.content_home_detail.*
-import kotlinx.android.synthetic.main.delivery_paid_layout.*
-import kotlinx.android.synthetic.main.delivery_paid_layout.close_dialog
-import kotlinx.android.synthetic.main.delivery_paid_layout.title_dialog_text
-import kotlinx.android.synthetic.main.detail_com_footer.*
-import kotlinx.android.synthetic.main.detail_home_footer.*
-import kotlinx.android.synthetic.main.detail_home_footer.delivery_fee_text
-import kotlinx.android.synthetic.main.detail_home_footer.discount_taxt
-import kotlinx.android.synthetic.main.detail_home_footer.sub_total_text
-import kotlinx.android.synthetic.main.detail_home_footer.tax_text
-import kotlinx.android.synthetic.main.detail_home_footer.tip_text
-import kotlinx.android.synthetic.main.detail_home_footer.tip_two_text
-import kotlinx.android.synthetic.main.detail_home_footer.total_tax
-import kotlinx.android.synthetic.main.home_detail_activity.*
-import kotlinx.android.synthetic.main.order_detail_item.*
+import com.gb.restaurant.session.SessionManager
 
 
 class HomeDetailActivity : BaseActivity() {
@@ -99,7 +85,7 @@ class HomeDetailActivity : BaseActivity() {
     public var mBitmap: Bitmap? = null
 
     var sessionManager: SessionManager? = null
-
+    private lateinit var binding: HomeDetailActivityBinding
 
     companion object {
         private val TAG: String = HomeDetailActivity::class.java.simpleName
@@ -111,7 +97,9 @@ class HomeDetailActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStatusBarColor()
-        setContentView(R.layout.home_detail_activity)
+       // setContentView(R.layout.home_detail_activity)
+        binding = HomeDetailActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         sessionManager = SessionManager(this)
 
         initData()
@@ -157,182 +145,190 @@ class HomeDetailActivity : BaseActivity() {
 
     private fun initView() {
         try {
-            setSupportActionBar(toolbar)
-            toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_back)
-            toolbar.setNavigationOnClickListener { onBackPressed() }
-            title_home.setOnClickListener { onBackPressed() }
-            toolbar.title = ""// "${getString(R.string.back)}"//"${rsLoginResponse?.data?.name}"
-            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorPrimaryDark_one));
-            con_update_button.text = "Update Order status"
+            binding.apply {
+                setSupportActionBar(toolbar)
+                toolbar.navigationIcon = ContextCompat.getDrawable(this@HomeDetailActivity, R.drawable.ic_back)
+                toolbar.setNavigationOnClickListener { onBackPressed() }
+                titleHome.setOnClickListener { onBackPressed() }
+                toolbar.title = ""// "${getString(R.string.back)}"//"${rsLoginResponse?.data?.name}"
+                toolbar.setTitleTextColor(ContextCompat.getColor(this@HomeDetailActivity, R.color.colorPrimaryDark_one));
+
+            }
+
             attachObserver()
             newDetailAdapter = NewDetailAdapter(this, data?.items as MutableList<Item>)
-            detail_recycler.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(this@HomeDetailActivity)
-                // addItemDecoration(ListPaddingDecoration(this@ViewDialogActivity, 0,0))
-                adapter = newDetailAdapter
-            }
-            con_update_button.visibility = View.VISIBLE
-            data?.name?.let {
-                name_text.text = "$it"
-            }
-            if (data?.payment!!.contains("Paid", true)) {
-                prepaid_text.text = "PREPAID"
-                prepaid_text.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
-                delivery_type_text.setTextColor(ContextCompat.getColor(this, R.color.green))
-                dont_charge_text.visibility = View.VISIBLE
-            } else {
-                prepaid_text.text = "CASH"
-                prepaid_text.setBackgroundColor(
-                    ContextCompat.getColor(
-                        this,
-                        R.color.colorPrimaryDark_one
-                    )
-                )
-                delivery_type_text.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
-                dont_charge_text.visibility = View.INVISIBLE
-            }
-            delivery_type_text.text = "${data?.type!!.toUpperCase()}"
-
-            if (!data?.holddate2.isNullOrEmpty()) {
-                future_order_layout.visibility = View.VISIBLE
-                if (data!!.type.equals("Delivery", true)) {
-                    hold_time_text.text = "Hold Order: Delivery Time: ${data!!.holddate2}"
+            binding.contentHomeDetail.apply {
+                orderDetailItem.conUpdateButton.text = "Update Order status"
+                detailRecycler.apply {
+                    setHasFixedSize(true)
+                    layoutManager = LinearLayoutManager(this@HomeDetailActivity)
+                    // addItemDecoration(ListPaddingDecoration(this@ViewDialogActivity, 0,0))
+                    adapter = newDetailAdapter
+                }
+                orderDetailItem.conUpdateButton.visibility = View.VISIBLE
+                data?.name?.let {
+                    orderDetailItem.nameText.text = "$it"
+                }
+                if (data?.payment!!.contains("Paid", true)) {
+                    orderDetailItem.prepaidText.text = "PREPAID"
+                    orderDetailItem.prepaidText.setBackgroundColor(ContextCompat.getColor(this@HomeDetailActivity, R.color.green))
+                    orderDetailItem.deliveryTypeText.setTextColor(ContextCompat.getColor(this@HomeDetailActivity, R.color.green))
+                    orderDetailItem.dontChargeText.visibility = View.VISIBLE
                 } else {
-                    hold_time_text.text = "Hold Order: Pickup Time: ${data!!.holddate2}"
+                    orderDetailItem.prepaidText.text = "CASH"
+                    orderDetailItem.prepaidText.setBackgroundColor(
+                        ContextCompat.getColor(
+                            this@HomeDetailActivity,
+                            R.color.colorPrimaryDark_one
+                        )
+                    )
+                    orderDetailItem.deliveryTypeText.setTextColor(ContextCompat.getColor(this@HomeDetailActivity, R.color.colorAccent))
+                    orderDetailItem.dontChargeText.visibility = View.INVISIBLE
                 }
-            } else {
-                future_order_layout.visibility = View.GONE
-                hold_time_text.visibility = View.GONE
-            }
+                orderDetailItem.deliveryTypeText.text = "${data?.type!!.toUpperCase()}"
 
-            if (!data?.type.isNullOrEmpty() && data?.type!!.contains("Pickup", true)) {
-                address_layout.visibility = View.INVISIBLE
-                delivery_fee_home_layout.visibility = View.GONE
-            } else {
-                address_layout.visibility = View.VISIBLE
-                delivery_fee_home_layout.visibility = View.VISIBLE
-            }
-            /*if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)
-                var paymentStatus = ""
-              if(data?.payment!!.contains("pending",true)){
-                  paymentStatus =  "NOT PAID"
-                  delivery_type_text.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
-                }else{
-                  paymentStatus =    "PAID"
-                  delivery_type_text.setTextColor(ContextCompat.getColor(this, R.color.green))
+                if (!data?.holddate2.isNullOrEmpty()) {
+                    futureOrderLayout.visibility = View.VISIBLE
+                    if (data!!.type.equals("Delivery", true)) {
+                        holdTimeText.text = "Hold Order: Delivery Time: ${data!!.holddate2}"
+                    } else {
+                        holdTimeText.text = "Hold Order: Pickup Time: ${data!!.holddate2}"
+                    }
+                } else {
+                    futureOrderLayout.visibility = View.GONE
+                    holdTimeText.visibility = View.GONE
                 }
-                delivery_type_text.text = "${data?.type!!.toUpperCase()} $paymentStatus"
-            }*/
 
-            /*if(!data?.status.isNullOrEmpty()){
-                status.text = "${data?.status}"
-            }*/
-            if (!data?.delivery.isNullOrEmpty()) {
-                delivery_address.text = "${data?.delivery}"
-            }
-            if (!data?.deliverycharge.isNullOrEmpty()) {
-                data?.deliverycharge?.let {
-                    delivery_fee_text.text = "$${data?.deliverycharge}"
+                if (!data?.type.isNullOrEmpty() && data?.type!!.contains("Pickup", true)) {
+                    orderDetailItem.addressLayout.visibility = View.INVISIBLE
+                    detailHomeFooter.deliveryFeeHomeLayout.visibility = View.GONE
+                } else {
+                    orderDetailItem.addressLayout.visibility = View.VISIBLE
+                    detailHomeFooter.deliveryFeeHomeLayout.visibility = View.VISIBLE
                 }
-            }
-            if (!data?.mobile.isNullOrEmpty()) {
-                phone_text.text = "Customer Ph: ${data?.mobile}"
-            }
+                /*if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)
+                    var paymentStatus = ""
+                  if(data?.payment!!.contains("pending",true)){
+                      paymentStatus =  "NOT PAID"
+                      delivery_type_text.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+                    }else{
+                      paymentStatus =    "PAID"
+                      delivery_type_text.setTextColor(ContextCompat.getColor(this, R.color.green))
+                    }
+                    delivery_type_text.text = "${data?.type!!.toUpperCase()} $paymentStatus"
+                }*/
 
-
-            if (data!!.items.isNullOrEmpty()) {
-                orders_item_count.text = "Order(0 items)"
-            } else {
-                orders_item_count.text = "Order(${data!!.items!!.size} items)"
-            }
-
-
-            order_id_text.text = "ORDER # ${data!!.id}"
-            if (data?.subtotal != null) {
-                sub_total_text.text = "$${data?.subtotal}"
-            }
-            if (!data?.offeramount.isNullOrEmpty()) {
-                data?.offeramount?.let {
-                    discount_taxt.text = "Discount-$$it"
+                /*if(!data?.status.isNullOrEmpty()){
+                    status.text = "${data?.status}"
+                }*/
+                if (!data?.delivery.isNullOrEmpty()) {
+                    orderDetailItem.deliveryAddress.text = "${data?.delivery}"
                 }
-            }
-            if (data?.tax != null) {
-                tax_text.text = "$${data?.tax}"
-            }
-            if (data?.tip != null) {
-                tip_text.text = "$${data?.tip}"
-            }
-            if (data?.total != null) {
-                total_tax.text = "Total $${data?.total}"
-            }
-            if (!data?.tip2.isNullOrEmpty()) {
-                tip_two_text.text = "Tips $${data?.tip2}"
-            } else {
-                tip_two_text.text = "Tips_____"
-            }
-            if (!data?.date2.isNullOrEmpty()) {
-                order_time_text.text = "ORDER TIME: ${data?.date2}"
-            } else {
-                order_time_text.text = ""
-            }
+                if (!data?.deliverycharge.isNullOrEmpty()) {
+                    data?.deliverycharge?.let {
+                        detailHomeFooter.deliveryFeeText.text = "$${data?.deliverycharge}"
+                    }
+                }
+                if (!data?.mobile.isNullOrEmpty()) {
+                    orderDetailItem.phoneText.text = "Customer Ph: ${data?.mobile}"
+                }
 
-            callOrderDetailService()
 
-            txtPrint.isEnabled = true
+                if (data!!.items.isNullOrEmpty()) {
+                    ordersItemCount.text = "Order(0 items)"
+                } else {
+                    ordersItemCount.text = "Order(${data!!.items!!.size} items)"
+                }
 
-            txtPrint.setOnClickListener {
 
-                txtPrint.isEnabled = false
-                Handler().postDelayed(Runnable {
-                    txtPrint.isEnabled = true
-                }, 10000)
+                orderIdText.text = "ORDER # ${data!!.id}"
+                if (data?.subtotal != null) {
+                    detailHomeFooter.subTotalText.text = "$${data?.subtotal}"
+                }
+                if (!data?.offeramount.isNullOrEmpty()) {
+                    data?.offeramount?.let {
+                        detailHomeFooter.discountTaxt.text = "Discount-$$it"
+                    }
+                }
+                if (data?.tax != null) {
+                    detailHomeFooter.taxText.text = "$${data?.tax}"
+                }
+                if (data?.tip != null) {
+                    detailHomeFooter.tipText.text = "$${data?.tip}"
+                }
+                if (data?.total != null) {
+                    detailHomeFooter.totalTax.text = "Total $${data?.total}"
+                }
+                if (!data?.tip2.isNullOrEmpty()) {
+                    detailHomeFooter.tipTwoText.text = "Tips $${data?.tip2}"
+                } else {
+                    detailHomeFooter.tipTwoText.text = "Tips_____"
+                }
+                if (!data?.date2.isNullOrEmpty()) {
+                    orderTimeText.text = "ORDER TIME: ${data?.date2}"
+                } else {
+                    orderTimeText.text = ""
+                }
 
-                if (ActivityCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.ACCESS_FINE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                        this,
-                        Manifest.permission.ACCESS_COARSE_LOCATION
-                    ) != PackageManager.PERMISSION_GRANTED
-                ) {
-                    ActivityCompat.requestPermissions(
-                        this,
-                        arrayOf(
-                            Manifest.permission.ACCESS_FINE_LOCATION,
+                callOrderDetailService()
+
+                orderDetailItem.txtPrint.isEnabled = true
+
+                orderDetailItem.txtPrint.setOnClickListener {
+
+                    orderDetailItem.txtPrint.isEnabled = false
+                    Handler().postDelayed(Runnable {
+                        orderDetailItem.txtPrint.isEnabled = true
+                    }, 10000)
+
+                    if (ActivityCompat.checkSelfPermission(
+                            this@HomeDetailActivity,
+                            Manifest.permission.ACCESS_FINE_LOCATION
+                        ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                            this@HomeDetailActivity,
                             Manifest.permission.ACCESS_COARSE_LOCATION
-                        ), 1
-                    )
-                } else {
-
-
-                    if (Utils.isLocationEnabled(this)!!) {
-
-                        if (sessionManager!!.getPrinterAddress().isNotEmpty()) {
-                            PrintingTask().execute()
-                        } else {
-                            showDialog(this, data!!)
-                        }
-
-
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        ActivityCompat.requestPermissions(
+                            this@HomeDetailActivity,
+                            arrayOf(
+                                Manifest.permission.ACCESS_FINE_LOCATION,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                            ), 1
+                        )
                     } else {
 
-                        AlertDialog.Builder(this)
-                            .setMessage("Location is off")
-                            .setPositiveButton(
-                                "Turn On"
-                            ) { _, _ ->
-                                this.startActivity(
-                                    Intent(
-                                        Settings.ACTION_LOCATION_SOURCE_SETTINGS
-                                    )
-                                )
-                            }
-                            .setNegativeButton("Cancel", null)
-                            .show()
-                    }
 
+                        if (Utils.isLocationEnabled(this@HomeDetailActivity)!!) {
+
+                            if (sessionManager!!.getPrinterAddress().isNotEmpty()) {
+                                PrintingTask().execute()
+                            } else {
+                                showDialog(this@HomeDetailActivity, data!!)
+                            }
+
+
+                        } else {
+
+                            AlertDialog.Builder(this@HomeDetailActivity)
+                                .setMessage("Location is off")
+                                .setPositiveButton(
+                                    "Turn On"
+                                ) { _, _ ->
+                                    this@HomeDetailActivity.startActivity(
+                                        Intent(
+                                            Settings.ACTION_LOCATION_SOURCE_SETTINGS
+                                        )
+                                    )
+                                }
+                                .setNegativeButton("Cancel", null)
+                                .show()
+                        }
+
+                    }
                 }
+
+
             }
 
 
@@ -615,48 +611,57 @@ class HomeDetailActivity : BaseActivity() {
                 noVerticalPadding = true,
                 horizontalPadding = false
             )
-            title_dialog_text.text = "Enter Card Details"
-            close_dialog.setOnClickListener {
+            val titleDialogText = this.findViewById<TextView>(R.id.title_dialog_text)
+            val cardEditText = this.findViewById<EditText>(R.id.card_edittext)
+            val expEditText = this.findViewById<EditText>(R.id.exp_edittext)
+            val cvvEditText = this.findViewById<EditText>(R.id.cvv_edittext)
+            val zipEditText = this.findViewById<EditText>(R.id.zip_edittext)
+            val cardProgressBar = this.findViewById<ProgressBar>(R.id.card_progress)
+            val cardHolderEditText = this.findViewById<EditText>(R.id.card_holder_edittext)
+            val closeDialog = this.findViewById<ImageView>(R.id.close_dialog)
+            val continueButton = this.findViewById<Button>(R.id.continue_button)
+            titleDialogText.text = "Enter Card Details"
+            closeDialog.setOnClickListener {
                 this.dismiss()
             }
-            continue_button.setOnClickListener {
-                if (card_edittext.text.toString()
-                        .isNullOrEmpty() || card_edittext.text.length < 15
+            continueButton.setOnClickListener {
+                if (cardEditText.text.toString()
+                        .isNullOrEmpty() || cardEditText.text.length < 15
                 ) {
                     Util.alertDialog("Please add Valid Card Number", this@HomeDetailActivity)
                     return@setOnClickListener
                 }
-                if (exp_edittext.text.toString().isNullOrEmpty() || exp_edittext.text.length < 4) {
+                if (expEditText.text.toString().isNullOrEmpty() || expEditText.text.length < 4) {
                     Util.alertDialog("Please add Valid Expiry Date", this@HomeDetailActivity)
                     return@setOnClickListener
                 }
-                if (cvv_edittext.text.toString().isNullOrEmpty() || cvv_edittext.text.length < 3) {
+                if (cvvEditText.text.toString().isNullOrEmpty() || cvvEditText.text.length < 3) {
                     Util.alertDialog("Please add Valid CVV", this@HomeDetailActivity)
                     return@setOnClickListener
                 }
-                if (zip_edittext.text.toString().isNullOrEmpty() || zip_edittext.text.length < 5) {
+                if (zipEditText.text.toString().isNullOrEmpty() || zipEditText.text.length < 5) {
                     Util.alertDialog("Please add Valid Zip Code", this@HomeDetailActivity)
                     return@setOnClickListener
                 }
-                if (card_holder_edittext.text.toString().isNullOrEmpty()) {
+                if (cardHolderEditText.text.toString().isNullOrEmpty()) {
                     Util.alertDialog("Please add card holder name", this@HomeDetailActivity)
                     return@setOnClickListener
                 }
-                card_progress.visibility = View.VISIBLE
+                cardProgressBar.visibility = View.VISIBLE
                 cardDialog = this
                 if (fromItem) {
-                    selOrderItemRequest?.card = card_edittext.text.toString()
-                    selOrderItemRequest?.expiry = exp_edittext.text.toString()
-                    selOrderItemRequest?.cvv = cvv_edittext.text.toString()
-                    selOrderItemRequest?.billingzip = zip_edittext.text.toString()
-                    selOrderItemRequest?.cardholder = card_holder_edittext.text.toString()
+                    selOrderItemRequest?.card = cardEditText.text.toString()
+                    selOrderItemRequest?.expiry = expEditText.text.toString()
+                    selOrderItemRequest?.cvv = cvvEditText.text.toString()
+                    selOrderItemRequest?.billingzip = zipEditText.text.toString()
+                    selOrderItemRequest?.cardholder = cardHolderEditText.text.toString()
                     callAddItemsService(selOrderItemRequest!!)
                 } else {
-                    selOrderTipsRequest?.card = card_edittext.text.toString()
-                    selOrderTipsRequest?.expiry = exp_edittext.text.toString()
-                    selOrderTipsRequest?.cvv = cvv_edittext.text.toString()
-                    selOrderTipsRequest?.billingzip = zip_edittext.text.toString()
-                    selOrderTipsRequest?.cardholder = card_holder_edittext.text.toString()
+                    selOrderTipsRequest?.card = cardEditText.text.toString()
+                    selOrderTipsRequest?.expiry = expEditText.text.toString()
+                    selOrderTipsRequest?.cvv = cvvEditText.text.toString()
+                    selOrderTipsRequest?.billingzip = zipEditText.text.toString()
+                    selOrderTipsRequest?.cardholder = cardHolderEditText.text.toString()
                     callTipsService(selOrderTipsRequest!!)
                 }
                 //this.dismiss()
@@ -712,18 +717,22 @@ class HomeDetailActivity : BaseActivity() {
                 noVerticalPadding = true,
                 horizontalPadding = false
             )
+            val titleDialogText = this.findViewById<TextView>(R.id.title_dialog_text)
+            val deliveryButton = this.findViewById<Button>(R.id.delivery_button)
+            val cancelButton = this.findViewById<Button>(R.id.cancel_button)
+            val closeDialog = this.findViewById<ImageView>(R.id.close_dialog)
             if (data.type.equals("Delivery", true)) {
                 //order_text.text = "DELIVERY PAID"
-                delivery_button.text = "DELIVERED"
+                deliveryButton.text = "DELIVERED"
             } else {
                 // order_text.text = "PICKUP PAID"
-                delivery_button.text = "PICKED UP"
+                deliveryButton.text = "PICKED UP"
             }
-            title_dialog_text.text = "${data.id}"
-            close_dialog.setOnClickListener {
+            titleDialogText.text = "${data.id}"
+            closeDialog.setOnClickListener {
                 this.dismiss()
             }
-            cancel_button.setOnClickListener {
+            cancelButton.setOnClickListener {
                 this.dismiss()
                 var orderStatusRequest = OrderStatusRequest()
                 orderStatusRequest.deviceversion = Util.getVersionName(this@HomeDetailActivity)
@@ -731,7 +740,7 @@ class HomeDetailActivity : BaseActivity() {
                 orderStatusRequest.order_id = data.id!!
                 callOrderStatusService(orderStatusRequest)
             }
-            delivery_button.setOnClickListener {
+            deliveryButton.setOnClickListener {
                 this.dismiss()
                 var orderStatusRequest = OrderStatusRequest()
                 orderStatusRequest.deviceversion = Util.getVersionName(this@HomeDetailActivity)
@@ -764,6 +773,7 @@ class HomeDetailActivity : BaseActivity() {
 
 
     private fun attachObserver() {
+        val  cardProgress=cardDialog?.findViewById<ProgressBar>(R.id.card_progress)
         viewModel.isLoading.observe(this, Observer<Boolean> {
             it?.let { showLoadingDialog(it) }
         })
@@ -772,11 +782,12 @@ class HomeDetailActivity : BaseActivity() {
         })
         viewModel.addTipsResponse.observe(this, Observer<OrderTipsResponse> {
             it?.let {
+
                 println("tipsResponse>>>>>>>>> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
                     // showToast(it.result!!)
                     Util.alertDialog(it.result ?: "", this)
-                    cardDialog?.card_progress?.visibility = View.GONE
+                    cardProgress?.visibility = View.GONE
                 } else {
                     if (it.result.equals(
                             "Tips charged successfully",
@@ -792,7 +803,7 @@ class HomeDetailActivity : BaseActivity() {
                         fromAddItemOrTip = true
                         Util.alertDialog(it.result ?: "", this)
                     } else {
-                        cardDialog?.card_progress?.visibility = View.GONE
+                        cardProgress?.visibility = View.GONE
                         selOrderTipsRequest?.newcard = "Yes"
                         if (cardDialog == null) {
                             showCardDetailDialog(data!!, fromItem = false)
@@ -813,7 +824,7 @@ class HomeDetailActivity : BaseActivity() {
             it?.let {
                 if (it.status == Constant.STATUS.FAIL) {
                     Util.alertDialog(it?.result ?: "", this)
-                    cardDialog?.card_progress?.visibility = View.GONE
+                    cardProgress?.visibility = View.GONE
                 } else {
                     if (it.result.equals("Items added successfully", true)) {
                         fromAddItemOrTip = true
@@ -821,7 +832,7 @@ class HomeDetailActivity : BaseActivity() {
                         Util.alertDialog(it.result ?: "", this)
                         callOrderDetailService()
                     } else {
-                        cardDialog?.card_progress?.visibility = View.GONE
+                        cardProgress?.visibility = View.GONE
                         selOrderItemRequest?.newcard = "Yes"
                         if (cardDialog == null) {
                             showCardDetailDialog(data!!, fromItem = true)
@@ -880,41 +891,44 @@ class HomeDetailActivity : BaseActivity() {
     }
 
     private fun setValue(data: Data) {
-        try {
-            if (!data?.offeramount.isNullOrEmpty()) {
-                data?.offeramount?.let {
-                    discount_taxt.text =
-                        "Discount-$${String.format("%.2f", data?.offeramount!!.toFloat())}"
+        binding.contentHomeDetail.detailHomeFooter.apply {
+            try {
+                if (!data?.offeramount.isNullOrEmpty()) {
+                    data?.offeramount?.let {
+                        discountTaxt.text =
+                            "Discount-$${String.format("%.2f", data?.offeramount!!.toFloat())}"
+                    }
                 }
-            }
-            if (!data.tip2.isNullOrEmpty()) {
-                tip_two_text.text =
-                    "Tips $${String.format("%.2f", data.tip2!!.toFloat())}"
-            } else {
-                tip_two_text.text = "Tips_____"
-            }
-            if (data.subtotal != null) {
-                sub_total_text.text = "$${data.subtotal}"
-            }
-            if (data.total != null) {
-                total_tax.text = "Total $${data.total}"
-            }
-            if (data?.tax != null) {
-                tax_text.text = "$${String.format("%.2f", data?.tax!!.toFloat())}"
-            }
-            if (data?.tip != null) {
-                tip_text.text = "$${String.format("%.2f", data?.tip!!.toFloat())}"
-            }
-            if (!data?.deliverycharge.isNullOrEmpty()) {
-                data?.deliverycharge?.let {
-                    delivery_fee_text.text =
-                        "$${String.format("%.2f", data?.deliverycharge!!.toFloat())}"
+                if (!data.tip2.isNullOrEmpty()) {
+                    tipTwoText.text =
+                        "Tips $${String.format("%.2f", data.tip2!!.toFloat())}"
+                } else {
+                    tipTwoText.text = "Tips_____"
                 }
+                if (data.subtotal != null) {
+                    subTotalText.text = "$${data.subtotal}"
+                }
+                if (data.total != null) {
+                    totalTax.text = "Total $${data.total}"
+                }
+                if (data?.tax != null) {
+                    taxText.text = "$${String.format("%.2f", data?.tax!!.toFloat())}"
+                }
+                if (data?.tip != null) {
+                    tipText.text = "$${String.format("%.2f", data?.tip!!.toFloat())}"
+                }
+                if (!data?.deliverycharge.isNullOrEmpty()) {
+                    data?.deliverycharge?.let {
+                        deliveryFeeText.text =
+                            "$${String.format("%.2f", data?.deliverycharge!!.toFloat())}"
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e(TAG, e.message!!)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e(TAG, e.message!!)
         }
+
     }
 
     private fun finishPage() {
@@ -938,7 +952,7 @@ class HomeDetailActivity : BaseActivity() {
                 println("activeresponse>>> ${Util.getStringFromBean(orderRequest)}")
                 viewModel.getOrderResponse(orderRequest)
             } else {
-                showSnackBar(progress_bar, getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar, getString(R.string.internet_connected))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -953,7 +967,7 @@ class HomeDetailActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
     override fun onBackPressed() {
@@ -1048,6 +1062,20 @@ class HomeDetailActivity : BaseActivity() {
 
                                 for (info in mDeviceList) {
                                     if (info != null) {
+                                        if (ActivityCompat.checkSelfPermission(
+                                                this@HomeDetailActivity,
+                                                Manifest.permission.BLUETOOTH_CONNECT
+                                            ) != PackageManager.PERMISSION_GRANTED
+                                        ) {
+                                            // TODO: Consider calling
+                                            //    ActivityCompat#requestPermissions
+                                            // here to request the missing permissions, and then overriding
+                                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                            //                                          int[] grantResults)
+                                            // to handle the case where the user grants the permission. See the documentation
+                                            // for ActivityCompat#requestPermissions for more details.
+                                            return
+                                        }
                                         if (info.name != null) {
 
                                             val devType = info.bluetoothClass.majorDeviceClass

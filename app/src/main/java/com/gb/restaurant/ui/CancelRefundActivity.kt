@@ -12,6 +12,8 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityBankInfoBinding
+import com.gb.restaurant.databinding.ActivityCancelRefundBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.confirmorder.OrderStatusRequest
 import com.gb.restaurant.model.confirmorder.OrderStatusResponse
@@ -20,9 +22,6 @@ import com.gb.restaurant.model.orderdetail.OrderDetailResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.TipsViewModel
-import kotlinx.android.synthetic.main.activity_cancel_refund.*
-import kotlinx.android.synthetic.main.content_cancel_refund.*
-import kotlinx.android.synthetic.main.custom_appbar.*
 
 class CancelRefundActivity : BaseActivity() {
 
@@ -32,10 +31,13 @@ class CancelRefundActivity : BaseActivity() {
         val TAG = CancelRefundActivity::class.java.simpleName
     }
     var rsLoginResponse: RsLoginResponse? = null
+    private lateinit var binding: ActivityCancelRefundBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_cancel_refund)
+        //setContentView(R.layout.activity_cancel_refund)
+        binding = ActivityCancelRefundBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
 
@@ -81,7 +83,7 @@ class CancelRefundActivity : BaseActivity() {
 
     private fun initView(){
         try{
-            back_layout.setOnClickListener {
+            binding.customAppbar.backLayout.setOnClickListener {
                 onBackPressed()
             }
             attachObserver()
@@ -118,16 +120,16 @@ class CancelRefundActivity : BaseActivity() {
     private fun callOrderSearchService(){
         try{
             if(!Validation.isOnline(this)){
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
                 return
-            }else if(search_edittext.text.toString().isNullOrEmpty()){
-                showSnackBar(progress_bar,"Please provide valid Order-Id")
+            }else if(binding.contentCancelRefund.searchEdittext.text.toString().isNullOrEmpty()){
+                showSnackBar(binding.progressBar,"Please provide valid Order-Id")
                 return
             }else{
 
                 var orderDetailRequest = OrderDetailRequest()
                 orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-                orderDetailRequest.order_id = search_edittext.text.toString().trim()
+                orderDetailRequest.order_id = binding.contentCancelRefund.searchEdittext.text.toString().trim()
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
                 // println("request date>>>>>> ${Util.getStringFromBean(reportRequest)}")
                 viewModel.getOrderDetailResponse(orderDetailRequest)
@@ -148,32 +150,32 @@ class CancelRefundActivity : BaseActivity() {
         })
         viewModel.apiError.observe(this, Observer<String> {
             it?.let {
-                showSnackBar(progress_bar,it)
+                showSnackBar(binding.progressBar,it)
             }
-            main_layout.visibility =View.GONE
-            order_not_found_text.visibility=View.VISIBLE
+            binding.contentCancelRefund.mainLayout.visibility =View.GONE
+            binding.contentCancelRefund.orderNotFoundText.visibility=View.VISIBLE
         })
         viewModel.orderDetailResponse.observe(this, Observer<OrderDetailResponse> {
             it?.let {
                 orderDetailResponse = it
                     if(it.status?:""=="success"){
                           if(it.result!!.contains("Not Available")){
-                              main_layout.visibility =View.GONE
-                              order_not_found_text.visibility=View.VISIBLE
+                              binding.contentCancelRefund.mainLayout.visibility =View.GONE
+                              binding.contentCancelRefund.orderNotFoundText.visibility=View.VISIBLE
                           }else{
-                              main_layout.visibility =View.VISIBLE
-                              order_not_found_text.visibility=View.GONE
+                              binding.contentCancelRefund.mainLayout.visibility =View.VISIBLE
+                              binding.contentCancelRefund.orderNotFoundText.visibility=View.GONE
                               setDetailData(it)
                           }
                     }else{
-                        main_layout.visibility =View.GONE
-                        order_not_found_text.visibility=View.VISIBLE
+                        binding.contentCancelRefund.mainLayout.visibility =View.GONE
+                        binding.contentCancelRefund.orderNotFoundText.visibility=View.VISIBLE
                     }
             }
         })
         viewModel.orderStatusResponse.observe(this, Observer<OrderStatusResponse> {
             it?.let {
-                if(it.status ==Constant.STATUS.FAIL){
+                if(it.status == Constant.STATUS.FAIL){
                     showToast(it.result!!)
                 }else{
                     showToast(it.result!!)
@@ -203,22 +205,25 @@ class CancelRefundActivity : BaseActivity() {
                 var dateArray = date2?.split("\\s".toRegex())
                 var month = dateArray?.get(0) ?:""
                 var day = dateArray?.get(1) ?:""
-                mothText.text = month
-                dateText.text = day
-                nameText.text = it.name
-                add_text.text=it.delivery
-                idText.text = it.id
-                statusText.text = it.type
-                delivery_text.text = it.status
-                date_text.text = it.date2
-                price_text.text = "$${it.total}"
-                if(it.payment.equals("Paid",true)){
-                    refund_button.visibility = View.VISIBLE
-                    partial_layout.visibility = View.VISIBLE
-                }else{
-                    refund_button.visibility = View.GONE
-                    partial_layout.visibility = View.GONE
+                binding.contentCancelRefund.apply {
+                    mothText.text = month
+                    dateText.text = day
+                    nameText.text = it.name
+                    addText.text=it.delivery
+                    idText.text = it.id
+                    statusText.text = it.type
+                    deliveryText.text = it.status
+                    dateText.text = it.date2
+                    priceText.text = "$${it.total}"
+                    if(it.payment.equals("Paid",true)){
+                        refundButton.visibility = View.VISIBLE
+                        partialLayout.visibility = View.VISIBLE
+                    }else{
+                        refundButton.visibility = View.GONE
+                        partialLayout.visibility = View.GONE
+                    }
                 }
+
                 //refund_button
             }
 
@@ -238,7 +243,7 @@ class CancelRefundActivity : BaseActivity() {
                    orderStatusRequest.status = Constant.ORDER_STATUS.CANCEL
                    orderStatusRequest.order_id = orderDetailResponse?.data?.id?:""
                    orderStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-                   orderStatusRequest.details = message_text.text.toString()?:""
+                   orderStatusRequest.details = binding.contentCancelRefund.messageText.text.toString()?:""
                    orderStatusRequest.deviceversion = Util.getVersionName(this)
                    println("request>>>>> ${Util.getStringFromBean(orderStatusRequest)}")
                    viewModel.orderStatus(orderStatusRequest)
@@ -258,13 +263,13 @@ class CancelRefundActivity : BaseActivity() {
                 orderStatusRequest.order_id = orderDetailResponse?.data?.id?:""
                 orderStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 orderStatusRequest.deviceversion = Util.getVersionName(this)
-                if(v==partial_refund_button){
+                if(v==binding.contentCancelRefund.partialRefundButton){
                     orderStatusRequest.status =  Constant.ORDER_STATUS.PARTIAL_REFUND
-                    if(partial_refund_edittext.text.isNullOrEmpty()){
+                    if(binding.contentCancelRefund.partialRefundEdittext.text.isNullOrEmpty()){
                         Util.alert("Please add Partial Amount.",this)
                         return
                     }
-                    orderStatusRequest.refund=partial_refund_edittext.text.toString()
+                    orderStatusRequest.refund=binding.contentCancelRefund.partialRefundEdittext.text.toString()
                 }else{
                     orderStatusRequest.status = Constant.ORDER_STATUS.REFUND
                 }
@@ -283,7 +288,7 @@ class CancelRefundActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 }

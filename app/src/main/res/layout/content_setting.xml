@@ -47,7 +47,8 @@
                     android:textStyle="bold" />
         </LinearLayout>
 
-        <include layout="@layout/self_gb_delivery_layout" />
+        <include layout="@layout/self_gb_delivery_layout"
+            android:id="@+id/self_gb_delivery_layout"/>
 
         <LinearLayout
                 android:layout_width="match_parent"

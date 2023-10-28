@@ -63,7 +63,8 @@
                     android:text="Hold Order on: November 6, 2019 at 05:00"/>
 
         </LinearLayout>
-        <include layout="@layout/order_detail_item"/>
+        <include layout="@layout/order_detail_item"
+            android:id="@+id/order_detail_item"/>
         <TextView style="@style/normal_text_12"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
@@ -120,6 +121,7 @@
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_height="match_parent"/>
-        <include layout="@layout/detail_com_footer"/>
+        <include layout="@layout/detail_com_footer"
+            android:id="@+id/detail_com_footer"/>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

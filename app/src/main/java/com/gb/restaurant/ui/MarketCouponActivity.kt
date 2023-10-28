@@ -4,7 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.view.WindowManager
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.ProgressBar
 import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -14,6 +20,8 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityMarketCouponBinding
+import com.gb.restaurant.databinding.HomeDetailActivityBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.discount.adddiscount.AddDiscountRequest
 import com.gb.restaurant.model.discount.adddiscount.AddDiscountResponse
@@ -28,10 +36,6 @@ import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.ui.adapter.MarketingAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.CouponViewModel
-import kotlinx.android.synthetic.main.activity_market_coupon.*
-import kotlinx.android.synthetic.main.add_offer_layout.*
-import kotlinx.android.synthetic.main.content_market_coupon.*
-import kotlinx.android.synthetic.main.custom_appbar.*
 
 class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
     companion object{
@@ -41,10 +45,13 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
     private lateinit var marketingAdapter: MarketingAdapter
     var rsLoginResponse: RsLoginResponse? = null
     var dialog:MaterialDialog?=null
+    private lateinit var binding: ActivityMarketCouponBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_market_coupon)
+       // setContentView(R.layout.activity_market_coupon)
+        binding = ActivityMarketCouponBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
     }
@@ -71,13 +78,13 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
     }
     private fun initView(){
         try{
-            create_offer_button.setOnClickListener(this)
+            binding.contentMarketCoupon.createOfferButton.setOnClickListener(this)
             attachObserver()
-            back_layout.setOnClickListener {
+            binding.customAppbar.backLayout.setOnClickListener {
                 onBackPressed()
             }
             marketingAdapter = MarketingAdapter(this,viewModel)
-            offer_recyclerview.apply {
+            binding.contentMarketCoupon.offerRecyclerview.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(this@MarketCouponActivity)
                 adapter = marketingAdapter
@@ -119,7 +126,7 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
                // println("activeresponse>>> ${Util.getStringFromBean(discountRequest)}")
                 viewModel.getDiscounts(discountRequest)
             }else{
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -148,7 +155,7 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
                 // println("activeresponse>>> ${Util.getStringFromBean(discountRequest)}")
                 viewModel.rmDiscount(rmDiscountRequest)
             }else{
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -164,8 +171,9 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
                 // println("activeresponse>>> ${Util.getStringFromBean(discountRequest)}")
                 viewModel.addDiscount(addDiscountRequest)
             }else{
-                dialog?.offer_progress?.visibility=View.GONE
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                val offerProgress = dialog?.findViewById<ProgressBar>(R.id.offer_progress)
+                offerProgress?.visibility=View.GONE
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -175,14 +183,16 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
 
     private fun callEditDiscountService(editDiscountRequest: EditDiscountRequest){
         try{
+
             if(Validation.isOnline(this)){
                 editDiscountRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 editDiscountRequest.deviceversion = Util.getVersionName(this)
                  println("editRequest>>> ${Util.getStringFromBean(editDiscountRequest)}")
                 viewModel.editDiscount(editDiscountRequest)
             }else{
-                dialog?.offer_progress?.visibility=View.GONE
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                val offerProgress = dialog?.findViewById<ProgressBar>(R.id.offer_progress)
+                offerProgress?.visibility=View.GONE
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -192,19 +202,20 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
 
 
     private fun attachObserver() {
+        val offerProgress = dialog?.findViewById<ProgressBar>(R.id.offer_progress)
         viewModel.isLoading.observe(this, Observer<Boolean> {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            dialog?.offer_progress?.visibility=View.GONE
-            it?.let { showSnackBar(progress_bar,it) }
+            offerProgress?.visibility=View.GONE
+            it?.let { showSnackBar(binding.progressBar,it) }
         })
 
         viewModel.getDiscountResponse.observe(this, Observer<GetDiscountResponse> {
             it?.let {
-                if(it.status !=Constant.STATUS.FAIL){
-                    user_size_text.text = "${it.users}"
-                    month_text.text = "${it.month}"
+                if(it.status != Constant.STATUS.FAIL){
+                    binding.contentMarketCoupon.userSizeText.text = "${it.users}"
+                    binding.contentMarketCoupon.monthText.text = "${it.month}"
                     showToast(it.result?:"")
                 }
                 marketingAdapter.notifyDataSetChanged()
@@ -214,7 +225,7 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
         })
         viewModel.rmDiscountResponse.observe(this, Observer<RmDiscountResponse> {
             it?.let {
-                if(it.status !=Constant.STATUS.FAIL){
+                if(it.status != Constant.STATUS.FAIL){
                    callGetDiscountService()
                     openAddEditOfferPopUp(isEdit = false)
                 }else{
@@ -226,8 +237,8 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
 
         viewModel.addDiscountResponse.observe(this, Observer<AddDiscountResponse> {
             it?.let {
-                dialog?.offer_progress?.visibility=View.GONE
-                if(it.status ==Constant.STATUS.FAIL){
+                offerProgress?.visibility=View.GONE
+                if(it.status == Constant.STATUS.FAIL){
                     // Util.alert("No offer list",this)
                 }else{
                     dialog?.dismiss()
@@ -239,8 +250,8 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
         })
         viewModel.editDiscountResponse.observe(this, Observer<EditDiscountResponse> {
             it?.let {
-                dialog?.offer_progress?.visibility=View.GONE
-                if(it.status !=Constant.STATUS.FAIL){
+                offerProgress?.visibility=View.GONE
+                if(it.status != Constant.STATUS.FAIL){
                     dialog?.dismiss()
                     callGetDiscountService()
                 }
@@ -253,18 +264,21 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
     }
 
     private fun adapterSize(){
-        if(marketingAdapter.itemCount <4){
-            create_offer_button.visibility=View.VISIBLE
-        }else{
-            create_offer_button.visibility=View.GONE
+        binding.contentMarketCoupon.apply {
+            if(marketingAdapter.itemCount <4){
+                createOfferButton.visibility=View.VISIBLE
+            }else{
+                createOfferButton.visibility=View.GONE
+            }
+            if(marketingAdapter.itemCount <1){
+                noOfferText.visibility=View.VISIBLE
+                offerRecyclerview.visibility=View.GONE
+            }else{
+                noOfferText.visibility=View.GONE
+                offerRecyclerview.visibility=View.VISIBLE
+            }
         }
-        if(marketingAdapter.itemCount <1){
-            no_offer_text.visibility=View.VISIBLE
-            offer_recyclerview.visibility=View.GONE
-        }else{
-            no_offer_text.visibility=View.GONE
-            offer_recyclerview.visibility=View.VISIBLE
-        }
+
     }
 
 
@@ -274,12 +288,12 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else  binding.progressBar.visibility = View.GONE
     }
 
     override fun onClick(view: View?) {
         when(view){
-            create_offer_button->{
+            binding.contentMarketCoupon.createOfferButton->{
                 openAddEditOfferPopUp(isEdit = false)
             }
         }
@@ -291,45 +305,56 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
                 this.cancelOnTouchOutside(false)
                 cornerRadius(null,R.dimen.dimen_30)
                 customView(R.layout.add_offer_layout, scrollable = false, noVerticalPadding = true, horizontalPadding = false)
-                title_dialog_text.text = "Enter Offer Detail"
-                continue_button.text="Save"
+                val titleDialogText = this.findViewById<TextView>(R.id.title_dialog_text)
+                val continueButton = this.findViewById<Button>(R.id.continue_button)
+                val spendText = this.findViewById<TextView>(R.id.spend_text)
+                val getText = this.findViewById<TextView>(R.id.get_text)
+                val minEditText = this.findViewById<EditText>(R.id.min_edittext)
+                val offEditText = this.findViewById<EditText>(R.id.off_edittext)
+                val closeDialog = this.findViewById<ImageView>(R.id.close_dialog)
+                val dollerRadio = this.findViewById<RadioButton>(R.id.doller_radio)
+                val percentRadio = this.findViewById<RadioButton>(R.id.percent_radio)
+                val offer_radio_group = this.findViewById<RadioGroup>(R.id.offer_radio_group)
+                val offerProgress = this.findViewById<ProgressBar>(R.id.offer_progress)
+                titleDialogText.text = "Enter Offer Detail"
+                continueButton.text="Save"
                 if(isEdit){
-                    spend_text.text = "Spend Minimum $"
-                    get_text.text = "Get ${discount?.types} off"
-                    min_edittext.setText("${discount?.minorder}")
-                    off_edittext.setText("${discount?.details}")
+                    spendText.text = "Spend Minimum $"
+                    getText.text = "Get ${discount?.types} off"
+                    minEditText.setText("${discount?.minorder}")
+                    offEditText.setText("${discount?.details}")
                   //  continue_button.text="Edit"
                     if(discount?.types=="$"){
-                        doller_radio.isChecked =true
+                        dollerRadio.isChecked =true
                     }else{
-                        percent_radio.isChecked =true
+                        percentRadio.isChecked =true
                     }
                 }else{
                    // continue_button.text="Add"
                 }
-                close_dialog.setOnClickListener {
+                closeDialog.setOnClickListener {
                     this.dismiss()
                 }
                 dialog =this
                 offer_radio_group.setOnCheckedChangeListener { radioGroup, checkedId ->
                     val radio: RadioButton = findViewById(checkedId)
                     when(radio){
-                        doller_radio->{
+                        dollerRadio->{
                             status ="$"
-                            get_text.text = "Get $status off"
+                            getText.text = "Get $status off"
                         }
-                        percent_radio->{
+                        percentRadio->{
                             status ="%"
-                            get_text.text = "Get $status off"
+                            getText.text = "Get $status off"
                         }
                     }
                 }
-                continue_button.setOnClickListener {
-                       offer_progress.visibility=View.VISIBLE
+                continueButton.setOnClickListener {
+                    offerProgress.visibility=View.VISIBLE
                         if(isEdit){
-                            initAddDiscount(min_edittext.text.toString(),status,off_edittext.text.toString(),discount?.id!!,isEdit=true)
+                            initAddDiscount(minEditText.text.toString(),status,offEditText.text.toString(),discount?.id!!,isEdit=true)
                         }else{
-                            initAddDiscount(min_edittext.text.toString(),status,off_edittext.text.toString())
+                            initAddDiscount(minEditText.text.toString(),status,offEditText.text.toString())
                         }
                 }
             }
@@ -341,20 +366,20 @@ class MarketCouponActivity : BaseActivity() ,View.OnClickListener{
 
     private fun initAddDiscount(minamount:String,discounttype:String,discounts:String, discountId:String="",isEdit:Boolean=false){
         try{
-
+          val offerProgress = dialog?.findViewById<ProgressBar>(R.id.offer_progress)
             if(minamount.isNullOrEmpty()){
                 Util.alert("Minimum amount should not empty.",this)
-                dialog?.offer_progress?.visibility=View.GONE
+                offerProgress?.visibility=View.GONE
                 return
             }
             if(discounttype.isNullOrEmpty()){
                 Util.alert("Discount Type should not empty.",this)
-                dialog?.offer_progress?.visibility=View.GONE
+                offerProgress?.visibility=View.GONE
                 return
             }
             if(discounts.isNullOrEmpty()){
                 Util.alert("Discount should not empty.",this)
-                dialog?.offer_progress?.visibility=View.GONE
+                offerProgress?.visibility=View.GONE
                 return
             }
             if(isEdit){

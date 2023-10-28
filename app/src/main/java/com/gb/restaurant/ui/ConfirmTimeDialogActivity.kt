@@ -14,13 +14,13 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityConfirmTimeDialogBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.confirmorder.OrderStatusRequest
 import com.gb.restaurant.model.confirmorder.OrderStatusResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.OrderStatusViewModel
-import kotlinx.android.synthetic.main.activity_confirm_time_dialog.*
 
 
 class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
@@ -31,6 +31,7 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
     private var orderType:String = "Delivery"
     private var hold:String = ""
     private var timeList:MutableList<String> = mutableListOf<String>()
+    private lateinit var binding: ActivityConfirmTimeDialogBinding
     companion object{
         private val TAG:String = ConfirmTimeDialogActivity::class.java.simpleName
         public val ORDER_ID:String = "ORDER_ID"
@@ -39,7 +40,9 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_confirm_time_dialog)
+       // setContentView(R.layout.activity_confirm_time_dialog)
+        binding = ActivityConfirmTimeDialogBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
     }
@@ -79,30 +82,33 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
      private fun initView(){
          try{
              attachObserver()
-             cancel.setOnClickListener(this)
-             confirm.setOnClickListener(this)
-             val adapter: ArrayAdapter<String> = ArrayAdapter<String>(this, R.layout.time_item, timeList)
-             mobile_list.adapter = adapter
-             if(hold.equals("Yes",true)){
-                 mobile_list.visibility=View.GONE
-                 confirm.visibility=View.VISIBLE
-                 click_on_button_time.text = "Click on Button To Confirm"
-             }else{
-                 mobile_list.visibility=View.VISIBLE
-                 confirm.visibility=View.GONE
-             }
-             mobile_list.setOnItemClickListener { adapterView, view, position, l ->
-                 var orderStatusRequest = OrderStatusRequest()
-                 orderStatusRequest.deviceversion = Util.getVersionName(this)
-                 orderStatusRequest.status = Constant.ORDER_STATUS.CONFIRMED
-                 orderStatusRequest.order_id = orderId
-                 if(orderType.equals("Delivery",true)) {
-                     orderStatusRequest.readytime = "${rsLoginResponse?.data?.deliverytime?.get(position)} minutes"
+             binding.apply {
+                 cancel.setOnClickListener(this@ConfirmTimeDialogActivity)
+                 confirm.setOnClickListener(this@ConfirmTimeDialogActivity)
+                 val adapter: ArrayAdapter<String> = ArrayAdapter<String>(this@ConfirmTimeDialogActivity, R.layout.time_item, timeList)
+                 mobileList.adapter = adapter
+                 if(hold.equals("Yes",true)){
+                     mobileList.visibility=View.GONE
+                     confirm.visibility=View.VISIBLE
+                     clickOnButtonTime.text = "Click on Button To Confirm"
                  }else{
-                     orderStatusRequest.readytime = "${rsLoginResponse?.data?.pickuptime?.get(position)} minutes"
+                     mobileList.visibility=View.VISIBLE
+                     confirm.visibility=View.GONE
                  }
-                 callService(orderStatusRequest)
+                 mobileList.setOnItemClickListener { adapterView, view, position, l ->
+                     var orderStatusRequest = OrderStatusRequest()
+                     orderStatusRequest.deviceversion = Util.getVersionName(this@ConfirmTimeDialogActivity)
+                     orderStatusRequest.status = Constant.ORDER_STATUS.CONFIRMED
+                     orderStatusRequest.order_id = orderId
+                     if(orderType.equals("Delivery",true)) {
+                         orderStatusRequest.readytime = "${rsLoginResponse?.data?.deliverytime?.get(position)} minutes"
+                     }else{
+                         orderStatusRequest.readytime = "${rsLoginResponse?.data?.pickuptime?.get(position)} minutes"
+                     }
+                     callService(orderStatusRequest)
+                 }
              }
+
          }catch (e:Exception){
              e.printStackTrace()
              Log.e(TAG,e.message!!)
@@ -113,10 +119,10 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
         try{
             var orderStatusRequest = OrderStatusRequest()
             when(view){
-                cancel->{
+                binding.cancel->{
                     orderStatusRequest.status = Constant.ORDER_STATUS.CANCEL
                 }
-                confirm->{
+                binding.confirm->{
                     orderStatusRequest.status = Constant.ORDER_STATUS.CONFIRMED
                 }
             }
@@ -162,7 +168,7 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
         })
         viewModel.orderStatusResponse.observe(this, Observer<OrderStatusResponse> {
             it?.let {
-               if(it.status ==Constant.STATUS.FAIL){
+               if(it.status == Constant.STATUS.FAIL){
                    showToast(it.result!!)
                }else{
                    showToast(it.result!!)
@@ -190,7 +196,7 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
     private fun showToast(msg:String){

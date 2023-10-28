@@ -6,25 +6,24 @@ import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.gb.restaurant.R
+import com.gb.restaurant.databinding.ActivityNewReportBinding
 import com.gb.restaurant.enumm.ReportsDetail
 import com.gb.restaurant.ui.adapter.NewReportAdapter
-import com.gb.restaurant.utils.Util
-
-import kotlinx.android.synthetic.main.content_new_report.*
-import kotlinx.android.synthetic.main.custom_appbar.*
 
 class NewReportActivity : BaseActivity() {
 
     private lateinit var newReportAdapter: NewReportAdapter
     private var list:MutableList<String> = ArrayList()
+    private lateinit var binding: ActivityNewReportBinding
     companion object{
         private val TAG = NewReportActivity::class.java.simpleName
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_new_report)
+        //setContentView(R.layout.activity_new_report)
+        binding = ActivityNewReportBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
     }
@@ -71,11 +70,11 @@ class NewReportActivity : BaseActivity() {
 
     private fun initView(){
         try{
-            back_layout.setOnClickListener {
+            binding.customAppbar.backLayout.setOnClickListener {
                 onBackPressed()
             }
             newReportAdapter = NewReportAdapter(this,list)
-            new_report_recycler.apply {
+            binding.contentNewReport.newReportRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(this@NewReportActivity)
                 adapter = newReportAdapter

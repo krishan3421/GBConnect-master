@@ -14,6 +14,7 @@ import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.FragmentMonthlyMealBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.report.ReportRequest
 import com.gb.restaurant.model.report.ReportResponse
@@ -22,7 +23,6 @@ import com.gb.restaurant.ui.adapter.MonthlyMealAdapter
 import com.gb.restaurant.utils.ListPaddingDecorationGray
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.ReportViewModel
-import kotlinx.android.synthetic.main.fragment_monthly_meal.*
 import kotlin.collections.ArrayList
 
 /**
@@ -40,6 +40,8 @@ class MonthlyMealFragment : BaseFragment() ,View.OnClickListener{
     private var yearArray = mutableListOf<String>()
     private var monthArray = mutableListOf<String>("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
     var rsLoginResponse: RsLoginResponse? = null
+    private var _binding: FragmentMonthlyMealBinding? = null
+    private val binding get() = _binding!!
     companion object{
         private val TAG = MonthlyMealFragment::class.java.simpleName
     }
@@ -71,19 +73,27 @@ class MonthlyMealFragment : BaseFragment() ,View.OnClickListener{
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_monthly_meal, container, false)
+        _binding = FragmentMonthlyMealBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         try{
             attachObserver()
-            month_button.setOnClickListener(this)
-            year_button.setOnClickListener(this)
-            month_button.text = monthArray[monthIndex]
-            year_button.text = selectYear
+            binding.apply {
+                monthButton.setOnClickListener(this@MonthlyMealFragment)
+                yearButton.setOnClickListener(this@MonthlyMealFragment)
+                monthButton.text = monthArray[monthIndex]
+                yearButton.text = selectYear
+            }
+
             monthlyMealAdapter = MonthlyMealAdapter(fragmentBaseActivity,viewModel)
-            monthly_meal_recycler.apply {
+            binding.monthlyMealRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(fragmentBaseActivity)
                 adapter = monthlyMealAdapter
@@ -109,7 +119,7 @@ class MonthlyMealFragment : BaseFragment() ,View.OnClickListener{
                 viewModel.getReportResponse(reportRequest)
             }else{
                 //reports_swipe_refresh.isRefreshing = false
-                fragmentBaseActivity.showSnackBar(progressBar,getString(R.string.internet_connected))
+                fragmentBaseActivity.showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -119,14 +129,14 @@ class MonthlyMealFragment : BaseFragment() ,View.OnClickListener{
 
 
 
-    fun openMonth(v:View){
+    private fun openMonth(v:View){
         try{
             MaterialDialog(fragmentBaseActivity).show {
                 title(R.string.month)
                 listItemsSingleChoice(null,monthArray, initialSelection = monthIndex) { _, index, text ->
                     monthIndex = index
                     try{
-                        fragmentBaseActivity.month_button.text = text
+                        binding.monthButton.text = text
                         when(text){
                             "Jan"->{
                                 selectMonth = "01"
@@ -183,7 +193,7 @@ class MonthlyMealFragment : BaseFragment() ,View.OnClickListener{
                 listItemsSingleChoice(null,yearArray, initialSelection = yearIndex) { _, index, text ->
                     yearIndex = index
                     try{
-                       fragmentBaseActivity.year_button.text = text
+                       binding.yearButton.text = text
                         selectYear = text
                         callService()
                     }catch (e:Exception){
@@ -200,22 +210,22 @@ class MonthlyMealFragment : BaseFragment() ,View.OnClickListener{
     }
 
     private fun attachObserver() {
-        viewModel.isLoading.observe(this, Observer<Boolean> {
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer<Boolean> {
             it?.let { showLoadingDialog(it) }
         })
-        viewModel.apiError.observe(this, androidx.lifecycle.Observer<String> {
-            it?.let { fragmentBaseActivity.showSnackBar(progressBar,it) }
+        viewModel.apiError.observe(viewLifecycleOwner, androidx.lifecycle.Observer<String> {
+            it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar,it) }
         })
-        viewModel.reportResponse.observe(this, Observer<ReportResponse> {
+        viewModel.reportResponse.observe(viewLifecycleOwner, Observer<ReportResponse> {
             it?.let {
                 monthlyMealAdapter.notifyDataSetChanged()
                 if(monthlyMealAdapter.itemCount >0){
-                    monthly_meal_recycler.visibility = View.VISIBLE
-                    no_order_text.visibility = View.GONE
+                    binding.monthlyMealRecycler.visibility = View.VISIBLE
+                    binding.noOrderText.visibility = View.GONE
 
                 }else{
-                    monthly_meal_recycler.visibility = View.GONE
-                    no_order_text.visibility = View.VISIBLE
+                    binding.monthlyMealRecycler.visibility = View.GONE
+                    binding.noOrderText.visibility = View.VISIBLE
                 }
             }
         })
@@ -229,17 +239,17 @@ class MonthlyMealFragment : BaseFragment() ,View.OnClickListener{
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progressBar.visibility = View.VISIBLE else progressBar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
     override fun onClick(view: View?) {
         try{
             when(view){
-                year_button->{
-                    openYear(year_button)
+                binding.yearButton->{
+                    openYear(binding.yearButton)
                 }
-                month_button->{
-                   openMonth(month_button)
+                binding.monthButton->{
+                   openMonth(binding.monthButton)
                 }
             }
         }catch (e:Exception){

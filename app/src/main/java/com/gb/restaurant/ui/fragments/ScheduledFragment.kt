@@ -15,6 +15,7 @@ import com.gb.restaurant.MyApp
 
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.FragmentScheduledBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.order.OrderRequest
 import com.gb.restaurant.model.order.OrderResponse
@@ -22,7 +23,6 @@ import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.ui.adapter.ScheduleAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.OrderViewModel
-import kotlinx.android.synthetic.main.fragment_scheduled.*
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -48,6 +48,8 @@ class ScheduledFragment : BaseFragment() {
     private var list:MutableList<String> = ArrayList()
     var rsLoginResponse: RsLoginResponse? = null
     private lateinit var viewModel: OrderViewModel
+    private var _binding: FragmentScheduledBinding? = null
+    private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -67,14 +69,21 @@ class ScheduledFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        println("page call>>>>>>>>>>>fragment_scheduled")
-        return inflater.inflate(R.layout.fragment_scheduled, container, false)
+
+        _binding = FragmentScheduledBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         scheduleAdapter = ScheduleAdapter(fragmentBaseActivity,viewModel)
-        schedule_recycler.apply {
+        binding.scheduleRecycler.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(fragmentBaseActivity)
             adapter = scheduleAdapter
@@ -85,7 +94,7 @@ class ScheduledFragment : BaseFragment() {
 
         callService()
 
-        schedule_swipe_refresh.setOnRefreshListener {
+        binding.scheduleSwipeRefresh.setOnRefreshListener {
             callService()
         }
     }
@@ -99,7 +108,7 @@ class ScheduledFragment : BaseFragment() {
                 orderRequest.deviceversion = Util.getVersionName(fragmentBaseActivity)
                 viewModel.getOrderResponse(orderRequest, false)
             }else{
-                fragmentBaseActivity.showSnackBar(progress_bar,getString(R.string.internet_connected))
+                fragmentBaseActivity.showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -108,24 +117,24 @@ class ScheduledFragment : BaseFragment() {
     }
 
     private fun attachObserver() {
-        viewModel.isLoading.observe(this, Observer<Boolean> {
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer<Boolean> {
             it?.let { showLoadingDialog(it) }
         })
-        viewModel.apiError.observe(this, Observer<String> {
-            schedule_swipe_refresh.isRefreshing = false
-            it?.let { fragmentBaseActivity.showSnackBar(progress_bar,it) }
+        viewModel.apiError.observe(viewLifecycleOwner, Observer<String> {
+            binding.scheduleSwipeRefresh.isRefreshing = false
+            it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar,it) }
         })
-        viewModel.orderResponse.observe(this, Observer<OrderResponse> {
-            schedule_swipe_refresh.isRefreshing = false
+        viewModel.orderResponse.observe(viewLifecycleOwner, Observer<OrderResponse> {
+            binding.scheduleSwipeRefresh.isRefreshing = false
             it?.let {
                 scheduleAdapter.notifyDataSetChanged()
                 if(scheduleAdapter.itemCount >0){
-                    schedule_recycler.visibility = View.VISIBLE
-                    no_order_text.visibility = View.GONE
+                    binding.scheduleRecycler.visibility = View.VISIBLE
+                    binding.noOrderText.visibility = View.GONE
                   //  onButtonPressed(Constant.TAB.SCHEDULE,scheduleAdapter.itemCount)
                 }else{
-                    schedule_recycler.visibility = View.GONE
-                    no_order_text.visibility = View.VISIBLE
+                    binding.scheduleRecycler.visibility = View.GONE
+                    binding.noOrderText.visibility = View.VISIBLE
                 }
                 //stopListener?.onStop(Constant.TAB.SCHEDULE,scheduleAdapter.itemCount)
             }
@@ -217,6 +226,6 @@ class ScheduledFragment : BaseFragment() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 }

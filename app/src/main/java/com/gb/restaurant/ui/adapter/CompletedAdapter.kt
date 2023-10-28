@@ -1,7 +1,6 @@
 package com.gb.restaurant.ui.adapter
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,10 +9,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.model.order.Data
-import com.gb.restaurant.ui.ComDetailActivity
 import com.gb.restaurant.viewmodel.OrderViewModel
 
 class CompletedAdapter(val mContext:Context, var viewModel: OrderViewModel) : RecyclerView.Adapter<CompletedAdapter.OrderViewHolder>() {

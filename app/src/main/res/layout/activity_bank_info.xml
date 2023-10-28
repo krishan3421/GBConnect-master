@@ -12,11 +12,13 @@
             app:elevation="0dp"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/custom_appbar"/>
+        <include layout="@layout/custom_appbar"
+            android:id="@+id/custom_appbar"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_bank_info" />
+    <include layout="@layout/content_bank_info"
+        android:id="@+id/content_bank_info"/>
 
     <ProgressBar
             android:id="@+id/progress_bar"

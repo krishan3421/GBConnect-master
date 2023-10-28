@@ -20,7 +20,8 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_support" />
+    <include layout="@layout/content_support"
+        android:id="@+id/content_support"/>
 
     <ProgressBar
             android:id="@+id/progress_bar"

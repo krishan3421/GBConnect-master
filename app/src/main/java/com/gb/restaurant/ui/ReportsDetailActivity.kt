@@ -8,12 +8,13 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import com.gb.restaurant.R
+import com.gb.restaurant.databinding.ActivityRegistrationBinding
+import com.gb.restaurant.databinding.ActivityReportsDetailBinding
 import com.gb.restaurant.enumm.ReportsDetail
 import com.gb.restaurant.ui.fragments.MonthlyInvoiceFragment
 import com.gb.restaurant.ui.fragments.MonthlyMealFragment
 import com.gb.restaurant.ui.fragments.MoreSaleFragment
 import com.gb.restaurant.ui.fragments.OrdersWeeklyFragment
-import kotlinx.android.synthetic.main.custom_appbar.*
 
 
 class ReportsDetailActivity : BaseActivity() {
@@ -23,10 +24,13 @@ class ReportsDetailActivity : BaseActivity() {
     }
 
     private var type:Int = 0
+    private lateinit var binding: ActivityReportsDetailBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_reports_detail)
+       // setContentView(R.layout.activity_reports_detail)
+        binding = ActivityReportsDetailBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
 
@@ -78,7 +82,7 @@ class ReportsDetailActivity : BaseActivity() {
     private fun initView(){
         var fragment:Fragment? = null
         try{
-            back_layout.setOnClickListener {
+            binding.customAppbar.backLayout.setOnClickListener {
                 onBackPressed()
             }
           if(type == ReportsDetail.MONTHLY_MEALS.ordinal){

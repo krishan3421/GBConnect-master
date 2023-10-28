@@ -21,7 +21,8 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_registration"/>
+    <include layout="@layout/content_registration"
+        android:id="@+id/content_registration"/>
 
   <ProgressBar android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="gone" android:layout_gravity="center" android:id="@+id/progressbar"/>
 

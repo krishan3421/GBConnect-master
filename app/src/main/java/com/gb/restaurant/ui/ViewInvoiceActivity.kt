@@ -8,10 +8,7 @@ import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.gb.restaurant.R
-import kotlinx.android.synthetic.main.activity_view_invoice.*
-import kotlinx.android.synthetic.main.content_view_summary.*
-import kotlinx.android.synthetic.main.custom_appbar.*
+import com.gb.restaurant.databinding.ActivityViewInvoiceBinding
 
 
 class ViewInvoiceActivity : BaseActivity() {
@@ -21,11 +18,14 @@ class ViewInvoiceActivity : BaseActivity() {
         private val TAG = ViewInvoiceActivity::class.java.simpleName
         const val INVOICE:String = "INVOICE"
     }
+    private lateinit var binding: ActivityViewInvoiceBinding
     private var url :String=""
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_view_invoice)
+       // setContentView(R.layout.activity_view_invoice)
+        binding = ActivityViewInvoiceBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
     }
@@ -71,37 +71,40 @@ class ViewInvoiceActivity : BaseActivity() {
 
     private fun initView(){
         try{
-            back_layout.setOnClickListener {
+            binding.customAppbar.backLayout.setOnClickListener {
                 onBackPressed()
             }
             //web_invoice.clearCache(false);
           //  web_invoice.settings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW;
             println("url>>>> $url")
-            web_invoice.settings.javaScriptEnabled = true;
-            web_invoice.settings.loadWithOverviewMode = true;
-            web_invoice.settings.useWideViewPort = true;
-            progress_bar.visibility=View.VISIBLE
-            web_invoice.webViewClient = object : WebViewClient() {
-                override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
-                    progress_bar.visibility=View.VISIBLE
-                    view!!.loadUrl(request?.url.toString())
-                    return true
-                }
-                override fun onPageFinished(view: WebView, url: String) {
-                    progress_bar.visibility=View.GONE
-                }
+            binding.contentViewSummary.apply {
+                webInvoice.settings.javaScriptEnabled = true;
+                webInvoice.settings.loadWithOverviewMode = true;
+                webInvoice.settings.useWideViewPort = true;
+                binding.progressBar.visibility=View.VISIBLE
+                webInvoice.webViewClient = object : WebViewClient() {
+                    override fun shouldOverrideUrlLoading(view: WebView?, request: WebResourceRequest?): Boolean {
+                        binding.progressBar.visibility=View.VISIBLE
+                        view!!.loadUrl(request?.url.toString())
+                        return true
+                    }
+                    override fun onPageFinished(view: WebView, url: String) {
+                        binding.progressBar.visibility=View.GONE
+                    }
 
-                override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
-                    progress_bar.visibility=View.GONE
-                    showToast("${error?.description}")
-                }
+                    override fun onReceivedError(view: WebView?, request: WebResourceRequest?, error: WebResourceError?) {
+                        binding.progressBar.visibility=View.GONE
+                       // showToast(error.description.)
+                    }
 
+                }
+                webInvoice.loadUrl(url);
             }
-            web_invoice.loadUrl(url);
+
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
-            progress_bar.visibility=View.GONE
+            binding.progressBar.visibility=View.GONE
         }
     }
     fun backClick(v: View){

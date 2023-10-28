@@ -21,7 +21,8 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_event_enquiry"/>
+    <include layout="@layout/content_event_enquiry"
+        android:id="@+id/content_event_enquiry"/>
 
 
 

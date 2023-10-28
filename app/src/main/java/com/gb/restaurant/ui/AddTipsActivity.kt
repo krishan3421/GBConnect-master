@@ -8,9 +8,11 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -23,6 +25,8 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityAddItemBinding
+import com.gb.restaurant.databinding.ActivityAddTipsBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.addordertips.OrderTipsRequest
 import com.gb.restaurant.model.addordertips.OrderTipsResponse
@@ -33,14 +37,6 @@ import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.ui.adapter.AddingTipsAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.AddTipsViewModel
-
-import kotlinx.android.synthetic.main.activity_add_tips.*
-import kotlinx.android.synthetic.main.card_detail_layout.*
-import kotlinx.android.synthetic.main.content_add_tips.*
-import kotlinx.android.synthetic.main.content_add_tips.no_order_text
-import kotlinx.android.synthetic.main.content_add_tips.search_edittext
-import kotlinx.android.synthetic.main.content_item.*
-import kotlinx.android.synthetic.main.custom_appbar.*
 
 class AddTipsActivity : BaseActivity() {
 
@@ -54,10 +50,13 @@ class AddTipsActivity : BaseActivity() {
     var selOrderTipsRequest : OrderTipsRequest?=null
     private var cardDialog:MaterialDialog?=null
     private var fromSearch:Boolean=false
+    private lateinit var binding: ActivityAddTipsBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_add_tips)
+       // setContentView(R.layout.activity_add_tips)
+        binding = ActivityAddTipsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
 
@@ -105,13 +104,13 @@ class AddTipsActivity : BaseActivity() {
 
     private fun initView(){
         try{
-            back_layout.setOnClickListener {
+            binding.customAppbar.backLayout.setOnClickListener {
                 onBackPressed()
             }
             attachObserver()
 
             addingTipsAdapter = AddingTipsAdapter(this,viewModel)
-            adding_tips_recycler.apply {
+            binding.contentAddTips.addingTipsRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(this@AddTipsActivity)
                 adapter = addingTipsAdapter
@@ -133,7 +132,7 @@ class AddTipsActivity : BaseActivity() {
                 fromSearch=false
                 viewModel.getActiveOrderList(activeOrderRequest)
             }else{
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -151,16 +150,16 @@ class AddTipsActivity : BaseActivity() {
     private fun callSearchService(){
         try{
             if(!Validation.isOnline(this)){
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
                 return
-            }else if(search_edittext.text.toString().isNullOrEmpty()){
-                showSnackBar(progress_bar,"Please provide valid item Id")
+            }else if(binding.contentAddTips.searchEdittext.text.toString().isNullOrEmpty()){
+                showSnackBar(binding.progressBar,"Please provide valid item Id")
                 return
             }else{
                 var orderSearchRequest = OrderSearchRequest()
                 orderSearchRequest.deviceversion = Util.getVersionName(this)
                 orderSearchRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-                orderSearchRequest.order_id=search_edittext.text.toString()
+                orderSearchRequest.order_id=binding.contentAddTips.searchEdittext.text.toString()
                  println("request date>>>>>> ${Util.getStringFromBean(orderSearchRequest)}")
                 fromSearch=true
                 viewModel.getOrderSearch(orderSearchRequest)
@@ -186,36 +185,37 @@ class AddTipsActivity : BaseActivity() {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { showSnackBar(progress_bar,it) }
+            it?.let { showSnackBar(binding.progressBar,it) }
         })
         viewModel.response.observe(this, Observer<ActiveOrderResponse> {
             it?.let {
                 addingTipsAdapter.notifyDataSetChanged()
                 if(addingTipsAdapter.itemCount >0){
-                    adding_tips_recycler.visibility = View.VISIBLE
-                    no_order_text.visibility = View.GONE}
+                    binding.contentAddTips.addingTipsRecycler.visibility = View.VISIBLE
+                    binding.contentAddTips.noOrderText.visibility = View.GONE}
                 else{
-                    adding_tips_recycler.visibility = View.GONE
-                    no_order_text.visibility = View.VISIBLE
+                    binding.contentAddTips.addingTipsRecycler.visibility = View.GONE
+                    binding.contentAddTips.noOrderText.visibility = View.VISIBLE
                     if(fromSearch){
-                        no_order_text.text=getString(R.string.oops_no_order_found_with_order_id_tips)
+                        binding.contentAddTips.noOrderText.text=getString(R.string.oops_no_order_found_with_order_id_tips)
                     }else{
-                        no_order_text.text=getString(R.string.oops_no_order_found)
+                        binding.contentAddTips.noOrderText.text=getString(R.string.oops_no_order_found)
                     }
                 }
             }
         })
         viewModel.addTipsResponse.observe(this, Observer<OrderTipsResponse> {
             it?.let {
+                val cardProgress = cardDialog?.findViewById<ProgressBar>(R.id.card_progress)
                 if(it.status == Constant.STATUS.FAIL){
                     Util.alertDialog(it.result?:"",this)
-                    cardDialog?.card_progress?.visibility =View.GONE
+                    cardProgress?.visibility =View.GONE
                 }else{
                     if(it.result.equals("Tips charged successfully",true) || it.result.equals("Tips added successfully",true)){
                         cardDialog?.dismiss()
                         Util.alertDialog(it.result?:"",this)
                     }else{
-                        cardDialog?.card_progress?.visibility =View.GONE
+                        cardProgress?.visibility =View.GONE
                         selOrderTipsRequest?.newcard = "Yes"
                         if(cardDialog ==null) {
                             showCardDetailDialog()
@@ -274,38 +274,47 @@ class AddTipsActivity : BaseActivity() {
             this.cancelOnTouchOutside(false)
             cornerRadius(null,R.dimen.dimen_30)
             customView(R.layout.card_detail_layout, scrollable = false, noVerticalPadding = true, horizontalPadding = false)
-            title_dialog_text.text = "Enter Card Detail"
-            close_dialog.setOnClickListener {
+            val titleDialogText = this.findViewById<TextView>(R.id.title_dialog_text)
+            val cardEditText = this.findViewById<EditText>(R.id.card_edittext)
+            val expEditText = this.findViewById<EditText>(R.id.exp_edittext)
+            val cvvEditText = this.findViewById<EditText>(R.id.cvv_edittext)
+            val zipEditText = this.findViewById<EditText>(R.id.zip_edittext)
+            val cardProgressBar = this.findViewById<ProgressBar>(R.id.card_progress)
+            val cardHolderEditText = this.findViewById<EditText>(R.id.card_holder_edittext)
+            val closeDialog = this.findViewById<ImageView>(R.id.close_dialog)
+            val continueButton = this.findViewById<Button>(R.id.continue_button)
+            titleDialogText.text = "Enter Card Detail"
+            closeDialog.setOnClickListener {
                 this.dismiss()
             }
-            continue_button.setOnClickListener {
-                if(card_edittext.text.toString().isNullOrEmpty() || card_edittext.text.length <15){
+            continueButton.setOnClickListener {
+                if(cardEditText.text.toString().isNullOrEmpty() || cardEditText.text.length <15){
                     Util.alertDialog("Please add Valid Card Number",this@AddTipsActivity)
                     return@setOnClickListener
                 }
-                if(exp_edittext.text.toString().isNullOrEmpty() || exp_edittext.text.length <4){
+                if(expEditText.text.toString().isNullOrEmpty() || expEditText.text.length <4){
                     Util.alertDialog("Please add Valid Expiry Date",this@AddTipsActivity)
                     return@setOnClickListener
                 }
-                if(cvv_edittext.text.toString().isNullOrEmpty() || cvv_edittext.text.length <3){
+                if(cvvEditText.text.toString().isNullOrEmpty() || cvvEditText.text.length <3){
                     Util.alertDialog("Please add Valid CVV",this@AddTipsActivity)
                     return@setOnClickListener
                 }
-                if(zip_edittext.text.toString().isNullOrEmpty() || zip_edittext.text.length <5){
+                if(zipEditText.text.toString().isNullOrEmpty() || zipEditText.text.length <5){
                     Util.alertDialog("Please add Valid Zip Code",this@AddTipsActivity)
                     return@setOnClickListener
                 }
-                if(card_holder_edittext.text.toString().isNullOrEmpty()){
+                if(cardHolderEditText.text.toString().isNullOrEmpty()){
                     Util.alertDialog("Please add card holder name",this@AddTipsActivity)
                     return@setOnClickListener
                 }
-                card_progress.visibility = View.VISIBLE
+                cardProgressBar.visibility = View.VISIBLE
                 cardDialog = this
-                selOrderTipsRequest?.card = card_edittext.text.toString()
-                selOrderTipsRequest?.expiry = exp_edittext.text.toString()
-                selOrderTipsRequest?.cvv = cvv_edittext.text.toString()
-                selOrderTipsRequest?.billingzip = zip_edittext.text.toString()
-                selOrderTipsRequest?.cardholder = card_holder_edittext.text.toString()
+                selOrderTipsRequest?.card = cardEditText.text.toString()
+                selOrderTipsRequest?.expiry = expEditText.text.toString()
+                selOrderTipsRequest?.cvv = cvvEditText.text.toString()
+                selOrderTipsRequest?.billingzip = zipEditText.text.toString()
+                selOrderTipsRequest?.cardholder = cardHolderEditText.text.toString()
                 callTipsService(selOrderTipsRequest!!)
             }
         }
@@ -334,7 +343,7 @@ class AddTipsActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 }

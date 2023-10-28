@@ -14,11 +14,13 @@
             app:elevation="0dp"
             android:theme="@style/AppTheme.AppBarOverlay">
 
-        <include layout="@layout/custom_appbar"/>
+        <include layout="@layout/custom_appbar"
+            android:id="@+id/custom_appbar"/>
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_view_summary" />
+    <include layout="@layout/content_view_summary"
+        android:id="@+id/content_view_summary"/>
     <ProgressBar
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

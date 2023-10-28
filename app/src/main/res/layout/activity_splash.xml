@@ -6,6 +6,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/colorPrimary_one"
+        android:backgroundTint="@color/colorPrimary_one"
         tools:context=".ui.SplashActivity">
 
     <com.google.android.material.appbar.AppBarLayout

@@ -10,6 +10,8 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityDailySummaryBinding
+import com.gb.restaurant.databinding.ActivityDashboardBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.enumm.Login
 import com.gb.restaurant.model.rslogin.RsLoginResponse
@@ -17,28 +19,25 @@ import com.gb.restaurant.model.rslogin.RsLoginRq
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.RsLoginViewModel
 import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
-import com.grabull.session.SessionManager
-
-import kotlinx.android.synthetic.main.activity_dashboard.*
-import kotlinx.android.synthetic.main.activity_dashboard.toolbar
-import kotlinx.android.synthetic.main.activity_restaurant_login.*
-import kotlinx.android.synthetic.main.content_dashboard.*
-import kotlinx.android.synthetic.main.content_restaurant_login.*
+import com.gb.restaurant.session.SessionManager
+import com.google.firebase.messaging.FirebaseMessaging
 
 class DashboardActivity : BaseActivity() {
     private var firbaseToken :String? = null
     private lateinit var viewModel: RsLoginViewModel
     private var userName:String?=null
+    private lateinit var binding: ActivityDashboardBinding
     companion object{
         private val TAG:String = DashboardActivity::class.java.simpleName
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_dashboard)
-        setSupportActionBar(toolbar)
+       // setContentView(R.layout.activity_dashboard)
+        binding = ActivityDashboardBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
         token()
-        toolbar.apply { visibility =View.GONE }
+        binding.toolbar.apply { visibility =View.GONE }
         initView()
     }
 
@@ -53,15 +52,15 @@ class DashboardActivity : BaseActivity() {
         try{
             viewModel = createViewModel()
             attachObserver()
-            var sessionManager=SessionManager(this)
+            var sessionManager= SessionManager(this)
             if(sessionManager.isAutoLoggedIn()){
-                button_rest.visibility=View.GONE
+                binding.contentDashboard.buttonRest.visibility=View.GONE
                 var userDetail=sessionManager.getUserDetails()
                 userName = userDetail[SessionManager.USERNAME]
                 var password = userDetail[SessionManager.PASSWORD]
                 loginMethod(userName?:"",password?:"")
             }else{
-                button_rest.visibility=View.VISIBLE
+                binding.contentDashboard.buttonRest.visibility=View.VISIBLE
             }
 
 
@@ -103,8 +102,8 @@ class DashboardActivity : BaseActivity() {
             // it?.let { showSnackBar(progressbar,getString(R.string.service_error)) }
             // it?.let { println("error>>>>> ${Util.getStringFromBean(it)}") }
             //Util.alert(getString(R.string.service_error),this)
-            button_rest.visibility=View.VISIBLE
-            forRestaurantClick(button_rest)
+            binding.contentDashboard.buttonRest.visibility=View.VISIBLE
+            forRestaurantClick(binding.contentDashboard.buttonRest)
         })
         viewModel.loginResponse.observe(this, Observer<RsLoginResponse> {
             it?.let {
@@ -112,8 +111,8 @@ class DashboardActivity : BaseActivity() {
                 if(it.status == Constant.STATUS.FAIL){
                     // showSnackBar(progressbar,it.result!!)
                     //Util.alert(it.result?:"",this)
-                    button_rest.visibility=View.VISIBLE
-                    forRestaurantClick(button_rest)
+                    binding.contentDashboard.buttonRest.visibility=View.VISIBLE
+                    forRestaurantClick(binding.contentDashboard.buttonRest)
                     //callHomePage()
                 }else{
                     MyApp.instance.rsLoginResponse = it
@@ -179,21 +178,21 @@ class DashboardActivity : BaseActivity() {
 
     private fun token(){
         try{
-            FirebaseInstanceId.getInstance().instanceId
-                .addOnCompleteListener(OnCompleteListener { task ->
-                    if (!task.isSuccessful) {
-                        Log.w(TAG, "getInstanceId failed", task.exception)
-                        return@OnCompleteListener
-                    }
+            FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+                if (!task.isSuccessful) {
+                    Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                    return@OnCompleteListener
+                }
 
-                    // Get new Instance ID token
-                    firbaseToken = task.result?.token
-                    MyApp.instance.deviceToken = firbaseToken?:""
-                    // Log and toast
-                    //val msg = getString(R.string.msg_token_fmt, token)
-                    Log.d("token>>>>>>>>>", firbaseToken!!)
-                    //Toast.makeText(baseContext, msg, Toast.LENGTH_SHORT).show()
-                })
+                // Get new FCM registration token
+                firbaseToken = task.result
+
+
+                MyApp.instance.deviceToken = firbaseToken?:""
+                // Log and toast
+                //val msg = getString(R.string.msg_token_fmt, token)
+                Log.d("token>>>>>>>>>", firbaseToken!!)
+            })
         }catch (e:Exception){
             e.printStackTrace()
         }
@@ -206,7 +205,7 @@ class DashboardActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 }

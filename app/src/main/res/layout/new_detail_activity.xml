@@ -48,7 +48,8 @@
                 android:background="@color/dark_gray"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_new_detail"/>
+    <include layout="@layout/content_new_detail"
+        android:id="@+id/content_new_detail"/>
     <ProgressBar android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
                  android:layout_gravity="center"

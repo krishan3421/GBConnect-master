@@ -1,6 +1,5 @@
 package com.gb.restaurant.ui
 
-import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -12,27 +11,28 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityResetPassBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.resetpass.ResetPassRequest
 import com.gb.restaurant.model.resetpass.ResetPassResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.ResetPassViewModel
-import com.grabull.session.SessionManager
-
-import kotlinx.android.synthetic.main.activity_reset_pass.*
-import kotlinx.android.synthetic.main.content_reset_pass.*
+import com.gb.restaurant.session.SessionManager
 
 class ResetPassActivity : BaseActivity() {
 
     var rsLoginResponse: RsLoginResponse? = null
     private lateinit var viewModel: ResetPassViewModel
+    private lateinit var binding: ActivityResetPassBinding
     companion object{
         private val TAG = ResetPassActivity::class.java.simpleName
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_reset_pass)
+       // setContentView(R.layout.activity_reset_pass)
+        binding = ActivityResetPassBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
 
@@ -50,9 +50,9 @@ class ResetPassActivity : BaseActivity() {
 
      private fun initView(){
          try{
-             setSupportActionBar(toolbar)
-             toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
-             toolbar.setNavigationOnClickListener { onBackPressed() }
+             setSupportActionBar(binding.toolbar)
+             binding.toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
+             binding.toolbar.setNavigationOnClickListener { onBackPressed() }
 
              attachObserver()
          }catch (e:Exception){
@@ -72,22 +72,22 @@ class ResetPassActivity : BaseActivity() {
     private fun callService(){
         try{
             if(!Validation.isOnline(this)){
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
                 return
-            }else if(new_pass_text.text.isNullOrEmpty()){
-                showSnackBar(progress_bar,getString(R.string.new_pass_empty))
+            }else if(binding.contentResetPass.newPassText.text.isNullOrEmpty()){
+                showSnackBar(binding.progressBar,getString(R.string.new_pass_empty))
                 return
 
-            }else if(!con_pass_text.text.toString().equals(new_pass_text.text.toString())){
-                showSnackBar(progress_bar,getString(R.string.con_pass_empty))
+            }else if(!binding.contentResetPass.conPassText.text.toString().equals(binding.contentResetPass.newPassText.text.toString())){
+                showSnackBar(binding.progressBar,getString(R.string.con_pass_empty))
                 return
             }else{
                 var resetPassRequest=ResetPassRequest()
                 resetPassRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 resetPassRequest.user_id = rsLoginResponse?.data?.loginId!!
-                resetPassRequest.password = new_pass_text.text.toString()
+                resetPassRequest.password = binding.contentResetPass.newPassText.text.toString()
                 resetPassRequest.deviceversion = Util.getVersionName(this)
-                println("data>>>>>> ${Util.getStringFromBean(resetPassRequest)}")
+               // println("data>>>>>> ${Util.getStringFromBean(resetPassRequest)}")
                 viewModel.resetPass(resetPassRequest)
             }
         }catch (e:Exception){
@@ -102,7 +102,7 @@ class ResetPassActivity : BaseActivity() {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { showSnackBar(progress_bar,it) }
+            it?.let { showSnackBar(binding.progressBar,it) }
         })
         viewModel.resetPassResponse.observe(this, Observer<ResetPassResponse> {
             it?.let {
@@ -144,6 +144,6 @@ class ResetPassActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 }

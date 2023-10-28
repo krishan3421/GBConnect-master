@@ -3,10 +3,15 @@ package com.gb.restaurant.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.DialogBehavior
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.ModalDialog
@@ -15,6 +20,7 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityViewDialogPageBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.additem.AddOrderItemRequest
 import com.gb.restaurant.model.additem.AddOrderItemResponse
@@ -31,12 +37,6 @@ import com.gb.restaurant.ui.adapter.ViewDialogAdapter
 import com.gb.restaurant.utils.ListPaddingDecorationGray
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.TipsViewModel
-import kotlinx.android.synthetic.main.activity_view_dialog.*
-import kotlinx.android.synthetic.main.activity_view_dialog.progress_bar
-import kotlinx.android.synthetic.main.activity_view_dialog_page.*
-import kotlinx.android.synthetic.main.add_items_layout.*
-import kotlinx.android.synthetic.main.tips_layout.*
-import kotlinx.android.synthetic.main.tips_layout.add_tips_button
 
 class ViewDialogActivity : BaseActivity() {
 
@@ -45,7 +45,7 @@ class ViewDialogActivity : BaseActivity() {
     private var data: Data? = null
     private lateinit var viewModel: TipsViewModel
     var rsLoginResponse: RsLoginResponse? = null
-
+    private lateinit var binding: ActivityViewDialogPageBinding
     companion object {
         private val TAG: String = ViewDialogActivity::class.java.simpleName
         val FROMPAGE: String = "FROMPAGE"
@@ -54,7 +54,9 @@ class ViewDialogActivity : BaseActivity() {
     var fromPage: Int = 0// 0 from completed,new and schedule , 1 from active
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_view_dialog_page)
+       // setContentView(R.layout.activity_view_dialog_page)
+        binding = ActivityViewDialogPageBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
     }
@@ -155,60 +157,65 @@ class ViewDialogActivity : BaseActivity() {
 
     private fun initView() {
         try {
-            setSupportActionBar(toolbar)
-            toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_back)
-            toolbar.setNavigationOnClickListener { onBackPressed() }
-            toolbar.title = "${rsLoginResponse?.data?.name}"
-            attachObserver()
-            viewDialogAdapter = ViewDialogAdapter(this, data!!, list)
-            view_recycler.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(this@ViewDialogActivity)
-                // addItemDecoration(ListPaddingDecoration(this@ViewDialogActivity, 0,0))
-                adapter = viewDialogAdapter
+            binding.apply {
+                setSupportActionBar(toolbar)
+                toolbar.navigationIcon = ContextCompat.getDrawable(this@ViewDialogActivity, R.drawable.ic_back)
+                toolbar.setNavigationOnClickListener { onBackPressed() }
+                toolbar.title = "${rsLoginResponse?.data?.name}"
             }
+           binding.activityViewDialog.apply {
+               attachObserver()
+               viewDialogAdapter = ViewDialogAdapter(this@ViewDialogActivity, data!!, list)
+               viewRecycler.apply {
+                   setHasFixedSize(true)
+                   layoutManager = LinearLayoutManager(this@ViewDialogActivity)
+                   // addItemDecoration(ListPaddingDecoration(this@ViewDialogActivity, 0,0))
+                   adapter = viewDialogAdapter
+               }
 
-            if (fromPage == 0) {
-                button_layout.visibility = View.GONE
-            } else {
-                button_layout.visibility = View.VISIBLE
-            }
-            if (!data?.holddate2.isNullOrEmpty()) {
-                if (data!!.type.equals("Delivery", true)) {
-                    hold_time_text.text = "Hold Order: Delivery Time: ${data!!.holddate2}"
-                } else {
-                    hold_time_text.text = "Hold Order: Pickup Time: ${data!!.holddate2}"
-                }
-            } else {
-                hold_time_text.visibility = View.GONE
-            }
-            if (!data?.date2.isNullOrEmpty()) {
-                order_time_text.text = "ORDER TIME: ${data!!.date2}"
-            }
+               if (fromPage == 0) {
+                   buttonLayout.visibility = View.GONE
+               } else {
+                   buttonLayout.visibility = View.VISIBLE
+               }
+               if (!data?.holddate2.isNullOrEmpty()) {
+                   if (data!!.type.equals("Delivery", true)) {
+                       holdTimeText.text = "Hold Order: Delivery Time: ${data!!.holddate2}"
+                   } else {
+                       holdTimeText.text = "Hold Order: Pickup Time: ${data!!.holddate2}"
+                   }
+               } else {
+                   holdTimeText.visibility = View.GONE
+               }
+               if (!data?.date2.isNullOrEmpty()) {
+                   orderTimeText.text = "ORDER TIME: ${data!!.date2}"
+               }
 
-            if (!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()) { //pending- cash(not paid)
-                var paymentStatus = ""
-                if (data?.payment!!.contains("pending", true)) {
-                    paymentStatus = "NOT PAID"
-                    delivery_type_text.setTextColor(
-                        ContextCompat.getColor(
-                            this,
-                            R.color.colorAccent
-                        )
-                    )
-                } else {
-                    paymentStatus = "PAID"
-                    delivery_type_text.setTextColor(ContextCompat.getColor(this, R.color.green))
-                }
-                delivery_type_text.text = "${data?.type!!.toUpperCase()} $paymentStatus"
-            }
+               if (!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()) { //pending- cash(not paid)
+                   var paymentStatus = ""
+                   if (data?.payment!!.contains("pending", true)) {
+                       paymentStatus = "NOT PAID"
+                       deliveryTypeText.setTextColor(
+                           ContextCompat.getColor(
+                               this@ViewDialogActivity,
+                               R.color.colorAccent
+                           )
+                       )
+                   } else {
+                       paymentStatus = "PAID"
+                       deliveryTypeText.setTextColor(ContextCompat.getColor(this@ViewDialogActivity, R.color.green))
+                   }
+                   deliveryTypeText.text = "${data?.type!!.toUpperCase()} $paymentStatus"
+               }
 
-            if (!data?.status.isNullOrEmpty()) {
-                status.text = "${data?.status}"
-            }
+               if (!data?.status.isNullOrEmpty()) {
+                   status.text = "${data?.status}"
+               }
 
-            order_id_text.text = "ORDER # ${data!!.id}"
-            callOrderDetailService()
+               orderIdText.text = "ORDER # ${data!!.id}"
+               callOrderDetailService()
+           }
+
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, e.message!!)
@@ -259,13 +266,17 @@ class ViewDialogActivity : BaseActivity() {
         val dialog = MaterialDialog(this, dialogBehavior).show {
             this.setCanceledOnTouchOutside(false)
             customView(R.layout.tips_layout, scrollable = true, horizontalPadding = true)
-            title_header_text.text = "Add Tips to order # ${data?.id}\n(Customer : ${data?.name}))"
-            cancel_image.setOnClickListener {
+            val titleHeaderTax = this.findViewById<TextView>(R.id.title_header_text)
+            val cancelImage = this.findViewById<ImageView>(R.id.cancel_image)
+            val addTipButton = this.findViewById<Button>(R.id.add_tips_button)
+            val tipsEdit = this.findViewById<EditText>(R.id.tips_edit)
+            titleHeaderTax.text = "Add Tips to order # ${data?.id}\n(Customer : ${data?.name}))"
+            cancelImage.setOnClickListener {
                 this.dismiss()
             }
-            add_tips_button.setOnClickListener {
-                if (!tips_edit.text.isNullOrEmpty()) {
-                    callTipsService(tips_edit.text.toString())
+            addTipButton.setOnClickListener {
+                if (!tipsEdit.text.isNullOrEmpty()) {
+                    callTipsService(tipsEdit.text.toString())
                     this.dismiss()
                 } else {
                     showToast("Please add Tips")
@@ -299,33 +310,40 @@ class ViewDialogActivity : BaseActivity() {
             this.setCanceledOnTouchOutside(false)
             customView(R.layout.add_items_layout, scrollable = true, horizontalPadding = false)
             var myAdapter = ItemAdapter(this@ViewDialogActivity, itemList)
-            items_recycler.apply {
+            val titleText = this.findViewById<View>(R.id.title_text) as TextView
+            val recyclerView = this.findViewById<View>(R.id.items_recycler) as RecyclerView
+            val cancelImage = this.findViewById<View>(R.id.cancel_image_items) as ImageView
+            val plusText = this.findViewById<View>(R.id.plus_text) as TextView
+            val addItemButton = this.findViewById<TextView>(R.id.add_item_button);
+            val itemEditText = this.findViewById<View>(R.id.item_text) as EditText
+            val priceEditText = this.findViewById<View>(R.id.price_text) as EditText
+            recyclerView.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(this@ViewDialogActivity)
                 addItemDecoration(ListPaddingDecorationGray(this@ViewDialogActivity, 0, 0))
                 adapter = myAdapter
             }
-            cancel_image_items.setOnClickListener {
+            cancelImage.setOnClickListener {
                 this.dismiss()
             }
 
-            plus_text.setOnClickListener {
-                if (!item_text.text.isNullOrEmpty() && !price_text.text.isNullOrEmpty()) {
+            plusText.setOnClickListener {
+                if (!itemEditText.text.isNullOrEmpty() && !priceEditText.text.isNullOrEmpty()) {
                     var item = com.gb.restaurant.model.Item(
-                        item_text.text.toString(),
-                        price_text.text.toString()
+                        itemEditText.text.toString(),
+                        priceEditText.text.toString()
                     )
                     itemList.add(item)
                     println("data>>> ${Util.getStringFromBean(item)}")
                     myAdapter.notifyDataSetChanged()
-                    item_text.setText("")
-                    price_text.setText("")
+                    itemEditText.setText("")
+                    priceEditText.setText("")
                 } else {
                     Util.alertDialog("Please add Items", this@ViewDialogActivity)
                 }
             }
 
-            add_tips_button.setOnClickListener {
+            addItemButton.setOnClickListener {
                 if (itemList.isNotEmpty()) {
                     callAddItemsService(itemList)
                     this.dismiss()
@@ -437,7 +455,7 @@ class ViewDialogActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 }

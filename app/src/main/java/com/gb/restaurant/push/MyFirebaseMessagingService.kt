@@ -8,7 +8,6 @@ import com.gb.restaurant.ui.ReservationActivity
 import com.gb.restaurant.utils.Util
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import java.time.Instant
 
 class MyFirebaseMessagingService : FirebaseMessagingService(){
     companion object {

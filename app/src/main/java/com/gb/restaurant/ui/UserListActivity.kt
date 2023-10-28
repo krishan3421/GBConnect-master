@@ -13,9 +13,9 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivitySupportBinding
+import com.gb.restaurant.databinding.ActivityUserListBinding
 import com.gb.restaurant.di.ComponentInjector
-import com.gb.restaurant.model.adduser.AddUserRequest
-import com.gb.restaurant.model.adduser.AddUserResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.model.users.User
 import com.gb.restaurant.model.users.UserListReponse
@@ -25,21 +25,21 @@ import com.gb.restaurant.model.users.rmuser.RmUserResponse
 import com.gb.restaurant.ui.adapter.UsersAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.RsLoginViewModel
-import kotlinx.android.synthetic.main.activity_user_list.*
-import kotlinx.android.synthetic.main.content_user_list.*
-import kotlinx.android.synthetic.main.custom_appbar.*
 
 class UserListActivity : BaseActivity() {
     private lateinit var viewModel: RsLoginViewModel
     var rsLoginResponse: RsLoginResponse? = null
     private lateinit var usersAdapter:UsersAdapter
+    private lateinit var binding: ActivityUserListBinding
     companion object{
         private val TAG = UserListActivity::class.java.simpleName
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_user_list)
+        //setContentView(R.layout.activity_user_list)
+        binding = ActivityUserListBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
     }
@@ -82,20 +82,20 @@ class UserListActivity : BaseActivity() {
 
     private fun initView(){
         try{
-            back_layout.setOnClickListener {
+            binding.customAppbar.backLayout.setOnClickListener {
                 onBackPressed()
             }
             viewModel = createViewModel()
             attachObserver()
             usersAdapter = UsersAdapter(this,viewModel)
-            users_recycler.apply {
+            binding.contentUserList.usersRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(this@UserListActivity)
                 adapter = usersAdapter
             }
 
             callUserListService()
-            user_swipe_refresh.setOnRefreshListener {
+            binding.contentUserList.userSwipeRefresh.setOnRefreshListener {
                 callUserListService()
             }
         }catch (e:Exception){
@@ -110,7 +110,7 @@ class UserListActivity : BaseActivity() {
             usersRequest.deviceversion =Util.getVersionName(this)
             usersRequest.restaurant_id = rsLoginResponse?.data?.restaurantId?:""
             if(!Validation.isOnline(this)){
-                user_swipe_refresh.isRefreshing=false
+                binding.contentUserList.userSwipeRefresh.isRefreshing=false
                 Util.alert(getString(R.string.internet_connected),this)
                 return
             }
@@ -177,15 +177,15 @@ class UserListActivity : BaseActivity() {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { showSnackBar(progress_bar,it) }
-            user_swipe_refresh.isRefreshing=false
+            it?.let { showSnackBar(binding.progressBar,it) }
+            binding.contentUserList.userSwipeRefresh.isRefreshing=false
         })
         viewModel.getGbUserResponse.observe(this, Observer<UserListReponse> {
             it?.let {
-                println("response>>>>> ${Util.getStringFromBean(it)}")
-                user_swipe_refresh.isRefreshing=false
+               // println("response>>>>> ${Util.getStringFromBean(it)}")
+                binding.contentUserList.userSwipeRefresh.isRefreshing=false
                 if(it.status == Constant.STATUS.FAIL){
-                    showSnackBar(progress_bar,it.result?:"")
+                    showSnackBar(binding.progressBar,it.result?:"")
                 }else{
                    usersAdapter.notifyDataSetChanged()
                 }
@@ -214,7 +214,7 @@ class UserListActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 }

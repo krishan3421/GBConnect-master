@@ -21,7 +21,8 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/activity_view_dialog"/>
+    <include layout="@layout/activity_view_dialog"
+        android:id="@+id/activity_view_dialog"/>
     <ProgressBar android:layout_width="wrap_content"
                  android:layout_height="wrap_content"
                  android:layout_gravity="center"

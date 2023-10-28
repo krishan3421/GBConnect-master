@@ -5,18 +5,19 @@ import android.util.Log
 import com.google.android.material.snackbar.Snackbar
 import androidx.core.content.ContextCompat
 import com.gb.restaurant.R
-
-import kotlinx.android.synthetic.main.activity_search.*
+import com.gb.restaurant.databinding.ActivitySearchBinding
 
 class SearchActivity : BaseActivity() {
-
+    private lateinit var binding: ActivitySearchBinding
     companion object{
         val TAG:String = SearchActivity::class.java.simpleName
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_search)
+       // setContentView(R.layout.activity_search)
+        binding = ActivitySearchBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
     }
@@ -31,13 +32,16 @@ class SearchActivity : BaseActivity() {
 
     private fun initView(){
         try{
-            setSupportActionBar(toolbar)
-            toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
-            toolbar.setNavigationOnClickListener { onBackPressed() }
-            fab.setOnClickListener { view ->
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                    .setAction("Action", null).show()
+            binding.apply {
+                setSupportActionBar(toolbar)
+                toolbar.navigationIcon = ContextCompat.getDrawable(this@SearchActivity,R.drawable.ic_back)
+                toolbar.setNavigationOnClickListener { onBackPressed() }
+                fab.setOnClickListener { view ->
+                    Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show()
+                }
             }
+
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)

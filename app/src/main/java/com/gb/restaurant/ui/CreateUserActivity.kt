@@ -12,6 +12,8 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityConfirmTimeDialogBinding
+import com.gb.restaurant.databinding.ActivityCreateUserBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.adduser.AddUserRequest
 import com.gb.restaurant.model.adduser.AddUserResponse
@@ -21,15 +23,13 @@ import com.gb.restaurant.model.users.edituser.EditUserRequest
 import com.gb.restaurant.model.users.edituser.EditUserResponse
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.RsLoginViewModel
-import kotlinx.android.synthetic.main.activity_create_user.*
-import kotlinx.android.synthetic.main.content_create_user.*
-import kotlinx.android.synthetic.main.custom_appbar.*
 
 class CreateUserActivity : BaseActivity() {
     private lateinit var viewModel: RsLoginViewModel
     var rsLoginResponse: RsLoginResponse? = null
     var user:User?=null
     var type:Int=0
+    private lateinit var binding: ActivityCreateUserBinding
     companion object{
         private val TAG = CreateUserActivity::class.java.simpleName
          val USER = "USER"
@@ -38,7 +38,9 @@ class CreateUserActivity : BaseActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_create_user)
+        //setContentView(R.layout.activity_create_user)
+        binding = ActivityCreateUserBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
     }
@@ -85,19 +87,22 @@ class CreateUserActivity : BaseActivity() {
 
     private fun initView(){
         try{
-            back_layout.setOnClickListener {
-                onBackPressed()
+            binding.apply {
+                customAppbar.backLayout.setOnClickListener {
+                    onBackPressed()
+                }
+                viewModel = createViewModel()
+                attachObserver()
+                if(type==1){
+                    contentCreateUser.createUserHeader.text = "Edit User"
+                    contentCreateUser.createUserButton.text="Save Changes"
+                    contentCreateUser.userIdText.isFocusable=false
+                    contentCreateUser.userNameText.setText("${user?.name}")
+                    contentCreateUser.userIdText.setText("${user?.gbId}")
+                    contentCreateUser.passwordText.setText("${user?.gbPass}")
+                }
             }
-            viewModel = createViewModel()
-            attachObserver()
-            if(type==1){
-                create_user_header.text = "Edit User"
-                create_user_button.text="Save Changes"
-                user_id_text.isFocusable=false
-                user_name_text.setText("${user?.name}")
-                user_id_text.setText("${user?.gbId}")
-                password_text.setText("${user?.gbPass}")
-            }
+
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
@@ -129,40 +134,43 @@ class CreateUserActivity : BaseActivity() {
 
 
     private fun checkValidation(){
-        try{
-            if(user_name_text.text.isNullOrEmpty()){
-                Util.alert("Name should not empty.",this)
-                return
+        binding.contentCreateUser.apply {
+            try{
+                if(userNameText.text.isNullOrEmpty()){
+                    Util.alert("Name should not empty.",this@CreateUserActivity)
+                    return
+                }
+                if(userIdText.text.isNullOrEmpty()){
+                    Util.alert("User-Id should not empty.",this@CreateUserActivity)
+                    return
+                }
+                if(passwordText.text.isNullOrEmpty()){
+                    Util.alert("Password should not empty.",this@CreateUserActivity)
+                    return
+                }
+                if(type==0) {
+                    var addUserRequest = AddUserRequest()
+                    addUserRequest.restaurant_id = rsLoginResponse?.data?.restaurantId ?: ""
+                    addUserRequest.name = userNameText.text.toString()
+                    addUserRequest.userid = userIdText.text.toString()
+                    addUserRequest.userpass = passwordText.text.toString()
+                    addUserRequest.deviceversion = Util.getVersionName(this@CreateUserActivity)
+                    callAddUserService(addUserRequest)
+                }else{
+                    var editUserRequest = EditUserRequest()
+                    editUserRequest.restaurant_id = user?.rid!!
+                    editUserRequest.name = userNameText.text.toString()
+                    editUserRequest.userid = user?.gbId!!
+                    editUserRequest.userpass = passwordText.text.toString()
+                    editUserRequest.deviceversion = Util.getVersionName(this@CreateUserActivity)
+                    callEditUserService(editUserRequest)
+                }
+            }catch (e:Exception){
+                e.printStackTrace()
+                Log.e(TAG, e.message!!)
             }
-            if(user_id_text.text.isNullOrEmpty()){
-                Util.alert("User-Id should not empty.",this)
-                return
-            }
-            if(password_text.text.isNullOrEmpty()){
-                Util.alert("Password should not empty.",this)
-                return
-            }
-        if(type==0) {
-            var addUserRequest = AddUserRequest()
-            addUserRequest.restaurant_id = rsLoginResponse?.data?.restaurantId ?: ""
-            addUserRequest.name = user_name_text.text.toString()
-            addUserRequest.userid = user_id_text.text.toString()
-            addUserRequest.userpass = password_text.text.toString()
-            addUserRequest.deviceversion = Util.getVersionName(this)
-            callAddUserService(addUserRequest)
-        }else{
-            var editUserRequest = EditUserRequest()
-            editUserRequest.restaurant_id = user?.rid!!
-            editUserRequest.name = user_name_text.text.toString()
-            editUserRequest.userid = user?.gbId!!
-            editUserRequest.userpass = password_text.text.toString()
-            editUserRequest.deviceversion = Util.getVersionName(this)
-            callEditUserService(editUserRequest)
         }
-        }catch (e:Exception){
-            e.printStackTrace()
-            Log.e(TAG, e.message!!)
-        }
+
     }
     private fun callAddUserService(addUserRequest: AddUserRequest){
         try {
@@ -194,18 +202,18 @@ class CreateUserActivity : BaseActivity() {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { showSnackBar(progress_bar,it) }
+            it?.let { showSnackBar(binding.progressBar,it) }
            // it?.let { println("error>>>>> ${Util.getStringFromBean(it)}") }
         })
         viewModel.addUserResponse.observe(this, Observer<AddUserResponse> {
             it?.let {
                 println("response>>>>> ${Util.getStringFromBean(it)}")
                 if(it.status == Constant.STATUS.FAIL){
-                    showSnackBar(progress_bar,it.result?:"")
+                    showSnackBar(binding.progressBar,it.result?:"")
                 }else{
-                    user_name_text.setText("")
-                    user_id_text.setText("")
-                    password_text.setText("")
+                    binding.contentCreateUser.userNameText.setText("")
+                    binding.contentCreateUser.userIdText.setText("")
+                    binding.contentCreateUser.passwordText.setText("")
                     Util.alert(it.result?:"",this)
                 }
 
@@ -215,7 +223,7 @@ class CreateUserActivity : BaseActivity() {
         viewModel.editGbUserResponse.observe(this, Observer<EditUserResponse> {
             it?.let {
                 if(it.status == Constant.STATUS.FAIL){
-                    showSnackBar(progress_bar,it.result?:"")
+                    showSnackBar(binding.progressBar,it.result?:"")
                 }else{
                     //Util.alert(it.result?:"",this)
                     editSuccessAlert(it.result?:"")
@@ -249,7 +257,7 @@ class CreateUserActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 }

@@ -47,7 +47,8 @@
                 android:layout_height="@dimen/dimen_3"/>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_reservation"/>
+    <include layout="@layout/content_reservation"
+        android:id="@+id/content_reservation"/>
 
     <ProgressBar android:layout_width="wrap_content"
             android:layout_height="wrap_content"

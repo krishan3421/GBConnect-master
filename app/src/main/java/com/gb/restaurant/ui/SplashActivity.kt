@@ -7,19 +7,21 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.View
-import com.gb.restaurant.R
-import kotlinx.android.synthetic.main.activity_splash.*
+import com.gb.restaurant.databinding.ActivitySplashBinding
 
 
 class SplashActivity : BaseActivity() {
 
     private var mDelayHandler: Handler? = null
     private val SPLASH_DELAY: Long = 3000 //2 seconds
+    private lateinit var binding: ActivitySplashBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_splash)
-        setSupportActionBar(toolbar)
-        toolbar.visibility = View.GONE
+        //setContentView(R.layout.activity_splash)
+        binding = ActivitySplashBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
+        binding.toolbar.visibility = View.GONE
 
         //Initializing the Handler
         mDelayHandler = Handler()

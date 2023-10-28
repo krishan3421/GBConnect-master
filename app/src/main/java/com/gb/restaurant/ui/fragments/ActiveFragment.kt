@@ -13,15 +13,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.MaterialDialog
 import com.gb.restaurant.CATPrintSDK.Canvas
 import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.FragmentActiveBinding
 import com.gb.restaurant.di.ComponentInjector
-import com.gb.restaurant.model.PrinterModel
 import com.gb.restaurant.model.confirmorder.OrderStatusResponse
 import com.gb.restaurant.model.order.Data
 import com.gb.restaurant.model.order.OrderRequest
@@ -30,12 +29,9 @@ import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.ui.HomeDetailActivity
 import com.gb.restaurant.ui.OrdersActivity
 import com.gb.restaurant.ui.adapter.ActiveAdapter
-import com.gb.restaurant.ui.adapter.PrinterListAdapter
-import com.gb.restaurant.utils.BluetoothDiscovery
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.utils.Utils
 import com.gb.restaurant.viewmodel.OrderViewModel
-import kotlinx.android.synthetic.main.fragment_active.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -68,6 +64,8 @@ class ActiveFragment : BaseFragment() {
     public var mCanvas: Canvas? = null
     public var canvasBitmap: Bitmap? = null
     public var mBitmap: Bitmap? = null
+    private var _binding: FragmentActiveBinding? = null
+    private val binding get() = _binding!!
 
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
@@ -95,13 +93,14 @@ class ActiveFragment : BaseFragment() {
     ): View? {
         // Inflate the layout for this fragment
         println("page call>>>>>>>>>>>fragment_active")
-        return inflater.inflate(R.layout.fragment_active, container, false)
+        _binding = FragmentActiveBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         activeAdapter = ActiveAdapter(fragmentBaseActivity, viewModel)
-        active_recycler.apply {
+        binding.activeRecycler.apply {
             setHasFixedSize(true)
             layoutManager = LinearLayoutManager(fragmentBaseActivity)
             adapter = activeAdapter
@@ -110,11 +109,15 @@ class ActiveFragment : BaseFragment() {
 
         callService()
 
-        active_swipe_refresh.setOnRefreshListener {
+        binding.activeSwipeRefresh.setOnRefreshListener {
             callService()
         }
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     fun callService() {
         try {
             if (Validation.isOnline(fragmentBaseActivity)) {
@@ -126,7 +129,7 @@ class ActiveFragment : BaseFragment() {
                 viewModel.getOrderResponse(orderRequest, false)
             } else {
                 fragmentBaseActivity.showSnackBar(
-                    progress_bar,
+                    binding.progressBar,
                     getString(R.string.internet_connected)
                 )
             }
@@ -223,34 +226,34 @@ class ActiveFragment : BaseFragment() {
     // TODO: Rename method, update argument and hook method into UI event
 
     private fun attachObserver() {
-        viewModel.isLoading.observe(this, Observer<Boolean> {
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer<Boolean> {
             it?.let { showLoadingDialog(it) }
         })
-        viewModel.apiError.observe(this, Observer<String> {
-            if (active_swipe_refresh != null)
-                active_swipe_refresh.isRefreshing = false
-            it?.let { fragmentBaseActivity.showSnackBar(progress_bar, it) }
+        viewModel.apiError.observe(viewLifecycleOwner, Observer<String> {
+            if (binding.activeSwipeRefresh != null)
+                binding.activeSwipeRefresh.isRefreshing = false
+            it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar, it) }
         })
-        viewModel.orderResponse.observe(this, Observer<OrderResponse> {
-            if (active_swipe_refresh != null)
-                active_swipe_refresh.isRefreshing = false
+        viewModel.orderResponse.observe(viewLifecycleOwner, Observer<OrderResponse> {
+            if (binding.activeSwipeRefresh != null)
+                binding.activeSwipeRefresh.isRefreshing = false
             it?.let {
                 println("data>>> ${Util.getStringFromBean(it)}")
                 activeAdapter.notifyDataSetChanged()
                 if (activeAdapter.itemCount > 0) {
-                    active_recycler?.visibility = View.VISIBLE
-                    no_order_text?.visibility = View.GONE
+                    binding.activeRecycler?.visibility = View.VISIBLE
+                    binding.noOrderText?.visibility = View.GONE
                     onButtonPressed(Constant.TAB.ACTIVE, activeAdapter.itemCount)
 
                 } else {
-                    active_recycler?.visibility = View.GONE
-                    no_order_text?.visibility = View.VISIBLE
+                    binding.activeRecycler?.visibility = View.GONE
+                    binding.noOrderText?.visibility = View.VISIBLE
                 }
                 stopListener?.onStop(Constant.TAB.ACTIVE, activeAdapter.itemCount)
             }
         })
 
-        viewModel.orderStatusResponse.observe(this, Observer<OrderStatusResponse> {
+        viewModel.orderStatusResponse.observe(viewLifecycleOwner, Observer<OrderStatusResponse> {
             it?.let {
                 if (it.status == Constant.STATUS.FAIL) {
                     fragmentBaseActivity.showToast(it.result!!)
@@ -303,6 +306,6 @@ class ActiveFragment : BaseFragment() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar?.visibility = View.VISIBLE else progress_bar?.visibility = View.GONE
+        if (show) binding.progressBar?.visibility = View.VISIBLE else binding.progressBar?.visibility = View.GONE
     }
 }

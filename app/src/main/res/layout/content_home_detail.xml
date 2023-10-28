@@ -62,8 +62,10 @@
                     android:layout_marginBottom="@dimen/dimen_5"/>
 
         </LinearLayout>
-        <include layout="@layout/add_items_tips_layout"/>
-        <include layout="@layout/order_detail_item"/>
+        <include layout="@layout/add_items_tips_layout"
+            android:id="@+id/add_items_tips_layout"/>
+        <include layout="@layout/order_detail_item"
+            android:id="@+id/order_detail_item"/>
         <TextView style="@style/normal_text_12"
                 android:layout_gravity="center"
                 android:layout_width="match_parent"
@@ -122,6 +124,7 @@
                 android:layout_marginLeft="@dimen/activity_horizontal_margin"
                 android:layout_marginRight="@dimen/activity_horizontal_margin"
                 android:layout_height="match_parent"/>
-        <include layout="@layout/detail_home_footer"/>
+        <include layout="@layout/detail_home_footer"
+            android:id="@+id/detail_home_footer"/>
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>

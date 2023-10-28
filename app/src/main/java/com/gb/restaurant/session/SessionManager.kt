@@ -1,4 +1,4 @@
-package com.grabull.session
+package com.gb.restaurant.session
 
 import android.content.Context
 import android.content.SharedPreferences

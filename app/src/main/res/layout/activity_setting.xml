@@ -42,7 +42,8 @@
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_setting"/>
+    <include layout="@layout/content_setting"
+        android:id="@+id/content_setting"/>
 
     <RelativeLayout android:layout_width="match_parent"
                     android:layout_height="@dimen/dimen_60"

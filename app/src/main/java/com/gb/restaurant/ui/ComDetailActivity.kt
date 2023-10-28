@@ -10,14 +10,21 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.os.*
+import android.os.AsyncTask
+import android.os.Build
+import android.os.Bundle
+import android.os.Handler
 import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.Window
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -34,6 +41,7 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ComDetailActivityBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.PrinterModel
 import com.gb.restaurant.model.additem.AddOrderItemRequest
@@ -46,18 +54,16 @@ import com.gb.restaurant.model.order.OrderResponse
 import com.gb.restaurant.model.orderdetail.OrderDetailRequest
 import com.gb.restaurant.model.orderdetail.OrderDetailResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
+import com.gb.restaurant.session.SessionManager
 import com.gb.restaurant.ui.adapter.ItemAdapter
 import com.gb.restaurant.ui.adapter.NewDetailAdapter
 import com.gb.restaurant.ui.adapter.PrinterListAdapter
-import com.gb.restaurant.utils.*
+import com.gb.restaurant.utils.BluetoothDiscovery
+import com.gb.restaurant.utils.IpScanner
+import com.gb.restaurant.utils.ListPaddingDecorationGray
+import com.gb.restaurant.utils.Util
+import com.gb.restaurant.utils.Utils
 import com.gb.restaurant.viewmodel.TipsViewModel
-import com.grabull.session.SessionManager
-import kotlinx.android.synthetic.main.add_items_layout.*
-import kotlinx.android.synthetic.main.com_detail_activity.*
-import kotlinx.android.synthetic.main.content_com_detail.*
-import kotlinx.android.synthetic.main.detail_com_footer.*
-import kotlinx.android.synthetic.main.order_detail_item.*
-import kotlinx.android.synthetic.main.tips_layout.*
 
 
 class ComDetailActivity : BaseActivity() {
@@ -82,11 +88,13 @@ class ComDetailActivity : BaseActivity() {
     }
 
     var fromPage: Int = 0// 0 from completed,new and schedule , 1 from active
+    private lateinit var binding: ComDetailActivityBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStatusBarColor()
-        setContentView(R.layout.com_detail_activity)
-
+       // setContentView(R.layout.com_detail_activity)
+        binding = ComDetailActivityBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         sessionManager = SessionManager(this)
 
         initData()
@@ -132,50 +140,55 @@ class ComDetailActivity : BaseActivity() {
 
     private fun initView() {
         try {
-            setSupportActionBar(toolbar)
-            toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_back)
-            toolbar.setNavigationOnClickListener { onBackPressed() }
-            toolbar.title = ""//"${getString(R.string.back)}"//"${rsLoginResponse?.data?.name}"
-            title_com_back.setOnClickListener { onBackPressed() }
-            toolbar.setTitleTextColor(ContextCompat.getColor(this, R.color.colorPrimary_one));
-            con_update_button.visibility = View.VISIBLE
+            binding.apply {
+                setSupportActionBar(toolbar)
+                toolbar.navigationIcon = ContextCompat.getDrawable(this@ComDetailActivity, R.drawable.ic_back)
+                toolbar.setNavigationOnClickListener { onBackPressed() }
+                toolbar.title = ""//"${getString(R.string.back)}"//"${rsLoginResponse?.data?.name}"r
+                titleComBack.setOnClickListener { onBackPressed() }
+                toolbar.setTitleTextColor(ContextCompat.getColor(this@ComDetailActivity, R.color.colorPrimary_one));
+                supportActionBar?.setDisplayShowTitleEnabled(false)
+            }
+
+
+            binding.contentComDetail.orderDetailItem.conUpdateButton.visibility = View.VISIBLE
             attachObserver()
             newDetailAdapter = NewDetailAdapter(this, data?.items as MutableList<Item>)
-            detail_recycler.apply {
+            binding.contentComDetail.detailRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(this@ComDetailActivity)
                 // addItemDecoration(ListPaddingDecoration(this@ViewDialogActivity, 0,0))
                 adapter = newDetailAdapter
             }
             data?.name?.let {
-                name_text.text = "$it"
+                binding.contentComDetail.orderDetailItem.nameText.text = "$it"
             }
             if (!data?.status.isNullOrEmpty()) {
                 if (data?.status.equals("Cancel", true)) {
-                    con_update_button.text = "Cancelled"
+                    binding.contentComDetail.orderDetailItem.conUpdateButton.text = "Cancelled"
                 } else {
-                    con_update_button.text = data?.status
+                    binding.contentComDetail.orderDetailItem.conUpdateButton.text = data?.status
                 }
             }
 
             if (!data?.holddate2.isNullOrEmpty()) {
-                future_order_layout.visibility = View.VISIBLE
+                binding.contentComDetail.futureOrderLayout.visibility = View.VISIBLE
                 if (data!!.type.equals("Delivery", true)) {
-                    hold_time_text.text = "Hold Order: Delivery Time: ${data!!.holddate2}"
+                    binding.contentComDetail.holdTimeText.text = "Hold Order: Delivery Time: ${data!!.holddate2}"
                 } else {
-                    hold_time_text.text = "Hold Order: Pickup Time: ${data!!.holddate2}"
+                    binding.contentComDetail.holdTimeText.text = "Hold Order: Pickup Time: ${data!!.holddate2}"
                 }
             } else {
-                future_order_layout.visibility = View.GONE
-                hold_time_text.visibility = View.GONE
+                binding.contentComDetail.futureOrderLayout.visibility = View.GONE
+                binding.contentComDetail.holdTimeText.visibility = View.GONE
             }
 
             if (!data?.type.isNullOrEmpty() && data?.type!!.contains("Pickup", true)) {
-                address_layout.visibility = View.INVISIBLE
-                delivery_fee_layout.visibility = View.GONE
+                binding.contentComDetail.orderDetailItem.addressLayout.visibility = View.INVISIBLE
+                binding.contentComDetail.detailComFooter.deliveryFeeLayout.visibility = View.GONE
             } else {
-                address_layout.visibility = View.VISIBLE
-                delivery_fee_layout.visibility = View.VISIBLE
+                binding.contentComDetail.orderDetailItem.addressLayout.visibility = View.VISIBLE
+                binding.contentComDetail.detailComFooter.deliveryFeeLayout.visibility = View.VISIBLE
             }
 //            if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)
 //                var paymentStatus = ""
@@ -193,73 +206,73 @@ class ComDetailActivity : BaseActivity() {
                 status.text = "${data?.status}"
             }*/
             if (data?.payment!!.contains("Paid", true)) {
-                prepaid_text.text = "PREPAID"
-                prepaid_text.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
-                delivery_type_text.setTextColor(ContextCompat.getColor(this, R.color.green))
-                dont_charge_text.visibility = View.VISIBLE
+                binding.contentComDetail.orderDetailItem.prepaidText.text = "PREPAID"
+                binding.contentComDetail.orderDetailItem.prepaidText.setBackgroundColor(ContextCompat.getColor(this, R.color.green))
+                binding.contentComDetail.orderDetailItem.deliveryTypeText.setTextColor(ContextCompat.getColor(this, R.color.green))
+                binding.contentComDetail.orderDetailItem.dontChargeText.visibility = View.VISIBLE
             } else {
-                prepaid_text.text = "CASH"
-                prepaid_text.setBackgroundColor(
+                binding.contentComDetail.orderDetailItem.prepaidText.text = "CASH"
+                binding.contentComDetail.orderDetailItem.prepaidText.setBackgroundColor(
                     ContextCompat.getColor(
                         this,
                         R.color.colorPrimaryDark_one
                     )
                 )
-                delivery_type_text.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
-                dont_charge_text.visibility = View.INVISIBLE
+                binding.contentComDetail.orderDetailItem.deliveryTypeText.setTextColor(ContextCompat.getColor(this, R.color.colorAccent))
+                binding.contentComDetail.orderDetailItem.dontChargeText.visibility = View.INVISIBLE
             }
-            delivery_type_text.text = "${data?.type!!.toUpperCase()}"
+            binding.contentComDetail.orderDetailItem.deliveryTypeText.text = "${data?.type!!.toUpperCase()}"
             if (!data?.deliverycharge.isNullOrEmpty()) {
-                delivery_fee_text.text = "$${data?.deliverycharge}"
+                binding.contentComDetail.detailComFooter.deliveryFeeText.text = "$${data?.deliverycharge}"
             }
             if (!data?.mobile.isNullOrEmpty()) {
-                phone_text.text = "Customer Ph: ${data?.mobile}"
+                binding.contentComDetail.orderDetailItem.phoneText.text = "Customer Ph: ${data?.mobile}"
             }
 
             if (data!!.items.isNullOrEmpty()) {
-                orders_item_count.text = "Order(0 items)"
+                binding.contentComDetail.ordersItemCount.text = "Order(0 items)"
             } else {
-                orders_item_count.text = "Order(${data!!.items!!.size} items)"
+                binding.contentComDetail.ordersItemCount.text = "Order(${data!!.items!!.size} items)"
             }
 
 
-            order_id_text.text = "ORDER # ${data!!.id}"
+            binding.contentComDetail.orderIdText.text = "ORDER # ${data!!.id}"
             if (data?.subtotal != null) {
-                sub_total_text.text = "$${data?.subtotal}"
+                binding.contentComDetail.detailComFooter.subTotalText.text = "$${data?.subtotal}"
             }
             if (!data?.offeramount.isNullOrEmpty()) {
-                discount_taxt.text = "Discount-$${data?.offeramount}"
+                binding.contentComDetail.detailComFooter.discountTaxt.text = "Discount-$${data?.offeramount}"
             }
             if (data?.tax != null) {
-                tax_text.text = "$${data?.tax}"
+                binding.contentComDetail.detailComFooter.taxText.text = "$${data?.tax}"
             }
             if (data?.tip != null) {
-                tip_text.text = "$${data?.tip}"
+                binding.contentComDetail.detailComFooter.tipText.text = "$${data?.tip}"
             }
             if (data?.total != null) {
-                total_tax.text = "Total $${data?.total}"
+                binding.contentComDetail.detailComFooter.totalTax.text = "Total $${data?.total}"
             }
             if (!data?.tip2.isNullOrEmpty()) {
-                tip_two_text.text = "Tips $${data?.tip2}"
+                binding.contentComDetail.detailComFooter.tipTwoText.text = "Tips $${data?.tip2}"
             } else {
-                tip_two_text.text = "Tips_____"
+                binding.contentComDetail.detailComFooter.tipTwoText.text = "Tips_____"
             }
             if (!data?.date2.isNullOrEmpty()) {
-                order_time_text.text = "ORDER TIME: ${data?.date2}"
+                binding.contentComDetail.orderTimeText.text = "ORDER TIME: ${data?.date2}"
             } else {
-                order_time_text.text = ""
+                binding.contentComDetail.orderTimeText.text = ""
             }
 
             callOrderDetailService()
 
 
-            txtPrint.isEnabled = true
+            binding.contentComDetail.orderDetailItem.txtPrint.isEnabled = true
 
-            txtPrint.setOnClickListener {
+            binding.contentComDetail.orderDetailItem.txtPrint.setOnClickListener {
 
-                txtPrint.isEnabled = false
+                binding.contentComDetail.orderDetailItem.txtPrint.isEnabled = false
                 Handler().postDelayed(Runnable {
-                    txtPrint.isEnabled = true
+                    binding.contentComDetail.orderDetailItem.txtPrint.isEnabled = true
                 }, 10000)
 
                 if (ActivityCompat.checkSelfPermission(
@@ -418,13 +431,17 @@ class ComDetailActivity : BaseActivity() {
         val dialog = MaterialDialog(this, dialogBehavior).show {
             this.setCanceledOnTouchOutside(false)
             customView(R.layout.tips_layout, scrollable = true, horizontalPadding = true)
-            title_header_text.text = "Add Tips to order # ${data?.id}\n(Customer : ${data?.name}))"
-            cancel_image.setOnClickListener {
+            val titleHeaderTax = this.findViewById<TextView>(R.id.title_header_text)
+            val cancelImage = this.findViewById<ImageView>(R.id.cancel_image)
+            val addTipButton = this.findViewById<Button>(R.id.add_tips_button)
+            val tipsEdit = this.findViewById<EditText>(R.id.tips_edit)
+            titleHeaderTax.text = "Add Tips to order # ${data?.id}\n(Customer : ${data?.name}))"
+            cancelImage.setOnClickListener {
                 this.dismiss()
             }
-            add_tips_button.setOnClickListener {
-                if (!tips_edit.text.isNullOrEmpty()) {
-                    callTipsService(tips_edit.text.toString())
+            addTipButton.setOnClickListener {
+                if (!tipsEdit.text.isNullOrEmpty()) {
+                    callTipsService(tipsEdit.text.toString())
                     this.dismiss()
                 } else {
                     showToast("Please add Tips")
@@ -458,33 +475,39 @@ class ComDetailActivity : BaseActivity() {
             this.setCanceledOnTouchOutside(false)
             customView(R.layout.add_items_layout, scrollable = true, horizontalPadding = false)
             var myAdapter = ItemAdapter(this@ComDetailActivity, itemList)
-            items_recycler.apply {
+            val itemRecycler = this.findViewById<RecyclerView>(R.id.items_recycler);
+            val cancelImageItem = this.findViewById<ImageView>(R.id.cancel_image_items);
+            val plusText = this.findViewById<TextView>(R.id.plus_text);
+            val itemText = this.findViewById<TextView>(R.id.item_text);
+            val priceText = this.findViewById<TextView>(R.id.price_text);
+            val addTipsButton = this.findViewById<Button>(R.id.add_tips_button);
+            itemRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(this@ComDetailActivity)
                 addItemDecoration(ListPaddingDecorationGray(this@ComDetailActivity, 0, 0))
                 adapter = myAdapter
             }
-            cancel_image_items.setOnClickListener {
+            cancelImageItem.setOnClickListener {
                 this.dismiss()
             }
 
-            plus_text.setOnClickListener {
-                if (!item_text.text.isNullOrEmpty() && !price_text.text.isNullOrEmpty()) {
+            plusText.setOnClickListener {
+                if (!itemText.text.isNullOrEmpty() && !priceText.text.isNullOrEmpty()) {
                     var item = com.gb.restaurant.model.Item(
-                        item_text.text.toString(),
-                        price_text.text.toString()
+                        itemText.text.toString(),
+                        priceText.text.toString()
                     )
                     itemList.add(item)
                     println("data>>> ${Util.getStringFromBean(item)}")
                     myAdapter.notifyDataSetChanged()
-                    item_text.setText("")
-                    price_text.setText("")
+                    itemText.setText("")
+                    priceText.setText("")
                 } else {
                     Util.alertDialog("Please add Items", this@ComDetailActivity)
                 }
             }
 
-            add_tips_button.setOnClickListener {
+            addTipsButton.setOnClickListener {
                 if (itemList.isNotEmpty()) {
                     callAddItemsService(itemList)
                     this.dismiss()
@@ -601,7 +624,7 @@ class ComDetailActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 
@@ -689,6 +712,20 @@ class ComDetailActivity : BaseActivity() {
 
                                 for (info in mDeviceList) {
                                     if (info != null) {
+                                        if (ActivityCompat.checkSelfPermission(
+                                                this@ComDetailActivity,
+                                                Manifest.permission.BLUETOOTH_CONNECT
+                                            ) != PackageManager.PERMISSION_GRANTED
+                                        ) {
+                                            // TODO: Consider calling
+                                            //    ActivityCompat#requestPermissions
+                                            // here to request the missing permissions, and then overriding
+                                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                            //                                          int[] grantResults)
+                                            // to handle the case where the user grants the permission. See the documentation
+                                            // for ActivityCompat#requestPermissions for more details.
+                                            return
+                                        }
                                         if (info.name != null) {
 
                                             val devType = info.bluetoothClass.majorDeviceClass
@@ -809,14 +846,14 @@ class ComDetailActivity : BaseActivity() {
 
         override fun onPreExecute() {
             super.onPreExecute()
-            progress_bar.visibility = View.VISIBLE
+            binding.progressBar.visibility = View.VISIBLE
 
             // ...
         }
 
         override fun onPostExecute(result: String?) {
             super.onPostExecute(result)
-            progress_bar.visibility = View.GONE
+            binding.progressBar.visibility = View.GONE
 
 
             // ...

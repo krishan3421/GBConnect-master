@@ -19,6 +19,7 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityEventEnquiryBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.reservation.ReservationRequest
 import com.gb.restaurant.model.reservation.ReservationResponse
@@ -31,9 +32,6 @@ import com.gb.restaurant.ui.adapter.EnquiryAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.ReservationViewModel
 import com.google.android.material.tabs.TabLayout
-
-import kotlinx.android.synthetic.main.activity_event_enquiry.*
-import kotlinx.android.synthetic.main.content_event_enquiry.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -45,14 +43,17 @@ class EventEnquiryActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
     private var list:MutableList<String> = ArrayList()
     private lateinit var viewModel: ReservationViewModel
     var rsLoginResponse: RsLoginResponse? = null
+    private lateinit var binding: ActivityEventEnquiryBinding
     companion object{
         private val TAG:String = EventEnquiryActivity::class.java.simpleName
         var isEnqueryVisible:Boolean =false
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_event_enquiry)
-        setSupportActionBar(toolbar)
+        //setContentView(R.layout.activity_event_enquiry)
+        binding = ActivityEventEnquiryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.toolbar)
         initData()
         initView()
     }
@@ -71,37 +72,42 @@ class EventEnquiryActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
 
     private fun initView(){
         try{
-            toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
-            toolbar.setNavigationOnClickListener { onBackPressed() }
-            enquiry_tab_layout.addTab(enquiry_tab_layout.newTab().setText("New"))
-            enquiry_tab_layout.addTab(enquiry_tab_layout.newTab().setText("All"))
-            enquiry_tab_layout.addTab(enquiry_tab_layout.newTab().setText("Shortlisted"))
-            enquiry_tab_layout.addOnTabSelectedListener(this)
+            binding.apply {
+                toolbar.navigationIcon = ContextCompat.getDrawable(this@EventEnquiryActivity,R.drawable.ic_back)
+                toolbar.setNavigationOnClickListener { onBackPressed() }
+                contentEventEnquiry.apply {
+                    enquiryTabLayout.addTab(enquiryTabLayout.newTab().setText("New"))
+                    enquiryTabLayout.addTab(enquiryTabLayout.newTab().setText("All"))
+                    enquiryTabLayout.addTab(enquiryTabLayout.newTab().setText("Shortlisted"))
+                    enquiryTabLayout.addOnTabSelectedListener(this@EventEnquiryActivity)
 
-            for (i in 0 until enquiry_tab_layout.tabCount) {
-                val tab = (enquiry_tab_layout.getChildAt(0) as ViewGroup).getChildAt(i)
-                val p = tab.layoutParams as ViewGroup.MarginLayoutParams
-                p.setMargins(0, 0, 3, 0)
-                tab.requestLayout()
-            }
-            enquiryAdapter = EnquiryAdapter(this,viewModel)
-            enquiry_recycler.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(this@EventEnquiryActivity)
-                adapter = enquiryAdapter
+                    for (i in 0 until enquiryTabLayout.tabCount) {
+                        val tab = (enquiryTabLayout.getChildAt(0) as ViewGroup).getChildAt(i)
+                        val p = tab.layoutParams as ViewGroup.MarginLayoutParams
+                        p.setMargins(0, 0, 3, 0)
+                        tab.requestLayout()
+                    }
+                    enquiryAdapter = EnquiryAdapter(this@EventEnquiryActivity,viewModel)
+                    enquiryRecycler.apply {
+                        setHasFixedSize(true)
+                        layoutManager = LinearLayoutManager(this@EventEnquiryActivity)
+                        adapter = enquiryAdapter
+                    }
+
+                    strtDateCalendar = Calendar.getInstance()
+                    endDateCalendar = Calendar.getInstance()
+                    startDateButton.text  = Util.getSelectedDateWithTime(strtDateCalendar!!)
+                    endDateButton.text  = Util.getSelectedDateWithTime(endDateCalendar!!)
+                    attachObserver()
+                    callService()
+
+                    enquirySwipeRefresh.setOnRefreshListener {
+                        //enquiry_swipe_refresh.isRefreshing = false
+                        callService()
+                    }
+                }
             }
 
-            strtDateCalendar = Calendar.getInstance()
-            endDateCalendar = Calendar.getInstance()
-            start_date_button.text  = Util.getSelectedDateWithTime(strtDateCalendar!!)
-            end_date_button.text  = Util.getSelectedDateWithTime(endDateCalendar!!)
-            attachObserver()
-            callService()
-
-            enquiry_swipe_refresh.setOnRefreshListener {
-                //enquiry_swipe_refresh.isRefreshing = false
-                callService()
-            }
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
@@ -119,18 +125,18 @@ class EventEnquiryActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
                 reservationRequest.service_type = Constant.SERVICE_TYPE.GET_ENQUIRY
                 if(strtDateCalendar !=null && endDateCalendar !=null) {
                     reservationRequest.datefrom =
-                        this@EventEnquiryActivity.start_date_button.text.toString()
+                        binding.contentEventEnquiry.startDateButton.text.toString()
                     reservationRequest.dateto =
-                        this@EventEnquiryActivity.end_date_button.text.toString()
+                        binding.contentEventEnquiry.endDateButton.text.toString()
                     println("data>>>>>>>>>> ${Util.getStringFromBean(reservationRequest)}")
                     viewModel.getReservationResponse(reservationRequest)
                 }else{
-                    showSnackBar(progress_bar,"Please select valid Date.")
+                    showSnackBar(binding.progressBar,"Please select valid Date.")
                 }
 
             }else{
-                enquiry_swipe_refresh.isRefreshing = false
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                binding.contentEventEnquiry.enquirySwipeRefresh.isRefreshing = false
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -145,7 +151,7 @@ class EventEnquiryActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
                 println("request>>>>>> ${Util.getStringFromBean(enquiryStatusRequest)}")
                 viewModel.getEnquiryStatusRes(enquiryStatusRequest)
             }else{
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -195,7 +201,7 @@ class EventEnquiryActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
                     strtDateCalendar = date
                     var dateText = Util.getSelectedDateWithTime(date)
                     //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                    this@EventEnquiryActivity.start_date_button.setText(dateText)
+                    binding.contentEventEnquiry.startDateButton.setText(dateText)
 
                 }
             }
@@ -218,12 +224,12 @@ class EventEnquiryActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
                             endDateCalendar = date
                             var dateText = Util.getSelectedDateWithTime(date)
                             //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                            this@EventEnquiryActivity.end_date_button.setText(dateText)
+                            binding.contentEventEnquiry.endDateButton.setText(dateText)
                         }else{
-                            this@EventEnquiryActivity.showSnackBar(this@EventEnquiryActivity.toolbar,"start-Date should be equal or less then end-Date")
+                            this@EventEnquiryActivity.showSnackBar(binding.toolbar,"start-Date should be equal or less then end-Date")
                         }
                     }else{
-                        this@EventEnquiryActivity.showSnackBar(this@EventEnquiryActivity.toolbar,"Please select start-Date")
+                        this@EventEnquiryActivity.showSnackBar(binding.toolbar,"Please select start-Date")
                     }
                 }
             }
@@ -247,27 +253,27 @@ class EventEnquiryActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            enquiry_swipe_refresh.isRefreshing = false
-            it?.let { showSnackBar(progress_bar,it) }
+            binding.contentEventEnquiry.enquirySwipeRefresh.isRefreshing = false
+            it?.let { showSnackBar(binding.progressBar,it) }
         })
         viewModel.response.observe(this, Observer<ReservationResponse> {
-            enquiry_swipe_refresh.isRefreshing = false
+            binding.contentEventEnquiry.enquirySwipeRefresh.isRefreshing = false
             it?.let {
                 enquiryAdapter.notifyDataSetChanged()
                 if(enquiryAdapter.itemCount >0){
-                    enquiry_recycler.visibility = View.VISIBLE
-                    no_order_text.visibility = View.GONE
+                    binding.contentEventEnquiry.enquiryRecycler.visibility = View.VISIBLE
+                    binding.contentEventEnquiry.noOrderText.visibility = View.GONE
 
                 }else{
-                    enquiry_recycler.visibility = View.GONE
-                    no_order_text.visibility = View.VISIBLE
+                    binding.contentEventEnquiry.enquiryRecycler.visibility = View.GONE
+                    binding.contentEventEnquiry.noOrderText.visibility = View.VISIBLE
                 }
             }
         })
 
         viewModel.enquiryStatusResponse.observe(this, Observer<StatusResponse> {
             it?.let {
-                if(it.status ===Constant.STATUS.SUCCESS){
+                if(it.status === Constant.STATUS.SUCCESS){
                     showToast(it.result!!)
                 }else{
                     showToast(it.result!!)
@@ -284,7 +290,7 @@ class EventEnquiryActivity : BaseActivity(), TabLayout.OnTabSelectedListener {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
     override fun onTabReselected(p0: TabLayout.Tab?) {

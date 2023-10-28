@@ -16,6 +16,8 @@ import com.gb.restaurant.MyApp
 
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.FragmentNewBinding
+import com.gb.restaurant.databinding.FragmentOrdersWeeklyBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.report.ReportRequest
 import com.gb.restaurant.model.report.ReportResponse
@@ -24,7 +26,6 @@ import com.gb.restaurant.ui.adapter.OrdersWeeklyAdapter
 import com.gb.restaurant.utils.ListPaddingDecorationGray
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.ReportViewModel
-import kotlinx.android.synthetic.main.fragment_orders_weekly.*
 
 /**
  * A simple [Fragment] subclass.
@@ -41,6 +42,8 @@ class OrdersWeeklyFragment : BaseFragment(),View.OnClickListener {
     private var monthArray = mutableListOf<String>("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
     var rsLoginResponse: RsLoginResponse? = null
     private lateinit var viewModel: ReportViewModel
+    private var _binding: FragmentOrdersWeeklyBinding? = null
+    private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         for(i in 0..10){
@@ -74,20 +77,30 @@ class OrdersWeeklyFragment : BaseFragment(),View.OnClickListener {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_orders_weekly, container, false)
+
+        _binding = FragmentOrdersWeeklyBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         try{
             attachObserver()
-            month_button.setOnClickListener(this)
-            year_button.setOnClickListener(this)
-            submit_button.setOnClickListener(this)
-            month_button.text = monthArray[monthIndex]
-            year_button.text = selectYear
+            binding.apply {
+                monthButton.setOnClickListener(this@OrdersWeeklyFragment)
+                yearButton.setOnClickListener(this@OrdersWeeklyFragment)
+                submitButton.setOnClickListener(this@OrdersWeeklyFragment)
+                monthButton.text = monthArray[monthIndex]
+                yearButton.text = selectYear
+            }
+
             ordersWeeklyAdapter = OrdersWeeklyAdapter(fragmentBaseActivity,viewModel)
-            orders_weekly_recycler.apply {
+            binding.ordersWeeklyRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(fragmentBaseActivity)
                 adapter = ordersWeeklyAdapter
@@ -113,7 +126,7 @@ class OrdersWeeklyFragment : BaseFragment(),View.OnClickListener {
                 viewModel.getReportResponse(reportRequest)
             }else{
                 //reports_swipe_refresh.isRefreshing = false
-                fragmentBaseActivity.showSnackBar(progressBar,getString(R.string.internet_connected))
+                fragmentBaseActivity.showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -130,7 +143,7 @@ class OrdersWeeklyFragment : BaseFragment(),View.OnClickListener {
                 listItemsSingleChoice(null,monthArray, initialSelection = monthIndex) { _, index, text ->
                     monthIndex = index
                     try{
-                        fragmentBaseActivity.month_button.text = text
+                        binding.monthButton.text = text
                         when(text){
                             "Jan"->{
                                 selectMonth = "01"
@@ -187,7 +200,7 @@ class OrdersWeeklyFragment : BaseFragment(),View.OnClickListener {
                 listItemsSingleChoice(null,yearArray, initialSelection = yearIndex) { _, index, text ->
                     yearIndex = index
                     try{
-                        fragmentBaseActivity.year_button.text = text
+                        binding.yearButton.text = text
                         selectYear = text
                         callService()
                     }catch (e:Exception){
@@ -208,18 +221,18 @@ class OrdersWeeklyFragment : BaseFragment(),View.OnClickListener {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(fragmentBaseActivity, androidx.lifecycle.Observer<String> {
-            it?.let { fragmentBaseActivity.showSnackBar(progressBar,it) }
+            it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar,it) }
         })
         viewModel.reportResponse.observe(fragmentBaseActivity, androidx.lifecycle.Observer<ReportResponse> {
             it?.let {
                 ordersWeeklyAdapter.notifyDataSetChanged()
                 if(ordersWeeklyAdapter.itemCount >0){
-                    orders_weekly_recycler.visibility = View.VISIBLE
-                    no_order_text.visibility = View.GONE
+                    binding.ordersWeeklyRecycler.visibility = View.VISIBLE
+                    binding.noOrderText.visibility = View.GONE
 
                 }else{
-                    orders_weekly_recycler.visibility = View.GONE
-                    no_order_text.visibility = View.VISIBLE
+                    binding.ordersWeeklyRecycler.visibility = View.GONE
+                    binding.noOrderText.visibility = View.VISIBLE
                 }
             }
         })
@@ -230,13 +243,13 @@ class OrdersWeeklyFragment : BaseFragment(),View.OnClickListener {
     override fun onClick(view: View?) {
         try{
             when(view){
-                year_button->{
-                    openYear(year_button)
+                binding.yearButton->{
+                    openYear(binding.yearButton)
                 }
-                month_button->{
-                    openMonth(month_button)
+                binding.monthButton->{
+                    openMonth(binding.monthButton)
                 }
-                submit_button->{
+                binding.submitButton->{
                     callService()
                 }
             }
@@ -252,7 +265,7 @@ class OrdersWeeklyFragment : BaseFragment(),View.OnClickListener {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progressBar.visibility = View.VISIBLE else progressBar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 }

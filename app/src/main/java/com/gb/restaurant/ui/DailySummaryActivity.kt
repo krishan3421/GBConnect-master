@@ -13,6 +13,7 @@ import com.gb.restaurant.Validation
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.gb.restaurant.Constant
+import com.gb.restaurant.databinding.ActivityDailySummaryBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.daily.DailySumRequest
 import com.gb.restaurant.model.daily.DailySummResponse
@@ -21,9 +22,6 @@ import com.gb.restaurant.ui.adapter.DailySummAdapter
 import com.gb.restaurant.ui.adapter.GbSummAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.AddTipsViewModel
-import kotlinx.android.synthetic.main.activity_daily_summary.*
-import kotlinx.android.synthetic.main.content_daily_summary.*
-import kotlinx.android.synthetic.main.custom_appbar.*
 import java.util.*
 
 
@@ -33,13 +31,16 @@ class DailySummaryActivity : BaseActivity() {
     private lateinit var viewModel: AddTipsViewModel
     private lateinit var dailyAdapter: DailySummAdapter
     private lateinit var gbSummAdapter: GbSummAdapter
+    private lateinit var binding: ActivityDailySummaryBinding
     companion object{
         private val TAG = DailySummaryActivity::class.java.simpleName
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_daily_summary)
+       // setContentView(R.layout.activity_daily_summary)
+        binding = ActivityDailySummaryBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
     }
@@ -84,24 +85,27 @@ class DailySummaryActivity : BaseActivity() {
 
     private fun initView(){
         try{
-            back_layout.setOnClickListener {
-                onBackPressed()
+            binding.apply {
+                customAppbar.backLayout.setOnClickListener {
+                    onBackPressed()
+                }
+                contentDailySummary.dateButton.text = "${Util.getMM_day_yyyy(Date())}"
+                attachObserver()
+                dailyAdapter = DailySummAdapter(this@DailySummaryActivity,viewModel)
+                contentDailySummary.summeryRecycler.apply {
+                    setHasFixedSize(true)
+                    layoutManager = LinearLayoutManager(this@DailySummaryActivity)
+                    adapter = dailyAdapter
+                }
+                gbSummAdapter = GbSummAdapter(this@DailySummaryActivity,viewModel)
+                contentDailySummary.gbSummeryRecycler.apply {
+                    setHasFixedSize(true)
+                    layoutManager = LinearLayoutManager(this@DailySummaryActivity)
+                    adapter = gbSummAdapter
+                }
+                callDailySummService()
             }
-            date_button.text = "${Util.getMM_day_yyyy(Date())}"
-            attachObserver()
-            dailyAdapter = DailySummAdapter(this,viewModel)
-            summery_recycler.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(this@DailySummaryActivity)
-                adapter = dailyAdapter
-            }
-            gbSummAdapter = GbSummAdapter(this,viewModel)
-            gb_summery_recycler.apply {
-                setHasFixedSize(true)
-                layoutManager = LinearLayoutManager(this@DailySummaryActivity)
-                adapter = gbSummAdapter
-            }
-            callDailySummService()
+
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
@@ -111,7 +115,7 @@ class DailySummaryActivity : BaseActivity() {
     private fun callDailySummService(){
         try{
             if(!Validation.isOnline(this)){
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
                 return
             }else{
 
@@ -132,7 +136,7 @@ class DailySummaryActivity : BaseActivity() {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { showSnackBar(progress_bar,it) }
+            it?.let { showSnackBar(binding.progressBar,it) }
         })
 
         viewModel.dailySummResponse.observe(this, Observer<DailySummResponse> {
@@ -152,10 +156,13 @@ class DailySummaryActivity : BaseActivity() {
 
     private fun setData(it: DailySummResponse) {
         try{
-            order_text.text = "${it.data?.orders}"
-            prepaid_text.text = "${it.data?.prepaid}"
-            cash_text.text = "${it.data?.cash}"
-            gb_header_text.text = "${it.data?.gbDelivery?.heading?:""}"
+            binding.contentDailySummary.apply {
+                orderText.text = "${it.data?.orders}"
+                prepaidText.text = "${it.data?.prepaid}"
+                cashText.text = "${it.data?.cash}"
+                gbHeaderText.text = "${it.data?.gbDelivery?.heading?:""}"
+            }
+
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
@@ -168,7 +175,7 @@ class DailySummaryActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
     fun openDateDialog(view:View){
@@ -179,7 +186,7 @@ class DailySummaryActivity : BaseActivity() {
                     date.set(date.get(Calendar.YEAR),date.get(Calendar.MONTH),date.get(Calendar.DATE),0,0,0)
                     var dateText = Util.getMM_day_yyyy(date.time)
                     //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                    this@DailySummaryActivity.date_button.text = dateText
+                    binding.contentDailySummary.dateButton.text = dateText
 
                 }
 

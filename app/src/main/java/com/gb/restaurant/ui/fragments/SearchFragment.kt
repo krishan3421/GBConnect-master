@@ -6,6 +6,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.lifecycle.ViewModelProviders
 import com.afollestad.date.dayOfMonth
 import com.afollestad.date.month
@@ -25,13 +29,13 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.afollestad.materialdialogs.customview.customView
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.FragmentPandingBinding
+import com.gb.restaurant.databinding.FragmentSearchBinding
 import com.gb.restaurant.model.reservation.Data
 import com.gb.restaurant.model.reservation.ReservationRequest
 import com.gb.restaurant.model.status.ReserStatusRequest
 import com.gb.restaurant.model.status.StatusResponse
 import com.gb.restaurant.viewmodel.ReservationViewModel
-import kotlinx.android.synthetic.main.fragment_search.*
-import kotlinx.android.synthetic.main.reservation_popup_layout.*
 import java.util.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -54,6 +58,8 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
     private var list:MutableList<String> = ArrayList()
     private lateinit var viewModel: ReservationViewModel
     var rsLoginResponse: RsLoginResponse? = null
+    private var _binding: FragmentSearchBinding? = null
+    private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -65,21 +71,35 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
         rsLoginResponse = MyApp.instance.rsLoginResponse
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_search, container, false)
+
+        _binding = FragmentSearchBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         try {
-            end_date_layout.setOnClickListener(this)
-            start_date_layout.setOnClickListener(this)
-            start_date_button_search.setOnClickListener(this)
-            end_date_button_search.setOnClickListener(this)
-            get_reservation_button.setOnClickListener(this)
+            binding.apply {
+                endDateLayout.setOnClickListener(this@SearchFragment)
+                startDateLayout.setOnClickListener(this@SearchFragment)
+                startDateButtonSearch.setOnClickListener(this@SearchFragment)
+                endDateButtonSearch.setOnClickListener(this@SearchFragment)
+                getReservationButton.setOnClickListener(this@SearchFragment)
+            }
+
             reservationAdapter = ReservationAdapter(fragmentBaseActivity,viewModel)
-            reservation_recycler.apply {
+            binding.reservationRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(fragmentBaseActivity)
                 adapter = reservationAdapter
@@ -87,8 +107,8 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
 
             strtDateCalendar = Calendar.getInstance()
             endDateCalendar = Calendar.getInstance()
-            start_date_button_search.text  = Util.getSelectedDateWithTime(strtDateCalendar!!)
-            end_date_button_search.text  = Util.getSelectedDateWithTime(endDateCalendar!!)
+            binding.startDateButtonSearch.text  = Util.getSelectedDateWithTime(strtDateCalendar!!)
+            binding.endDateButtonSearch.text  = Util.getSelectedDateWithTime(endDateCalendar!!)
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
@@ -100,13 +120,13 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
             var reservationRequest = ReservationRequest()
             reservationRequest.search_type = "Search"
             if(!Validation.isOnline(fragmentBaseActivity)){
-                fragmentBaseActivity.showSnackBar(progress_bar,getString(R.string.internet_connected))
+                fragmentBaseActivity.showSnackBar(binding.progressBar,getString(R.string.internet_connected))
                 return
             }else{
                 reservationRequest.deviceversion = Util.getVersionName(fragmentBaseActivity)
                 reservationRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-                reservationRequest.datefrom =start_date_button_search.text.toString()!!
-                reservationRequest.dateto =end_date_button_search.text.toString()!!
+                reservationRequest.datefrom =binding.startDateButtonSearch.text.toString()!!
+                reservationRequest.dateto =binding.endDateButtonSearch.text.toString()!!
                 viewModel.getReservationResponse(reservationRequest)
             }
         }catch (e:Exception){
@@ -126,7 +146,7 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
                     strtDateCalendar = date
                     var dateText = Util.getSelectedDateWithTime(date)
                     //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                    activity!!.start_date_button_search.text = dateText
+                    binding.startDateButtonSearch.text = dateText
 
                 }
 
@@ -152,12 +172,12 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
                             endDateCalendar = date
                             var dateText = Util.getSelectedDateWithTime(date)
                             //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                            activity!!.end_date_button_search.text = dateText
+                            binding.endDateButtonSearch.text = dateText
                         }else{
-                            fragmentBaseActivity.showSnackBar(progress_bar,"start-Date should be equal or less then end-Date")
+                            fragmentBaseActivity.showSnackBar(binding.progressBar,"start-Date should be equal or less then end-Date")
                         }
                     }else{
-                        fragmentBaseActivity.showSnackBar(progress_bar,"Please select start-Date")
+                        fragmentBaseActivity.showSnackBar(binding.progressBar,"Please select start-Date")
                     }
                 }
             }
@@ -193,10 +213,9 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
             if(Validation.isOnline(fragmentBaseActivity)){
                 reserStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 reserStatusRequest.service_type = Constant.SERVICE_TYPE.GET_RESERVATION_STATUS
-                println("request>>>>>> ${Util.getStringFromBean(reserStatusRequest)}")
                 viewModel.getReservationStatusRes(reserStatusRequest)
             }else{
-                fragmentBaseActivity.showSnackBar(progress_bar,getString(R.string.internet_connected))
+                fragmentBaseActivity.showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -209,17 +228,17 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { fragmentBaseActivity.showSnackBar(progress_bar,it) }
+            it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar,it) }
         })
         viewModel.response.observe(this, Observer<ReservationResponse> {
             reservationAdapter.notifyDataSetChanged()
             if(reservationAdapter.itemCount >0){
-                reservation_recycler.visibility = View.VISIBLE
-                no_order_text.visibility = View.GONE
+                binding.reservationRecycler.visibility = View.VISIBLE
+                binding.noOrderText.visibility = View.GONE
 
             }else{
-                reservation_recycler.visibility = View.GONE
-                no_order_text.visibility = View.VISIBLE
+                binding.reservationRecycler.visibility = View.GONE
+                binding.noOrderText.visibility = View.VISIBLE
             }
         })
         viewModel.resStatusResponse.observe(this, Observer<StatusResponse> {
@@ -241,7 +260,7 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
     companion object {
@@ -268,19 +287,19 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
     override fun onClick(view: View?) {
         try {
             when(view){
-                start_date_layout->{
+                binding.startDateLayout->{
                     startDateButton()
                 }
-                end_date_layout->{
+                binding.endDateLayout->{
                     endDateButton()
                 }
-                start_date_button_search->{
+                binding.startDateButtonSearch->{
                     startDateButton()
                 }
-                end_date_button_search->{
+                binding.endDateButtonSearch->{
                     endDateButton()
                 }
-                get_reservation_button->{
+                binding.getReservationButton->{
                     callService()
                 }
             }
@@ -296,89 +315,102 @@ class SearchFragment : BaseFragment(),View.OnClickListener {
             this.cancelOnTouchOutside(false)
             cornerRadius(null,R.dimen.dimen_30)
             customView(R.layout.reservation_popup_layout, scrollable = false, noVerticalPadding = true, horizontalPadding = false)
-            title_dialog_text.text = "${data.name?:""}"
-            people_text.text ="${data.peoples}"
-            date_text.text ="Date: ${data.date2}"
-            booking_date_text.text ="Booking Date: ${data.bookingtime}"
+            val titleDialogText = this.findViewById<TextView>(R.id.title_dialog_text);
+            val peopleText = this.findViewById<TextView>(R.id.people_text);
+            val dateText = this.findViewById<TextView>(R.id.date_text);
+            val bookingDateText = this.findViewById<TextView>(R.id.booking_date_text);
+            val locationText = this.findViewById<TextView>(R.id.location_text);
+            val locationType = this.findViewById<TextView>(R.id.location_type);
+            val desText = this.findViewById<TextView>(R.id.des_text);
+            val replyEdittext = this.findViewById<EditText>(R.id.reply_edittext);
+            val confirmButton = this.findViewById<Button>(R.id.confirm_button);
+            val cancelButton = this.findViewById<Button>(R.id.cancel_button);
+            val closeDialog = this.findViewById<ImageView>(R.id.close_dialog);
+            val replyText = this.findViewById<TextView>(R.id.reply_text);
+            val replyTextVal = this.findViewById<TextView>(R.id.reply_text_val);
+            titleDialogText.text = "${data.name?:""}"
+            peopleText.text ="${data.peoples}"
+            dateText.text ="Date: ${data.date2}"
+            bookingDateText.text ="Booking Date: ${data.bookingtime}"
             if(data.location.isNullOrEmpty()){
-                location_text.visibility = View.GONE
-                location_type.visibility = View.GONE
+                locationText.visibility = View.GONE
+                locationType.visibility = View.GONE
             }else{
-                location_text.text ="${data.location}"
+                locationText.text ="${data.location}"
             }
 
-            des_text.text = "${data.details}"
+            desText.text = "${data.details}"
             if(data.reply.isNullOrEmpty()){
                 if(data.status.equals(Constant.ORDER_STATUS.CLOSED,true)){
-                    reply_edittext.visibility = View.GONE
-                    confirm_button.visibility=View.GONE
-                    cancel_button.text = "${data.status}"
-                    cancel_button.alpha = 0.5f
-                    cancel_button.isClickable=false
-                    cancel_button.isEnabled=false
+                    replyEdittext.visibility = View.GONE
+                    confirmButton.visibility=View.GONE
+                    cancelButton.text = "${data.status}"
+                    cancelButton.alpha = 0.5f
+                    cancelButton.isClickable=false
+                    cancelButton.isEnabled=false
                 }else if(data.status.equals(Constant.ORDER_STATUS.CONFIRMED,true)){
-                    reply_edittext.visibility = View.GONE
-                    confirm_button.text = "${data.status}"
-                    confirm_button.alpha = 0.5f
-                    confirm_button.isClickable=false
-                    confirm_button.isEnabled=false
-                    cancel_button.text = "CLOSE"
+                    replyEdittext.visibility = View.GONE
+                    confirmButton.text = "${data.status}"
+                    confirmButton.alpha = 0.5f
+                    confirmButton.isClickable=false
+                    confirmButton.isEnabled=false
+                    cancelButton.text = "CLOSE"
                 }
                 else if(data.status.equals(Constant.ORDER_STATUS.CANCEL,true)){
-                    reply_edittext.visibility = View.GONE
-                    confirm_button.visibility=View.GONE
-                    cancel_button.text = "CANCELED"
-                    cancel_button.alpha = 0.5f
-                    cancel_button.isClickable=false
-                    cancel_button.isEnabled=false
+                    replyEdittext.visibility = View.GONE
+                    confirmButton.visibility=View.GONE
+                    cancelButton.text = "CANCELED"
+                    cancelButton.alpha = 0.5f
+                    cancelButton.isClickable=false
+                    cancelButton.isEnabled=false
                 }else{
-                    reply_edittext.visibility = View.VISIBLE
+                    replyEdittext.visibility = View.VISIBLE
                 }
-                reply_text.visibility = View.GONE
-                reply_text_val.visibility = View.GONE
+                replyText.visibility = View.GONE
+                replyTextVal.visibility = View.GONE
             }else{
-                reply_text.text = "${data.reply}"
-                reply_text.visibility = View.VISIBLE
-                reply_edittext.visibility = View.GONE
-                reply_text_val.visibility = View.VISIBLE
+                replyText.text = "${data.reply}"
+                replyText.visibility = View.VISIBLE
+                replyEdittext.visibility = View.GONE
+                replyTextVal.visibility = View.VISIBLE
                 if(data.status.equals(Constant.ORDER_STATUS.CLOSED,true)){
-                    confirm_button.visibility=View.GONE
-                    cancel_button.text = "${data.status}"
-                    cancel_button.alpha = 0.5f
-                    cancel_button.isClickable=false
-                    cancel_button.isEnabled=false
+                    confirmButton.visibility=View.GONE
+                    cancelButton.text = "${data.status}"
+                    cancelButton.alpha = 0.5f
+                    cancelButton.isClickable=false
+                    cancelButton.isEnabled=false
                 }else if(data.status.equals(Constant.ORDER_STATUS.CONFIRMED,true)){
-                    confirm_button.text = "${data.status}"
-                    confirm_button.alpha = 0.5f
-                    confirm_button.isClickable=false
-                    confirm_button.isEnabled=false
-                    cancel_button.text = "CLOSE"
+                    confirmButton.text = "${data.status}"
+                    confirmButton.alpha = 0.5f
+                    confirmButton.isClickable=false
+                    confirmButton.isEnabled=false
+                    cancelButton.text = "CLOSE"
                 }
                 else if(data.status.equals(Constant.ORDER_STATUS.CANCEL,true)){
-                    confirm_button.visibility=View.GONE
-                    cancel_button.text = "CANCELED"
-                    cancel_button.alpha = 0.5f
-                    cancel_button.isClickable=false
-                    cancel_button.isEnabled=false
+                    confirmButton.visibility=View.GONE
+                    cancelButton.text = "CANCELED"
+                    cancelButton.alpha = 0.5f
+                    cancelButton.isClickable=false
+                    cancelButton.isEnabled=false
                 }
             }
 
-            close_dialog.setOnClickListener {
+            closeDialog.setOnClickListener {
                 this.dismiss()
             }
-            confirm_button.setOnClickListener {
+            confirmButton.setOnClickListener {
                 var reserStatusRequest= ReserStatusRequest()
                 reserStatusRequest.reservation_id = data.id!!
-                reserStatusRequest.reply = reply_edittext.text.toString()
+                reserStatusRequest.reply = replyEdittext.text.toString()
                 reserStatusRequest.status = Constant.ORDER_STATUS.CONFIRMED
                 callStatusService(reserStatusRequest)
                 this.dismiss()
             }
-            cancel_button.setOnClickListener {
+            cancelButton.setOnClickListener {
                 var reserStatusRequest= ReserStatusRequest()
                 reserStatusRequest.reservation_id = data.id!!
-                reserStatusRequest.reply = reply_edittext.text.toString()
-                if(cancel_button.text.toString().equals(Constant.ORDER_STATUS.CANCEL,true)) {
+                reserStatusRequest.reply = replyEdittext.text.toString()
+                if(cancelButton.text.toString().equals(Constant.ORDER_STATUS.CANCEL,true)) {
                     reserStatusRequest.status = Constant.ORDER_STATUS.CANCEL
                 }else{
                     reserStatusRequest.status = Constant.ORDER_STATUS.CLOSED

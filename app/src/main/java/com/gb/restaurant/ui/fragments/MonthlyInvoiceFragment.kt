@@ -15,6 +15,7 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.FragmentMonthlyInvoiceBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.report.ReportRequest
 import com.gb.restaurant.model.report.ReportResponse
@@ -23,12 +24,6 @@ import com.gb.restaurant.ui.adapter.MonthlyInvoiceAdapter
 import com.gb.restaurant.utils.ListPaddingDecorationGray
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.ReportViewModel
-import kotlinx.android.synthetic.main.fragment_monthly_invoice.*
-import kotlinx.android.synthetic.main.fragment_monthly_invoice.month_button
-import kotlinx.android.synthetic.main.fragment_monthly_invoice.no_order_text
-import kotlinx.android.synthetic.main.fragment_monthly_invoice.progressBar
-import kotlinx.android.synthetic.main.fragment_monthly_invoice.year_button
-
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
@@ -43,7 +38,8 @@ class MonthlyInvoiceFragment : BaseFragment(),View.OnClickListener{
     private var yearArray = mutableListOf<String>()
     private var monthArray = mutableListOf<String>("Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec")
     var rsLoginResponse: RsLoginResponse? = null
-
+    private var _binding: FragmentMonthlyInvoiceBinding? = null
+    private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         for(i in 0..10){
@@ -76,20 +72,28 @@ class MonthlyInvoiceFragment : BaseFragment(),View.OnClickListener{
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_monthly_invoice, container, false)
+        _binding = FragmentMonthlyInvoiceBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
        try{
            attachObserver()
-           month_button.setOnClickListener(this)
-           year_button.setOnClickListener(this)
-           submit_button.setOnClickListener(this)
-           month_button.text = monthArray[monthIndex]
-           year_button.text = selectYear
+           binding.apply {
+               monthButton.setOnClickListener(this@MonthlyInvoiceFragment)
+               yearButton.setOnClickListener(this@MonthlyInvoiceFragment)
+               submitButton.setOnClickListener(this@MonthlyInvoiceFragment)
+               monthButton.text = monthArray[monthIndex]
+               yearButton.text = selectYear
+           }
+
            monthlyInvoiceAdapter = MonthlyInvoiceAdapter(fragmentBaseActivity,viewModel)
-           monthly_invoice_recycler.apply {
+           binding.monthlyInvoiceRecycler.apply {
                setHasFixedSize(true)
                layoutManager = LinearLayoutManager(fragmentBaseActivity)
                adapter = monthlyInvoiceAdapter
@@ -115,7 +119,7 @@ class MonthlyInvoiceFragment : BaseFragment(),View.OnClickListener{
                 viewModel.getReportResponse(reportRequest)
             }else{
                 //reports_swipe_refresh.isRefreshing = false
-                fragmentBaseActivity.showSnackBar(progressBar,getString(R.string.internet_connected))
+                fragmentBaseActivity.showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -132,7 +136,7 @@ class MonthlyInvoiceFragment : BaseFragment(),View.OnClickListener{
                 listItemsSingleChoice(null,monthArray, initialSelection = monthIndex) { _, index, text ->
                     monthIndex = index
                     try{
-                        fragmentBaseActivity.month_button.text = text
+                        binding.monthButton.text = text
                         when(text){
                             "Jan"->{
                                 selectMonth = "01"
@@ -189,7 +193,7 @@ class MonthlyInvoiceFragment : BaseFragment(),View.OnClickListener{
                 listItemsSingleChoice(null,yearArray, initialSelection = yearIndex) { _, index, text ->
                     yearIndex = index
                     try{
-                        fragmentBaseActivity.year_button.text = text
+                        binding.yearButton.text = text
                         selectYear = text
                         callService()
                     }catch (e:Exception){
@@ -206,22 +210,22 @@ class MonthlyInvoiceFragment : BaseFragment(),View.OnClickListener{
     }
 
     private fun attachObserver() {
-        viewModel.isLoading.observe(this, Observer<Boolean> {
+        viewModel.isLoading.observe(viewLifecycleOwner, Observer<Boolean> {
             it?.let { showLoadingDialog(it) }
         })
-        viewModel.apiError.observe(this, androidx.lifecycle.Observer<String> {
-            it?.let { fragmentBaseActivity.showSnackBar(progressBar,it) }
+        viewModel.apiError.observe(viewLifecycleOwner, androidx.lifecycle.Observer<String> {
+            it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar,it) }
         })
-        viewModel.reportResponse.observe(this, Observer<ReportResponse> {
+        viewModel.reportResponse.observe(viewLifecycleOwner, Observer<ReportResponse> {
             it?.let {
                 monthlyInvoiceAdapter.notifyDataSetChanged()
                 if(monthlyInvoiceAdapter.itemCount >0){
-                    monthly_invoice_recycler.visibility = View.VISIBLE
-                    no_order_text.visibility = View.GONE
+                    binding.monthlyInvoiceRecycler.visibility = View.VISIBLE
+                    binding.noOrderText.visibility = View.GONE
 
                 }else{
-                    monthly_invoice_recycler.visibility = View.GONE
-                    no_order_text.visibility = View.VISIBLE
+                    binding.monthlyInvoiceRecycler.visibility = View.GONE
+                    binding.noOrderText.visibility = View.VISIBLE
                 }
             }
         })
@@ -235,19 +239,19 @@ class MonthlyInvoiceFragment : BaseFragment(),View.OnClickListener{
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progressBar.visibility = View.VISIBLE else progressBar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
     override fun onClick(view: View?) {
         try{
             when(view){
-                year_button->{
-                    openYear(year_button)
+                binding.yearButton->{
+                    openYear(binding.yearButton)
                 }
-                month_button->{
-                    openMonth(month_button)
+                binding.monthButton->{
+                    openMonth(binding.monthButton)
                 }
-                submit_button->{
+                binding.submitButton->{
                     callService()
                 }
             }

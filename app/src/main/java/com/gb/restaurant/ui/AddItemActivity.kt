@@ -8,9 +8,11 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -23,6 +25,7 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivityAddItemBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.additem.AddOrderItemRequest
 import com.gb.restaurant.model.additem.AddOrderItemResponse
@@ -35,14 +38,6 @@ import com.gb.restaurant.ui.adapter.ExtraItemAdapter
 import com.gb.restaurant.ui.adapter.ItemAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.AddTipsViewModel
-import kotlinx.android.synthetic.main.activity_add_item.*
-import kotlinx.android.synthetic.main.add_items_layout.*
-import kotlinx.android.synthetic.main.card_detail_layout.*
-import kotlinx.android.synthetic.main.content_add_tips.*
-import kotlinx.android.synthetic.main.content_item.*
-import kotlinx.android.synthetic.main.content_item.no_order_text
-import kotlinx.android.synthetic.main.content_item.search_edittext
-import kotlinx.android.synthetic.main.custom_appbar.*
 
 
 class AddItemActivity : BaseActivity() {
@@ -58,10 +53,13 @@ class AddItemActivity : BaseActivity() {
     var selOrderItemRequest:AddOrderItemRequest?=null
     private var cardDialog:MaterialDialog?=null
     private var fromSearch:Boolean=false
+    private lateinit var binding: ActivityAddItemBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
-        setContentView(R.layout.activity_add_item)
+       // setContentView(R.layout.activity_add_item)
+        binding = ActivityAddItemBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
 
@@ -109,13 +107,13 @@ class AddItemActivity : BaseActivity() {
 
     private fun initView(){
         try{
-            back_layout.setOnClickListener {
+            binding.customAppbar.backLayout.setOnClickListener {
                 onBackPressed()
             }
             attachObserver()
 
             addingItemAdapter = AddingItemAdapter(this,viewModel)
-            adding_items_recycler.apply {
+            binding.contentItem.addingItemsRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(this@AddItemActivity)
                 adapter = addingItemAdapter
@@ -137,7 +135,7 @@ class AddItemActivity : BaseActivity() {
                 fromSearch =false
                 viewModel.getActiveOrderList(activeOrderRequest)
             }else{
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -156,17 +154,17 @@ class AddItemActivity : BaseActivity() {
     private fun callSearchService(){
         try{
             if(!Validation.isOnline(this)){
-                showSnackBar(progress_bar,getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar,getString(R.string.internet_connected))
                 return
-            }else if(search_edittext.text.toString().isNullOrEmpty()){
-                showSnackBar(progress_bar,"Please provide valid item Id")
+            }else if(binding.contentItem.searchEdittext.text.toString().isNullOrEmpty()){
+                showSnackBar(binding.progressBar,"Please provide valid item Id")
                 return
             }else{
 
                 var orderSearchRequest = OrderSearchRequest()
                 orderSearchRequest.deviceversion = Util.getVersionName(this)
                 orderSearchRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-                orderSearchRequest.order_id=search_edittext.text.toString()
+                orderSearchRequest.order_id=binding.contentItem.searchEdittext.text.toString()
                 // println("request date>>>>>> ${Util.getStringFromBean(reportRequest)}")
                 fromSearch =true
                 viewModel.getOrderSearch(orderSearchRequest)
@@ -193,21 +191,21 @@ class AddItemActivity : BaseActivity() {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { showSnackBar(progress_bar,it) }
+            it?.let { showSnackBar(binding.progressBar,it) }
         })
         viewModel.response.observe(this, Observer<ActiveOrderResponse> {
             it?.let {
                 addingItemAdapter.notifyDataSetChanged()
                 if(addingItemAdapter.itemCount >0){
-                    adding_items_recycler.visibility = View.VISIBLE
-                    no_order_text.visibility = View.GONE}
+                    binding.contentItem.addingItemsRecycler.visibility = View.VISIBLE
+                    binding.contentItem.noOrderText.visibility = View.GONE}
                 else{
-                    adding_items_recycler.visibility = View.GONE
-                    no_order_text.visibility = View.VISIBLE
+                    binding.contentItem.addingItemsRecycler.visibility = View.GONE
+                    binding.contentItem.noOrderText.visibility  = View.VISIBLE
                     if(fromSearch){
-                        no_order_text.text=getString(R.string.oops_no_order_found_with_order_id_item)
+                        binding.contentItem.noOrderText.text=getString(R.string.oops_no_order_found_with_order_id_item)
                     }else{
-                        no_order_text.text=getString(R.string.oops_no_order_found)
+                        binding.contentItem.noOrderText.text=getString(R.string.oops_no_order_found)
                     }
                    // no_order_text.text="${it.result}"
                 }
@@ -216,17 +214,18 @@ class AddItemActivity : BaseActivity() {
 
         viewModel.addItemsOrderResponse.observe(this, Observer<AddOrderItemResponse> {
             it?.let {
+               val cardProgress =  cardDialog?.findViewById<ProgressBar>(R.id.card_progress);
                 println("add_item_res>> ${Util.getStringFromBean(it)}")
                 if(it.status == Constant.STATUS.FAIL){
                     Util.alertDialog(it.result?:"",this)
-                    cardDialog?.card_progress?.visibility =View.GONE
+                    cardProgress?.visibility =View.GONE
                     //showToast(it.result!!)
                 }else{
                     if(it.result.equals("Items added successfully",true)){
                         cardDialog?.dismiss()
                         Util.alertDialog(it.result?:"",this)
                     }else{
-                        cardDialog?.card_progress?.visibility =View.GONE
+                        cardProgress?.visibility =View.GONE
                         selOrderItemRequest?.newcard = "Yes"
                         if(cardDialog ==null) {
                             showCardDetailDialog()
@@ -366,38 +365,47 @@ class AddItemActivity : BaseActivity() {
             this.cancelOnTouchOutside(false)
             cornerRadius(null,R.dimen.dimen_30)
             customView(R.layout.card_detail_layout, scrollable = false, noVerticalPadding = true, horizontalPadding = false)
-            title_dialog_text.text = "Enter Card Detail"
-            close_dialog.setOnClickListener {
+            val titleDialogText = this.findViewById<TextView>(R.id.title_dialog_text)
+            val cardEditText = this.findViewById<EditText>(R.id.card_edittext)
+            val expEditText = this.findViewById<EditText>(R.id.exp_edittext)
+            val cvvEditText = this.findViewById<EditText>(R.id.cvv_edittext)
+            val zipEditText = this.findViewById<EditText>(R.id.zip_edittext)
+            val cardProgressBar = this.findViewById<ProgressBar>(R.id.card_progress)
+            val cardHolderEditText = this.findViewById<EditText>(R.id.card_holder_edittext)
+            val closeDialog = this.findViewById<ImageView>(R.id.close_dialog)
+            val continueButton = this.findViewById<Button>(R.id.continue_button)
+            titleDialogText.text = "Enter Card Detail"
+            closeDialog.setOnClickListener {
                 this.dismiss()
             }
-            continue_button.setOnClickListener {
-                if(card_edittext.text.toString().isNullOrEmpty() || card_edittext.text.length < 15){
+            continueButton.setOnClickListener {
+                if(cardEditText.text.toString().isNullOrEmpty() || cardEditText.text.length < 15){
                     Util.alertDialog("Please add Valid Card Number",this@AddItemActivity)
                     return@setOnClickListener
                 }
-                if(exp_edittext.text.toString().isNullOrEmpty() || exp_edittext.text.length <4){
+                if(expEditText.text.toString().isNullOrEmpty() || expEditText.text.length <4){
                     Util.alertDialog("Please add Valid Expiry Date",this@AddItemActivity)
                     return@setOnClickListener
                 }
-                if(cvv_edittext.text.toString().isNullOrEmpty() || cvv_edittext.text.length <3){
+                if(cvvEditText.text.toString().isNullOrEmpty() || cvvEditText.text.length <3){
                     Util.alertDialog("Please add Valid CVV",this@AddItemActivity)
                     return@setOnClickListener
                 }
-                if(zip_edittext.text.toString().isNullOrEmpty() || zip_edittext.text.length <5){
+                if(zipEditText.text.toString().isNullOrEmpty() || zipEditText.text.length <5){
                     Util.alertDialog("Please add Valid Zip Code",this@AddItemActivity)
                     return@setOnClickListener
                 }
-                if(card_holder_edittext.text.toString().isNullOrEmpty()){
+                if(cardHolderEditText.text.toString().isNullOrEmpty()){
                     Util.alertDialog("Please add card holder name",this@AddItemActivity)
                     return@setOnClickListener
                 }
-                card_progress.visibility = View.VISIBLE
+                cardProgressBar.visibility = View.VISIBLE
                 cardDialog = this
-                selOrderItemRequest?.card = card_edittext.text.toString()
-                selOrderItemRequest?.expiry = exp_edittext.text.toString()
-                selOrderItemRequest?.cvv = cvv_edittext.text.toString()
-                selOrderItemRequest?.billingzip = zip_edittext.text.toString()
-                selOrderItemRequest?.cardholder = card_holder_edittext.text.toString()
+                selOrderItemRequest?.card = cardEditText.text.toString()
+                selOrderItemRequest?.expiry = expEditText.text.toString()
+                selOrderItemRequest?.cvv = cvvEditText.text.toString()
+                selOrderItemRequest?.billingzip = zipEditText.text.toString()
+                selOrderItemRequest?.cardholder = cardHolderEditText.text.toString()
                 callAddItemsService(selOrderItemRequest!!)
                 //this.dismiss()
             }
@@ -429,7 +437,7 @@ class AddItemActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 }

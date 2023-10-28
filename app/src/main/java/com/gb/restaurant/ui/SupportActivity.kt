@@ -4,6 +4,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -16,6 +19,7 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivitySupportBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.enumm.Support
 import com.gb.restaurant.model.rslogin.RsLoginResponse
@@ -27,25 +31,21 @@ import com.gb.restaurant.utils.ListPaddingDecorationGray
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.SupportViewModel
 
-import kotlinx.android.synthetic.main.activity_support.*
-import kotlinx.android.synthetic.main.content_support.*
-import kotlinx.android.synthetic.main.payment_query_dialog.*
-import kotlinx.android.synthetic.main.support_dialog.*
-import kotlinx.android.synthetic.main.support_dialog.detail_edit
-import kotlinx.android.synthetic.main.support_dialog.submit_button
-
 class SupportActivity : BaseActivity() {
 
     private lateinit var supportAdapter: SupportAdapter
     var rsLoginResponse: RsLoginResponse? = null
     private lateinit var viewModel: SupportViewModel
     private var list:MutableList<SupportItem> = ArrayList()
+    private lateinit var binding: ActivitySupportBinding
     companion object{
         val TAG:String = SupportActivity::class.java.simpleName
     }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_support)
+       // setContentView(R.layout.activity_support)
+        binding = ActivitySupportBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         initData()
         initView()
 
@@ -84,11 +84,11 @@ class SupportActivity : BaseActivity() {
     }
     private fun initView(){
         try{
-            setSupportActionBar(toolbar)
-            toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
-            toolbar.setNavigationOnClickListener { onBackPressed() }
+            setSupportActionBar(binding.toolbar)
+            binding.toolbar.navigationIcon = ContextCompat.getDrawable(this,R.drawable.ic_back)
+            binding.toolbar.setNavigationOnClickListener { onBackPressed() }
             supportAdapter = SupportAdapter(this,list)
-            support_recycler.apply {
+            binding.contentSupport.supportRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(this@SupportActivity)
                 adapter = supportAdapter
@@ -156,19 +156,22 @@ class SupportActivity : BaseActivity() {
             this.setCanceledOnTouchOutside(false)
             cornerRadius(null,R.dimen.dimen_30)
             customView(R.layout.payment_query_dialog, scrollable = false,noVerticalPadding = true, horizontalPadding = false)
+            val cancelImage = this.findViewById<ImageView>(R.id.cancel_image)
+            val submitButton = this.findViewById<Button>(R.id.submit_button_payment)
+            val detailEditPayment = this.findViewById<EditText>(R.id.detail_edit_payment)
             var supportRequest = SupportRequest()
             supportRequest.deviceversion = Util.getVersionName(this@SupportActivity)
             supportRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-            cancel_image.setOnClickListener {
+            cancelImage.setOnClickListener {
                 this.dismiss()
             }
 
-            submit_button_payment.setOnClickListener {
-                if(detail_edit_payment.text.isNullOrEmpty()){
+            submitButton.setOnClickListener {
+                if(detailEditPayment.text.isNullOrEmpty()){
                     showToast("Please enter your payment query.")
                 }else{
                     supportRequest.querytype="Payment"
-                    supportRequest.details = detail_edit_payment.text.toString()?:""
+                    supportRequest.details = detailEditPayment.text.toString()?:""
                     callService(supportRequest)
                     this.dismiss()
                 }
@@ -182,21 +185,25 @@ class SupportActivity : BaseActivity() {
             this.setCanceledOnTouchOutside(false)
             cornerRadius(null,R.dimen.dimen_30)
             customView(R.layout.support_dialog, scrollable = false,noVerticalPadding = true, horizontalPadding = false)
+            val callBackImage = this.findViewById<Button>(R.id.call_back_image)
+            val closeImage =this.findViewById<ImageView>(R.id.close_image)
+            val submitButton = this.findViewById<Button>(R.id.submit_button)
+            val detailEditText = this.findViewById<EditText>(R.id.detail_edit)
             var supportRequest = SupportRequest()
             supportRequest.deviceversion = Util.getVersionName(this@SupportActivity)
             supportRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-            close_image.setOnClickListener {
+            closeImage.setOnClickListener {
                 this.dismiss()
             }
-            call_back_image.setOnClickListener {
+            callBackImage.setOnClickListener {
                 callService(supportRequest)
                 this.dismiss()
             }
-            submit_button.setOnClickListener {
-                if(detail_edit.text.isNullOrEmpty()){
+            submitButton.setOnClickListener {
+                if(detailEditText.text.isNullOrEmpty()){
                     showToast("Detail box is empty.")
                 }else{
-                    supportRequest.details = detail_edit.text.toString()
+                    supportRequest.details = detailEditText.text.toString()
                     callService(supportRequest)
                     this.dismiss()
                 }
@@ -209,7 +216,7 @@ class SupportActivity : BaseActivity() {
             if(Validation.isOnline(this)){
                 viewModel.getCallBack(supportRequest)
             }else{
-               showSnackBar(progress_bar,getString(R.string.internet_connected))
+               showSnackBar(binding.progressBar,getString(R.string.internet_connected))
             }
         }catch (e:Exception){
             e.printStackTrace()
@@ -222,7 +229,7 @@ class SupportActivity : BaseActivity() {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { showSnackBar(progress_bar,it) }
+            it?.let { showSnackBar(binding.progressBar,it) }
         })
         viewModel.supportResponse.observe(this, Observer<SupportResponse> {
             it?.let {
@@ -243,7 +250,7 @@ class SupportActivity : BaseActivity() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
 }

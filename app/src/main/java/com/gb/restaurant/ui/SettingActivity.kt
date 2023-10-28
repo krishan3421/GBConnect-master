@@ -14,9 +14,11 @@ import android.util.Log
 import android.view.View
 import android.view.Window
 import android.widget.CompoundButton
+import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -32,6 +34,8 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
+import com.gb.restaurant.databinding.ActivitySearchBinding
+import com.gb.restaurant.databinding.ActivitySettingBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.PrinterModel
 import com.gb.restaurant.model.rslogin.RsLoginResponse
@@ -45,12 +49,7 @@ import com.gb.restaurant.utils.IpScanner
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.utils.Utils
 import com.gb.restaurant.viewmodel.DestinViewModel
-import com.grabull.session.SessionManager
-
-import kotlinx.android.synthetic.main.activity_setting.*
-import kotlinx.android.synthetic.main.content_setting.*
-import kotlinx.android.synthetic.main.self_gb_delivery_layout.*
-import kotlinx.android.synthetic.main.term_layout.*
+import com.gb.restaurant.session.SessionManager
 import java.util.*
 
 class SettingActivity : BaseActivity(), View.OnClickListener {
@@ -68,13 +67,15 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     private var deliveryChargeValue = 0.0
     private var gbSelect: String = Constant.GB_DELIVERY.SELF
     private lateinit var viewModel: DestinViewModel
-
+    private lateinit var binding: ActivitySettingBinding
     var sessionManager: SessionManager? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setting)
+        //setContentView(R.layout.activity_setting)
+        binding = ActivitySettingBinding.inflate(layoutInflater)
+        setContentView(binding.root)
         sessionManager = SessionManager(this)
 
         initData()
@@ -87,10 +88,10 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             } else if (sessionManager!!.getPrinterType() == 2) {
                 printerType = "LAN"
             }
-            txtCurrentPrinter.text =
+            binding.contentSetting.txtCurrentPrinter.text =
                 "Current selected Printer: " + printerType + " " + sessionManager!!.getPrinterAddress()
         } else {
-            txtCurrentPrinter.text =
+            binding.contentSetting.txtCurrentPrinter.text =
                 "Current selected Printer: None"
         }
     }
@@ -107,29 +108,30 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
     private fun initView() {
         try {
-            setSupportActionBar(toolbar)
-            toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_back)
-            toolbar.setNavigationOnClickListener { onBackPressed() }
-            setting_title.setOnClickListener { onBackPressed() }
-            toolbar.title = ""// getString(R.string.back)//"${rsLoginResponse?.data?.name}"
-            minus_pickup_estimate.setOnClickListener(this)
-            plus_pickup_estimate.setOnClickListener(this)
+            setSupportActionBar(binding.toolbar)
+            binding.toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_back)
+            binding.toolbar.setNavigationOnClickListener { onBackPressed() }
+            binding.settingTitle.setOnClickListener { onBackPressed() }
+            binding.toolbar.title = ""// getString(R.string.back)//"${rsLoginResponse?.data?.name}"
+            supportActionBar?.setDisplayShowTitleEnabled(false)
+            binding.contentSetting.minusPickupEstimate.setOnClickListener(this)
+            binding.contentSetting.plusPickupEstimate.setOnClickListener(this)
 
-            minus_delivery_estimate.setOnClickListener(this)
-            plus_delivery_estimate.setOnClickListener(this)
+            binding.contentSetting.minusDeliveryEstimate.setOnClickListener(this)
+            binding.contentSetting.plusDeliveryEstimate.setOnClickListener(this)
 
-            minus_miles.setOnClickListener(this)
-            plus_miles.setOnClickListener(this)
+            binding.contentSetting.minusMiles.setOnClickListener(this)
+            binding.contentSetting.plusMiles.setOnClickListener(this)
 
-            minus_min_delivery.setOnClickListener(this)
-            plus_min_delivery.setOnClickListener(this)
+            binding.contentSetting.minusMinDelivery.setOnClickListener(this)
+            binding.contentSetting.plusMinDelivery.setOnClickListener(this)
 
-            minus_delivery_charge.setOnClickListener(this)
-            plus_delivery_charge.setOnClickListener(this)
+            binding.contentSetting.minusDeliveryCharge.setOnClickListener(this)
+            binding.contentSetting.plusDeliveryCharge.setOnClickListener(this)
             //percent_radio.setOnClickListener(this)
             // doller_radio.setOnClickListener(this)
-            percent_image.setOnClickListener(this)
-            doller_image.setOnClickListener(this)
+            binding.contentSetting.percentImage.setOnClickListener(this)
+            binding.contentSetting.dollerImage.setOnClickListener(this)
             attachObserver()
             if (rsLoginResponse != null && rsLoginResponse!!.data != null) {
                 if (!rsLoginResponse?.data?.pickup.isNullOrEmpty())
@@ -148,18 +150,18 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
                     deliveryChargeValue = rsLoginResponse?.data?.dcharge!!.toDouble()
 
                 if (!rsLoginResponse?.data?.dchargetype.isNullOrEmpty())
-                    minimum_delivery_title.text =
+                    binding.contentSetting.minimumDeliveryTitle.text =
                         "MINIMUM DELIVERY ${rsLoginResponse?.data?.dchargetype}"
 
                 if (!rsLoginResponse?.data?.dchargetype.isNullOrEmpty()) {
 
                     if (rsLoginResponse?.data?.dchargetype!!.contains("$", true)) {
-                        doller_radio.isChecked = true
+                        binding.contentSetting.dollerRadio.isChecked = true
                     } else {
-                        percent_radio.isChecked = true
+                        binding.contentSetting.percentRadio.isChecked = true
                     }
                 }
-                gb_switch.isChecked = rsLoginResponse?.data?.gbdelivery == "Yes"
+                binding.contentSetting.selfGbDeliveryLayout.gbSwitch.isChecked = rsLoginResponse?.data?.gbdelivery == "Yes"
                 gbSelect = if (!rsLoginResponse?.data?.gbdelivery.isNullOrEmpty()) {
                     Constant.GB_DELIVERY.GB
                 } else {
@@ -174,24 +176,24 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             minDelivery(minDeliveryValue, fromButtonClick = false)
             deliveryCharge(deliveryChargeValue, fromButtonClick = false)
 
-            gb_switch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener() { compoundButton: CompoundButton, b: Boolean ->
+            binding.contentSetting.selfGbDeliveryLayout.gbSwitch.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener() { compoundButton: CompoundButton, b: Boolean ->
                 gbSelect = if (b) {
                     Constant.GB_DELIVERY.GB
                 } else {
                     Constant.GB_DELIVERY.SELF
                 }
-                submit(gb_switch)
+                submit(binding.contentSetting.selfGbDeliveryLayout.gbSwitch)
             });
-            percent_radio.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
+            binding.contentSetting.percentRadio.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
                 if (b) {
-                    doller_radio.isChecked = false
+                    binding.contentSetting.dollerRadio.isChecked = false
                     deliveryCharge(deliveryChargeValue, fromButtonClick = true)
                     // submit(percent_radio)
                 }
             })
-            doller_radio.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
+            binding.contentSetting.dollerRadio.setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener { compoundButton, b ->
                 if (b) {
-                    percent_radio.isChecked = false
+                    binding.contentSetting.percentRadio.isChecked = false
                     deliveryCharge(deliveryChargeValue, fromButtonClick = true)
                     //submit(doller_radio)
                 }
@@ -204,17 +206,20 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
     private fun stopOpenButtonText() {
         try {
-            if (rsLoginResponse?.data?.stoptoday.isNullOrEmpty()) {
-                stop_open_button.text = getString(R.string.stop_order_today)
-                //stop_open_button.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary_one))
-                // stop_open_button.background = getDrawable(R.drawable.romance_color_round_corner)
-                stop_open_button.background = getDrawable(R.drawable.colorprimary_round_corner)
-                stop_open_button.setTextColor(ContextCompat.getColor(this, R.color.white))
-            } else {
-                stop_open_button.text = getString(R.string.open_order_today)
-                stop_open_button.background = getDrawable(R.drawable.green_round_corner)
-                stop_open_button.setTextColor(ContextCompat.getColor(this, R.color.white))
+            binding.contentSetting.apply {
+                if (rsLoginResponse?.data?.stoptoday.isNullOrEmpty()) {
+                    stopOpenButton.text = getString(R.string.stop_order_today)
+                    //stop_open_button.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary_one))
+                    // stop_open_button.background = getDrawable(R.drawable.romance_color_round_corner)
+                    stopOpenButton.background = getDrawable(R.drawable.colorprimary_round_corner)
+                    stopOpenButton.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.white))
+                } else {
+                    stopOpenButton.text = getString(R.string.open_order_today)
+                    stopOpenButton.background = getDrawable(R.drawable.green_round_corner)
+                    stopOpenButton.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.white))
+                }
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, e.message!!)
@@ -222,72 +227,74 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun onClick(view: View?) {
-        when (view) {
-            minus_pickup_estimate -> {
-                if (pickEstimateValue > 0) {
-                    pickEstimateValue--
-                    pickUpEstimate(pickEstimateValue)
+        binding.contentSetting.apply {
+            when (view) {
+                minusPickupEstimate -> {
+                    if (pickEstimateValue > 0) {
+                        pickEstimateValue--
+                        pickUpEstimate(pickEstimateValue)
+                    }
                 }
-            }
-            plus_pickup_estimate -> {
-                if (pickEstimateValue < 500) {
-                    pickEstimateValue++
-                    pickUpEstimate(pickEstimateValue)
+                plusPickupEstimate -> {
+                    if (pickEstimateValue < 500) {
+                        pickEstimateValue++
+                        pickUpEstimate(pickEstimateValue)
+                    }
                 }
-            }
-            minus_delivery_estimate -> {
-                if (deliveryEstimateValue > 0) {
-                    deliveryEstimateValue--
-                    deliveryEstimate(deliveryEstimateValue)
+                minusDeliveryEstimate -> {
+                    if (deliveryEstimateValue > 0) {
+                        deliveryEstimateValue--
+                        deliveryEstimate(deliveryEstimateValue)
+                    }
                 }
-            }
-            plus_delivery_estimate -> {
-                if (deliveryEstimateValue < 500) {
-                    deliveryEstimateValue++
-                    deliveryEstimate(deliveryEstimateValue)
+                plusDeliveryEstimate -> {
+                    if (deliveryEstimateValue < 500) {
+                        deliveryEstimateValue++
+                        deliveryEstimate(deliveryEstimateValue)
+                    }
                 }
-            }
-            minus_miles -> {
-                if (defaultMilesValue > 0) {
-                    defaultMilesValue--
-                    defaultMiles(defaultMilesValue)
+                minusMiles -> {
+                    if (defaultMilesValue > 0) {
+                        defaultMilesValue--
+                        defaultMiles(defaultMilesValue)
+                    }
                 }
-            }
-            plus_miles -> {
-                if (defaultMilesValue < 500) {
-                    defaultMilesValue++
-                    defaultMiles(defaultMilesValue)
+                plusMiles -> {
+                    if (defaultMilesValue < 500) {
+                        defaultMilesValue++
+                        defaultMiles(defaultMilesValue)
+                    }
                 }
-            }
-            minus_min_delivery -> {
-                if (minDeliveryValue > 0) {
-                    minDeliveryValue--
-                    minDelivery(minDeliveryValue)
+                minusMinDelivery -> {
+                    if (minDeliveryValue > 0) {
+                        minDeliveryValue--
+                        minDelivery(minDeliveryValue)
+                    }
                 }
-            }
-            plus_min_delivery -> {
-                if (minDeliveryValue < 500) {
-                    minDeliveryValue++
-                    minDelivery(minDeliveryValue)
+                plusMinDelivery -> {
+                    if (minDeliveryValue < 500) {
+                        minDeliveryValue++
+                        minDelivery(minDeliveryValue)
+                    }
                 }
-            }
-            minus_delivery_charge -> {
-                if (deliveryChargeValue > 0) {
-                    deliveryChargeValue -= 0.5
-                    deliveryCharge(deliveryChargeValue)
+                minusDeliveryCharge -> {
+                    if (deliveryChargeValue > 0) {
+                        deliveryChargeValue -= 0.5
+                        deliveryCharge(deliveryChargeValue)
+                    }
                 }
-            }
-            plus_delivery_charge -> {
-                if (deliveryChargeValue < 500) {
-                    deliveryChargeValue += 0.5
-                    deliveryCharge(deliveryChargeValue)
+                plusDeliveryCharge -> {
+                    if (deliveryChargeValue < 500) {
+                        deliveryChargeValue += 0.5
+                        deliveryCharge(deliveryChargeValue)
+                    }
                 }
-            }
-            percent_image -> {
-                chargeTypePopUp("%")
-            }
-            doller_image -> {
-                chargeTypePopUp("$")
+                percentImage -> {
+                    chargeTypePopUp("%")
+                }
+                dollerImage -> {
+                    chargeTypePopUp("$")
+                }
             }
         }
     }
@@ -307,13 +314,16 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
-    private fun pickUpEstimate(pickUpEstimate: Int, fromButtonClick: Boolean = true) {
+    private fun pickUpEstimate(pickUpEstimat: Int, fromButtonClick: Boolean = true) {
         try {
-            pickup_estimate.text = "$pickUpEstimate Minutes"
-            if (fromButtonClick) {
-                pickup_save_button.background = getDrawable(R.drawable.white_blue_round_corner)
-                pickup_save_button.setTextColor(ContextCompat.getColor(this, R.color.blue_color))
+            binding.contentSetting.apply {
+                pickupEstimate.text = "$pickUpEstimat Minutes"
+                if (fromButtonClick) {
+                    pickupSaveButton.background = getDrawable(R.drawable.white_blue_round_corner)
+                    pickupSaveButton.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.blue_color))
+                }
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, e.message!!)
@@ -321,13 +331,16 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     }
 
 
-    private fun deliveryEstimate(deliveryEstimate: Int, fromButtonClick: Boolean = true) {
+    private fun deliveryEstimate(deliveryEstimat: Int, fromButtonClick: Boolean = true) {
         try {
-            delivery_estimate.text = "$deliveryEstimate Minutes"
-            if (fromButtonClick) {
-                delivery_save_button.background = getDrawable(R.drawable.white_blue_round_corner)
-                delivery_save_button.setTextColor(ContextCompat.getColor(this, R.color.blue_color))
+            binding.contentSetting.apply {
+                deliveryEstimate.text = "$deliveryEstimat Minutes"
+                if (fromButtonClick) {
+                    deliverySaveButton.background = getDrawable(R.drawable.white_blue_round_corner)
+                    deliverySaveButton.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.blue_color))
+                }
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, e.message!!)
@@ -336,49 +349,58 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
     private fun defaultMiles(defaultMiles: Int, fromButtonClick: Boolean = true) {
         try {
-            miles.text = "$defaultMiles Miles"
-            if (fromButtonClick) {
-                default_save_button.background = getDrawable(R.drawable.white_blue_round_corner)
-                default_save_button.setTextColor(ContextCompat.getColor(this, R.color.blue_color))
+            binding.contentSetting.apply {
+                miles.text = "$defaultMiles Miles"
+                if (fromButtonClick) {
+                    defaultSaveButton.background = getDrawable(R.drawable.white_blue_round_corner)
+                    defaultSaveButton.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.blue_color))
+                }
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, e.message!!)
         }
     }
 
-    private fun minDelivery(minDelivery: Int, fromButtonClick: Boolean = true) {
+    private fun minDelivery(minDeliver: Int, fromButtonClick: Boolean = true) {
         try {
-            min_delivery.text = "$minDelivery"
-            if (fromButtonClick) {
-                min_delivery_save_button.background =
-                    getDrawable(R.drawable.white_blue_round_corner)
-                min_delivery_save_button.setTextColor(
-                    ContextCompat.getColor(
-                        this,
-                        R.color.blue_color
+            binding.contentSetting.apply {
+                minDelivery.text = "$minDeliver"
+                if (fromButtonClick) {
+                    minDeliverySaveButton.background =
+                        getDrawable(R.drawable.white_blue_round_corner)
+                    minDeliverySaveButton.setTextColor(
+                        ContextCompat.getColor(
+                            this@SettingActivity,
+                            R.color.blue_color
+                        )
                     )
-                )
+                }
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, e.message!!)
         }
     }
 
-    private fun deliveryCharge(deliveryCharge: Double, fromButtonClick: Boolean = true) {
+    private fun deliveryCharge(deliveryCharg: Double, fromButtonClick: Boolean = true) {
         try {
-            delivery_charge.text = "$deliveryCharge"
-            if (fromButtonClick) {
-                delivery_charge_save_button.background =
-                    getDrawable(R.drawable.white_blue_round_corner)
-                delivery_charge_save_button.setTextColor(
-                    ContextCompat.getColor(
-                        this,
-                        R.color.blue_color
+            binding.contentSetting.apply {
+                deliveryCharge.text = "$deliveryCharg"
+                if (fromButtonClick) {
+                    deliveryChargeSaveButton.background =
+                        getDrawable(R.drawable.white_blue_round_corner)
+                    deliveryChargeSaveButton.setTextColor(
+                        ContextCompat.getColor(
+                            this@SettingActivity,
+                            R.color.blue_color
+                        )
                     )
-                )
+                }
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, e.message!!)
@@ -387,7 +409,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
     fun stopOrderToday(view: View) {
         try {
-            if (stop_open_button.text.toString().contains("STOP")) {
+            if (binding.contentSetting.stopOpenButton.text.toString().contains("STOP")) {
                 openStopOpenPopUp("Stop")
             } else {
                 openStopOpenPopUp("Open")
@@ -453,7 +475,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
         when (requestCode) {
             1 -> if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                selectPrinter(btnSelectPrinter)
+                selectPrinter(binding.contentSetting.btnSelectPrinter)
             }
         }
 
@@ -489,7 +511,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
     fun selfDelivery(view: View) {
         try {
-            gb_switch.isChecked = false
+            binding.contentSetting.selfGbDeliveryLayout.gbSwitch.isChecked = false
             gbSelect = Constant.GB_DELIVERY.SELF
         } catch (e: Exception) {
             e.printStackTrace()
@@ -499,7 +521,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
     fun gbDelivery(view: View) {
         try {
-            gb_switch.isChecked = true
+            binding.contentSetting.selfGbDeliveryLayout.gbSwitch.isChecked = true
             gbSelect = Constant.GB_DELIVERY.GB
         } catch (e: Exception) {
             e.printStackTrace()
@@ -522,93 +544,97 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
         val dialog = MaterialDialog(this, dialogBehavior).show {
             this.cancelOnTouchOutside(false)
             customView(R.layout.term_layout, scrollable = true, horizontalPadding = true)
-            description_text.text = rsLoginResponse?.data?.terms
-            close_dialog.setOnClickListener {
+            val desText = this.findViewById<TextView>(R.id.description_text)
+            val closeDialog = this.findViewById<ImageView>(R.id.close_dialog)
+            desText.text = rsLoginResponse?.data?.terms
+            closeDialog.setOnClickListener {
                 this.dismiss()
             }
         }
     }
 
     fun submit(view: View) {
-        try {
-            when (view) {
-                pickup_save_button -> {
-                    //println("button>>>> ${pickup_save_button.background.constantState}")
-                    //println("drawable>>>> ${getDrawable(R.drawable.white_darkgray_round_corner)?.constantState}")
-                    if (pickup_save_button.background.constantState == getDrawable(R.drawable.white_darkgray_round_corner)?.constantState)
-                        return
-                    pickup_save_button.background =
-                        getDrawable(R.drawable.white_darkgray_round_corner)
-                    pickup_save_button.setTextColor(ContextCompat.getColor(this, R.color.dark_gray))
-                }
-                delivery_save_button -> {
-                    if (delivery_save_button.background.constantState == getDrawable(R.drawable.white_darkgray_round_corner)?.constantState)
-                        return
-                    delivery_save_button.background =
-                        getDrawable(R.drawable.white_darkgray_round_corner)
-                    delivery_save_button.setTextColor(
-                        ContextCompat.getColor(
-                            this,
-                            R.color.dark_gray
+        binding.contentSetting.apply {
+            try {
+                when (view) {
+                    pickupSaveButton -> {
+                        //println("button>>>> ${pickup_save_button.background.constantState}")
+                        //println("drawable>>>> ${getDrawable(R.drawable.white_darkgray_round_corner)?.constantState}")
+                        if (pickupSaveButton.background.constantState == getDrawable(R.drawable.white_darkgray_round_corner)?.constantState)
+                            return
+                        pickupSaveButton.background =
+                            getDrawable(R.drawable.white_darkgray_round_corner)
+                        pickupSaveButton.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.dark_gray))
+                    }
+                    deliverySaveButton -> {
+                        if (deliverySaveButton.background.constantState == getDrawable(R.drawable.white_darkgray_round_corner)?.constantState)
+                            return
+                        deliverySaveButton.background =
+                            getDrawable(R.drawable.white_darkgray_round_corner)
+                        deliverySaveButton.setTextColor(
+                            ContextCompat.getColor(
+                                this@SettingActivity,
+                                R.color.dark_gray
+                            )
                         )
-                    )
-                }
-                default_save_button -> {
-                    if (default_save_button.background.constantState == getDrawable(R.drawable.white_darkgray_round_corner)?.constantState)
-                        return
-                    default_save_button.background =
-                        getDrawable(R.drawable.white_darkgray_round_corner)
-                    default_save_button.setTextColor(
-                        ContextCompat.getColor(
-                            this,
-                            R.color.dark_gray
+                    }
+                    defaultSaveButton -> {
+                        if (defaultSaveButton.background.constantState == getDrawable(R.drawable.white_darkgray_round_corner)?.constantState)
+                            return
+                        defaultSaveButton.background =
+                            getDrawable(R.drawable.white_darkgray_round_corner)
+                        defaultSaveButton.setTextColor(
+                            ContextCompat.getColor(
+                                this@SettingActivity,
+                                R.color.dark_gray
+                            )
                         )
-                    )
-                }
-                min_delivery_save_button -> {
-                    if (min_delivery_save_button.background?.constantState == getDrawable(R.drawable.white_darkgray_round_corner)?.constantState)
-                        return
-                    min_delivery_save_button.background =
-                        getDrawable(R.drawable.white_darkgray_round_corner)
-                    min_delivery_save_button.setTextColor(
-                        ContextCompat.getColor(
-                            this,
-                            R.color.dark_gray
+                    }
+                    minDeliverySaveButton -> {
+                        if (minDeliverySaveButton.background?.constantState == getDrawable(R.drawable.white_darkgray_round_corner)?.constantState)
+                            return
+                        minDeliverySaveButton.background =
+                            getDrawable(R.drawable.white_darkgray_round_corner)
+                        minDeliverySaveButton.setTextColor(
+                            ContextCompat.getColor(
+                                this@SettingActivity,
+                                R.color.dark_gray
+                            )
                         )
-                    )
-                }
-                delivery_charge_save_button -> {
-                    if (delivery_charge_save_button.background?.constantState == getDrawable(R.drawable.white_darkgray_round_corner)?.constantState)
-                        return
-                    delivery_charge_save_button.background =
-                        getDrawable(R.drawable.white_darkgray_round_corner)
-                    delivery_charge_save_button.setTextColor(
-                        ContextCompat.getColor(
-                            this,
-                            R.color.dark_gray
+                    }
+                    deliveryChargeSaveButton -> {
+                        if (deliveryChargeSaveButton.background?.constantState == getDrawable(R.drawable.white_darkgray_round_corner)?.constantState)
+                            return
+                        deliveryChargeSaveButton.background =
+                            getDrawable(R.drawable.white_darkgray_round_corner)
+                        deliveryChargeSaveButton.setTextColor(
+                            ContextCompat.getColor(
+                                this@SettingActivity,
+                                R.color.dark_gray
+                            )
                         )
-                    )
+                    }
                 }
+                var updateSettingRequest = UpdateSettingRequest()
+                updateSettingRequest.deviceversion = Util.getVersionName(this@SettingActivity)
+                updateSettingRequest.pickup = pickEstimateValue.toString()
+                updateSettingRequest.delivery = deliveryEstimateValue.toString()
+                updateSettingRequest.miles = defaultMilesValue.toString()
+                updateSettingRequest.mindelivery = minDeliveryValue.toString()
+                updateSettingRequest.deliverycharge = deliveryChargeValue.toString()
+                when {
+                    dollerRadio.isChecked -> updateSettingRequest.deliverychargetype = "$"
+                    percentRadio.isChecked -> updateSettingRequest.deliverychargetype = "%"
+                    else -> updateSettingRequest.deliverychargetype = "$"
+                }
+                updateSettingRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
+                updateSettingRequest.gbdelivery = gbSelect
+                println("update request>>>>>> ${Util.getStringFromBean(updateSettingRequest)}")
+                callUpdateSetting(updateSettingRequest)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Log.e(TAG, e.message!!)
             }
-            var updateSettingRequest = UpdateSettingRequest()
-            updateSettingRequest.deviceversion = Util.getVersionName(this)
-            updateSettingRequest.pickup = pickEstimateValue.toString()
-            updateSettingRequest.delivery = deliveryEstimateValue.toString()
-            updateSettingRequest.miles = defaultMilesValue.toString()
-            updateSettingRequest.mindelivery = minDeliveryValue.toString()
-            updateSettingRequest.deliverycharge = deliveryChargeValue.toString()
-            when {
-                doller_radio.isChecked -> updateSettingRequest.deliverychargetype = "$"
-                percent_radio.isChecked -> updateSettingRequest.deliverychargetype = "%"
-                else -> updateSettingRequest.deliverychargetype = "$"
-            }
-            updateSettingRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-            updateSettingRequest.gbdelivery = gbSelect
-            println("update request>>>>>> ${Util.getStringFromBean(updateSettingRequest)}")
-            callUpdateSetting(updateSettingRequest)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e(TAG, e.message!!)
         }
     }
 
@@ -617,7 +643,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             if (Validation.isOnline(this)) {
                 viewModel.updateSetting(updateSettingRequest)
             } else {
-                showSnackBar(progress_bar, getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar, getString(R.string.internet_connected))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -631,7 +657,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
                 var stopOrderRequest = StopOrderRequest()
                 stopOrderRequest.deviceversion = Util.getVersionName(this)
                 stopOrderRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-                if (stop_open_button.text.toString()
+                if (binding.contentSetting.stopOpenButton.text.toString()
                         .contains(getString(R.string.stop_order_today), true)
                 ) {
                     stopOrderRequest.service_type = Constant.SERVICE_TYPE.GET_STOP_TODAY
@@ -643,7 +669,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
                 println("stop request>>>>>> ${Util.getStringFromBean(stopOrderRequest)}")
                 viewModel.stopOrderToday(stopOrderRequest)
             } else {
-                showSnackBar(progress_bar, getString(R.string.internet_connected))
+                showSnackBar(binding.progressBar, getString(R.string.internet_connected))
             }
         } catch (e: Exception) {
             e.printStackTrace()
@@ -656,7 +682,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             it?.let { showLoadingDialog(it) }
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { showSnackBar(progress_bar, it) }
+            it?.let { showSnackBar(binding.progressBar, it) }
         })
         viewModel.stopOrderResponse.observe(this, Observer<StopOrderResponse> {
             it?.let {
@@ -719,7 +745,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             } else {
                 rsLoginResponse?.data?.gbdelivery = "No"
             }
-            if (doller_radio.isChecked) {
+            if (binding.contentSetting.dollerRadio.isChecked) {
                 rsLoginResponse?.data?.dchargetype = "$"
             } else {
                 rsLoginResponse?.data?.dchargetype = "%"
@@ -737,7 +763,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) progress_bar.visibility = View.VISIBLE else progress_bar.visibility = View.GONE
+        if (show) binding.progressBar.visibility = View.VISIBLE else binding.progressBar.visibility = View.GONE
     }
 
     private fun showDialog(mContext: Context) {
@@ -789,7 +815,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             } else if (printerList.printer_type == 2) {
                 printerType = "LAN"
             }
-            txtCurrentPrinter.text =
+            binding.contentSetting.txtCurrentPrinter.text =
                 "Current selected Printer: " + printerType + " " + printerList.printer_id
 
         }
@@ -827,6 +853,20 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
                                 for (info in mDeviceList) {
                                     if (info != null) {
+                                        if (ActivityCompat.checkSelfPermission(
+                                                this@SettingActivity,
+                                                Manifest.permission.BLUETOOTH_CONNECT
+                                            ) != PackageManager.PERMISSION_GRANTED
+                                        ) {
+                                            // TODO: Consider calling
+                                            //    ActivityCompat#requestPermissions
+                                            // here to request the missing permissions, and then overriding
+                                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                            //                                          int[] grantResults)
+                                            // to handle the case where the user grants the permission. See the documentation
+                                            // for ActivityCompat#requestPermissions for more details.
+                                            return
+                                        }
                                         if (info.name != null) {
 
                                             val devType = info.bluetoothClass.majorDeviceClass
