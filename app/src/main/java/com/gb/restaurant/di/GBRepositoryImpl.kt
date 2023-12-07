@@ -1,5 +1,8 @@
 package com.gb.restaurant.di
 
+import android.content.Context
+import com.gb.restaurant.R
+import com.gb.restaurant.Validation
 import com.gb.restaurant.api.GBClient
 import com.gb.restaurant.model.additem.AddOrderItemRequest
 import com.gb.restaurant.model.additem.AddOrderItemResponse
@@ -63,6 +66,9 @@ import com.gb.restaurant.model.users.edituser.EditUserRequest
 import com.gb.restaurant.model.users.edituser.EditUserResponse
 import com.gb.restaurant.model.users.rmuser.RmUserRequest
 import com.gb.restaurant.model.users.rmuser.RmUserResponse
+import com.gb.restaurant.session.SessionManager
+import com.gb.restaurant.utils.Util
+import com.gb.restaurant.utils.Utils
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Response
@@ -73,11 +79,22 @@ import retrofit2.Response
  * Created by Krishan on 08/20/2019
  */
 
-class GBRepositoryImpl(private val apiService: GBClient) : GBRepository {
-
+class GBRepositoryImpl(private val gbClient: GBClient, private val gdClient: GBClient, context: Context) : GBRepository {
+   var sessionManager: SessionManager = SessionManager(context)
+     private var apiService: GBClient =gdClient
     companion object{
         private const val ERROR_500 :String="Unable to connect to server. Please try again after sometime."
     }
+
+
+    init {
+         if(sessionManager.getApiType()=="GB"){
+            // println("sessions>>>>>>>>>>>>> ${context.getColor(R.color.bg_color)}")
+             apiService = gbClient
+        }
+       // println("sessions>>>>>>>>>>>>> ${sessionManager.getApiType()}")
+    }
+
    override suspend fun reLogin(rsLoginRq: RsLoginRq): Response<RsLoginResponse> {
       return  apiService.restaurantLogin(rsLoginRq)
 
@@ -111,6 +128,7 @@ class GBRepositoryImpl(private val apiService: GBClient) : GBRepository {
     }
 
     override fun getCompOrder(compOrderRequest: CompOrderRequest, successHandler: (OrderResponse) -> Unit, failureHandler: (String?) -> Unit) {
+        println("request>>>> ${Util.getStringFromBean(compOrderRequest)}")
         apiService.getCompOrder(compOrderRequest).enqueue(object:retrofit2.Callback<OrderResponse>{
 
             override fun onResponse(call: Call<OrderResponse>, response: Response<OrderResponse>) {
@@ -800,7 +818,7 @@ class GBRepositoryImpl(private val apiService: GBClient) : GBRepository {
     }
 
     override fun forgotPass(forgotPassRequest: ForgotPassRequest, successHandler: (ForgotPassResponse) -> Unit, failureHandler: (String?) -> Unit) {
-        apiService.forgotPass(forgotPassRequest).enqueue(object:retrofit2.Callback<ForgotPassResponse>{
+        gdClient.forgotPass(forgotPassRequest).enqueue(object:retrofit2.Callback<ForgotPassResponse>{
 
             override fun onResponse(call: Call<ForgotPassResponse>, response: Response<ForgotPassResponse>) {
                 if(response?.body()!=null){

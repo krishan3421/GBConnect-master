@@ -27,6 +27,7 @@ class SessionManager(mContext: Context) {
 
         val PRINTER_ADDRESS = "printer_address"
         val PRINTER_TYPE = "printer_type"
+        val API_TYPE = "GD"
 
     }
 
@@ -38,12 +39,13 @@ class SessionManager(mContext: Context) {
     /**
      * Create login session
      * */
-    public fun createLoginSession(userName: String, password: String, isAutoLogin: Boolean) {
+    public fun createLoginSession(userName: String, password: String, isAutoLogin: Boolean,apiType:String="GD") {
         // Storing email in pref
         try {
             editor.putString(USERNAME, userName)
             editor.putString(PASSWORD, password)
             editor.putBoolean(IS_LOGIN, isAutoLogin)
+            editor.putString(API_TYPE, apiType)
             // commit changes
             editor.commit()
         } catch (e: Exception) {
@@ -117,5 +119,14 @@ class SessionManager(mContext: Context) {
         user[PASSWORD] = pref.getString(PASSWORD, "")
         // return user
         return user
+    }
+
+    fun setApiType(apiType: String) {
+        editor.putString(API_TYPE, apiType)
+        editor.commit()
+    }
+
+    fun getApiType(): String {
+        return pref.getString(API_TYPE, "GD")?:"GD"
     }
 }

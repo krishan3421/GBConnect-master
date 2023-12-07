@@ -9,5 +9,7 @@ data class RsLoginResponse(
     @SerializedName("result")
     val result: String?,
     @SerializedName("status")
-    val status: String?
+    val status: String?,
+    @SerializedName("apitype")
+    val apitype: String?
 )
