@@ -263,6 +263,12 @@ class ComDetailActivity : BaseActivity() {
                 binding.contentComDetail.orderTimeText.text = ""
             }
 
+            data?.rewards?.let {reward->
+                if(reward > 0){
+                    binding.contentComDetail.detailComFooter.rewardLayout.visibility = View.VISIBLE
+                }
+            }
+
             callOrderDetailService()
 
 

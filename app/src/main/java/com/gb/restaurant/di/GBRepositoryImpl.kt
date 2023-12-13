@@ -468,7 +468,7 @@ class GBRepositoryImpl(private val gbClient: GBClient, private val gdClient: GBC
     }
 
     override fun registerUser(registerRequest: RegisterRequest, successHandler: (RegisterResponse) -> Unit, failureHandler: (String?) -> Unit) {
-        apiService.registerUser(registerRequest).enqueue(object:retrofit2.Callback<RegisterResponse>{
+        gdClient.registerUser(registerRequest).enqueue(object:retrofit2.Callback<RegisterResponse>{
 
             override fun onResponse(call: Call<RegisterResponse>, response: Response<RegisterResponse>) {
                 if(response?.body()!=null){

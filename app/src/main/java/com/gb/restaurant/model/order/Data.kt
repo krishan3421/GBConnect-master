@@ -53,5 +53,8 @@ data class Data(
     @SerializedName("type")
     val type: String?,
     @SerializedName("payby")
-    var payby: String?
+    var payby: String?,
+    @SerializedName("rewards")
+    var rewards: Int?
+
 )

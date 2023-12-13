@@ -206,6 +206,11 @@ class HomeDetailActivity : BaseActivity() {
                     orderDetailItem.addressLayout.visibility = View.VISIBLE
                     detailHomeFooter.deliveryFeeHomeLayout.visibility = View.VISIBLE
                 }
+                data?.rewards?.let {reward->
+                    if(reward > 0){
+                        detailHomeFooter.rewardLayout.visibility = View.VISIBLE
+                    }
+                }
                 /*if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)
                     var paymentStatus = ""
                   if(data?.payment!!.contains("pending",true)){
