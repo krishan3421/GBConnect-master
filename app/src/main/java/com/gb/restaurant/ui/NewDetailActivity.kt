@@ -197,8 +197,9 @@ class NewDetailActivity : BaseActivity() {
                     detailFooter.deliveryFeeLayout.visibility = View.VISIBLE
                 }
                 data?.rewards?.let {reward->
-                    if(reward > 0){
+                    if(reward.isNotEmpty()){
                        detailFooter.rewardLayout.visibility = View.VISIBLE
+                        detailFooter.rewards.text="$$reward"
                     }
                 }
                 /*  if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)
@@ -552,7 +553,7 @@ class NewDetailActivity : BaseActivity() {
                 orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 orderDetailRequest.order_id = data!!.id!!
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
-                println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
+               // println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
                 viewModel.getOrderDetailResponse(orderDetailRequest)
             } else {
                 showToast(getString(R.string.internet_connected))
@@ -571,7 +572,7 @@ class NewDetailActivity : BaseActivity() {
                 addOrderItemRequest.order_id = data?.orderid!!
                 addOrderItemRequest.itemslist = itemList
                 addOrderItemRequest.deviceversion = Util.getVersionName(this)
-                println("request add item>>>> ${Util.getStringFromBean(addOrderItemRequest)}")
+               // println("request add item>>>> ${Util.getStringFromBean(addOrderItemRequest)}")
                 viewModel.addItemsOrder(addOrderItemRequest)
             } else {
                 showToast(getString(R.string.internet_connected))

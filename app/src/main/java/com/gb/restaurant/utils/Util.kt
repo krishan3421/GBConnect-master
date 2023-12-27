@@ -11,7 +11,8 @@ import java.math.RoundingMode
 import java.text.DateFormat
 import java.text.DecimalFormat
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
 
 
 class Util {
@@ -326,7 +327,19 @@ class Util {
             }
 
         }
+        fun currentMonthStartDate(): Calendar{
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.add(Calendar.MONTH, 0)
+            calendar[Calendar.DATE] = calendar.getActualMinimum(Calendar.DAY_OF_MONTH)
+            return calendar
+        }
 
+        fun currentMonthEndDate(): Calendar{
+            val calendar: Calendar = Calendar.getInstance()
+            calendar.add(Calendar.MONTH, 0)
+            calendar[Calendar.DATE] = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
+            return calendar
+        }
     }
 
 }

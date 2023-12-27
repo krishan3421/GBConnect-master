@@ -122,13 +122,22 @@ class RestaurantLoginActivity : BaseActivity() {
 
     fun signUpMethod(view:View){
         try{
-            var  intent = Intent(applicationContext, RegistrationActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+//            var  intent = Intent(applicationContext, RegistrationActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            startActivity(intent)
+
+            openURL("https://www.grabullmarketing.com/new-restaurant-sign-up/")
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
         }
+    }
+
+    private fun openURL(url:String){
+        var intent = Intent(this, ViewInvoiceActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra(ViewInvoiceActivity.INVOICE, "$url")
+        startActivity(intent)
     }
 
     fun forgotPassClick(view:View){

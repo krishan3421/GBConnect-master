@@ -207,8 +207,9 @@ class HomeDetailActivity : BaseActivity() {
                     detailHomeFooter.deliveryFeeHomeLayout.visibility = View.VISIBLE
                 }
                 data?.rewards?.let {reward->
-                    if(reward > 0){
+                    if(reward.isNotEmpty()){
                         detailHomeFooter.rewardLayout.visibility = View.VISIBLE
+                        detailHomeFooter.rewards.text="$$reward"
                     }
                 }
                 /*if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)

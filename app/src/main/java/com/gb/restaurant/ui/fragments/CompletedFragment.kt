@@ -57,7 +57,8 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
     private lateinit var viewModel: OrderViewModel
     var strtDateCalendar: Calendar? = null
     var endDateCalendar: Calendar? = null
-
+    val currentMonthStartDate = Util.currentMonthStartDate()
+    val currentMonthEndDate = Util.currentMonthEndDate()
     private var _binding: FragmentCompletedBinding? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -282,7 +283,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
         try {
             var calendar = Calendar.getInstance()
             MaterialDialog(fragmentBaseActivity).show {
-                datePicker(null, null, calendar) { _, date ->
+                datePicker(currentMonthStartDate, currentMonthEndDate, calendar) { _, date ->
                     date.set(
                         date.get(Calendar.YEAR),
                         date.get(Calendar.MONTH),
@@ -310,7 +311,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
             var calendar = Calendar.getInstance()
             println("time>>> ${calendar.time}")
             MaterialDialog(fragmentBaseActivity).show {
-                datePicker(null, null, calendar) { _, date ->
+                datePicker(currentMonthStartDate, currentMonthEndDate, calendar) { _, date ->
                     if (strtDateCalendar != null) {
                         if (strtDateCalendar!!.before(date) || strtDateCalendar!! == date) {
                             date.set(

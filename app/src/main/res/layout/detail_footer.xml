@@ -40,7 +40,7 @@
         android:orientation="horizontal">
 
         <TextView
-            style="@style/normal_text_14"
+            style="@style/normal_text_12"
             android:layout_width="match_parent"
             android:layout_weight="1"
             android:gravity="right"
@@ -49,11 +49,10 @@
 
         <TextView
             android:id="@+id/rewards"
-            style="@style/normal_text_14"
+            style="@style/normal_text_12"
             android:layout_width="match_parent"
             android:layout_weight="3"
             android:gravity="right"
-            android:text="@string/applied"
             android:textStyle="bold" />
     </LinearLayout>
 

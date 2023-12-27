@@ -360,5 +360,8 @@
         <item name="android:textAllCaps">false</item>
         <item name="textAllCaps">false</item>
     </style>
-
+    <style name="AppThemeMD" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="md_color_title">@color/black</item>
+        <item name="md_background_color">@color/white</item>
+    </style>
 </resources>

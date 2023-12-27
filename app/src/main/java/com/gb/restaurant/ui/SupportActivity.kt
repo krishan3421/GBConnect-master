@@ -55,7 +55,7 @@ class SupportActivity : BaseActivity() {
         try{
             rsLoginResponse = MyApp.instance.rsLoginResponse
             viewModel = createViewModel()
-            var support0= SupportItem("Request a call Back", Support.REQUEST_CALL_BACK)
+           // var support0= SupportItem("Request a call Back", Support.REQUEST_CALL_BACK)
             var support1= SupportItem("Help With adding Tips",Support.HELP_ADDING_TIPS)
             var support2= SupportItem("Help with adding extra Item in Order",Support.HELP_ADDING_ITEM)
             var support3= SupportItem("Help Cancel or Refund Order to customer",Support.HELP_CANCEL_REFUND)
@@ -66,7 +66,7 @@ class SupportActivity : BaseActivity() {
             var support8= SupportItem("Marketing Packages",Support.MARKETING_PACKAGE)
             var support9= SupportItem("Payment & Bank Account Query",Support.PAYMENT_BANK)
 
-            list.add(support0)
+           // list.add(support0)
             list.add(support1)
             list.add(support2)
             list.add(support3)
@@ -106,9 +106,10 @@ class SupportActivity : BaseActivity() {
         super.onResume()
         supportAdapter.setOnItemClickListener(object :SupportAdapter.SupportClickListener{
             override fun onItemClick(supportItem: SupportItem,position:Int, v: View) {
-                if(supportItem.index==Support.REQUEST_CALL_BACK){
-                    showCustomViewDialog()
-                }else if(supportItem.index==Support.HELP_ADDING_TIPS){
+//                if(supportItem.index==Support.REQUEST_CALL_BACK){
+//                    showCustomViewDialog()
+//                }else
+              if(supportItem.index==Support.HELP_ADDING_TIPS){
                     goToPage(AddTipsActivity::class.java)
                 }else if(supportItem.index==Support.HELP_ADDING_ITEM){
                     goToPage(AddItemActivity::class.java)

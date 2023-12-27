@@ -55,6 +55,6 @@ data class Data(
     @SerializedName("payby")
     var payby: String?,
     @SerializedName("rewards")
-    var rewards: Int?
+    var rewards: String?
 
 )

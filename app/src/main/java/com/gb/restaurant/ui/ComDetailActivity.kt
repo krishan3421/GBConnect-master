@@ -264,8 +264,9 @@ class ComDetailActivity : BaseActivity() {
             }
 
             data?.rewards?.let {reward->
-                if(reward > 0){
+                if(reward.isNotEmpty()){
                     binding.contentComDetail.detailComFooter.rewardLayout.visibility = View.VISIBLE
+                    binding.contentComDetail.detailComFooter.rewards.text="$$reward"
                 }
             }
 

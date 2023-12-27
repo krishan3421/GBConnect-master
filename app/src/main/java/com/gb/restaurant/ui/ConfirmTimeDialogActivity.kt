@@ -2,6 +2,7 @@ package com.gb.restaurant.ui
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -10,6 +11,8 @@ import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.list.listItemsSingleChoice
 import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
@@ -120,16 +123,14 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
             var orderStatusRequest = OrderStatusRequest()
             when(view){
                 binding.cancel->{
+                    //cancelStatusPopup()
                     orderStatusRequest.status = Constant.ORDER_STATUS.CANCEL
                 }
                 binding.confirm->{
                     orderStatusRequest.status = Constant.ORDER_STATUS.CONFIRMED
+
                 }
             }
-
-           orderStatusRequest.deviceversion = Util.getVersionName(this)
-            orderStatusRequest.order_id = orderId
-
             callService(orderStatusRequest)
         }catch (e:Exception){
             e.printStackTrace()
@@ -138,10 +139,27 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
 
     }
 
+    private fun cancelStatusPopup(){
+        MaterialDialog(this).show {
+            setTheme(R.style.AppThemeMD)
+            title(R.string.choose_reason)
+            listItemsSingleChoice(
+                R.array.cancel_reason_list, initialSelection = 1
+            ) { _, index, text ->
+                var orderStatusRequest = OrderStatusRequest()
+                orderStatusRequest.details=text
+                callService(orderStatusRequest)
+            }
+            positiveButton(R.string.choose)
+        }
+    }
+
 
     private fun callService(orderStatusRequest: OrderStatusRequest){
         try{
             if(Validation.isOnline(this)){
+                orderStatusRequest.deviceversion = Util.getVersionName(this)
+                orderStatusRequest.order_id = orderId
                 orderStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 println("request>>>>> ${Util.getStringFromBean(orderStatusRequest)}")
                 viewModel.orderStatus(orderStatusRequest)

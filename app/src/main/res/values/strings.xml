@@ -17,6 +17,8 @@
     <string name="auto_login">Remember Me</string>
     <string name="remove_user_msg">Do you want to remove User?</string>
     <string name="remove_discount_msg">Do you want to remove Discount?</string>
+    <string name="choose_reason">Choose reason…</string>
+
     <!--splash-->
     <string name="grabull">GRABULL</string>
     <string name="for_restaurant">For Restaurants</string>
@@ -193,8 +195,7 @@
     <string name="re_fax">Re-fax</string>
     <string name="re_email">Re-Email</string>
     <string name="print">PRINT</string>
-    <string name="rewards">Rewards</string>
-    <string name="applied">Applied</string>
+    <string name="rewards">Rewards applied</string>
     <!--Confirm time activity-->
     <string name="des">Click on Button To Confirm Time When it\n will be Ready</string>
     <string name="min_20">READY IN 20 MIN</string>

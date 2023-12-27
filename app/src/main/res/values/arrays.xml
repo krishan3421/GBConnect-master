@@ -26,4 +26,18 @@
         <item>Dinner</item>
         <item>Other</item>
     </string-array>
+
+    <string-array name="cancel_reason_list">
+        <item>Ordered twice</item>
+        <item>Changed Mind</item>
+        <item>Late Delivery compensating</item>
+        <item>Food Complaint compensating</item>
+        <item>Driver Not available</item>
+        <item>Wrong Location Order</item>
+        <item>Store was close</item>
+        <item>Out of Items</item>
+        <item>Temporary Outage</item>
+        <item>Did not Receive order at store</item>
+        <item>Fraud Alert</item>
+    </string-array>
 </resources>
