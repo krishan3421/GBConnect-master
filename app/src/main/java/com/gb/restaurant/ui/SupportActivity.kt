@@ -26,6 +26,7 @@ import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.model.support.SupportItem
 import com.gb.restaurant.model.support.SupportRequest
 import com.gb.restaurant.model.support.SupportResponse
+import com.gb.restaurant.session.SessionManager
 import com.gb.restaurant.ui.adapter.SupportAdapter
 import com.gb.restaurant.utils.ListPaddingDecorationGray
 import com.gb.restaurant.utils.Util
@@ -38,6 +39,7 @@ class SupportActivity : BaseActivity() {
     private lateinit var viewModel: SupportViewModel
     private var list:MutableList<SupportItem> = ArrayList()
     private lateinit var binding: ActivitySupportBinding
+    lateinit var sessionManager: SessionManager
     companion object{
         val TAG:String = SupportActivity::class.java.simpleName
     }
@@ -53,20 +55,24 @@ class SupportActivity : BaseActivity() {
 
     private fun initData(){
         try{
+             sessionManager= SessionManager(applicationContext)
             rsLoginResponse = MyApp.instance.rsLoginResponse
             viewModel = createViewModel()
-           // var support0= SupportItem("Request a call Back", Support.REQUEST_CALL_BACK)
-            var support1= SupportItem("Help With adding Tips",Support.HELP_ADDING_TIPS)
-            var support2= SupportItem("Help with adding extra Item in Order",Support.HELP_ADDING_ITEM)
-            var support3= SupportItem("Help Cancel or Refund Order to customer",Support.HELP_CANCEL_REFUND)
-            var support4= SupportItem("Update of Menu",Support.UPDATE_MENU)
-            var support5= SupportItem("Add New store with Grabull",Support.ADDING_NEW_STORE)
-            var support6= SupportItem("Free website Upgrade and Marketing Help",Support.FREE_WEBSITE)
-            var support7= SupportItem("Reviews on Google (Reputation management)",Support.REVIEW_ON_GOOGLE)
-            var support8= SupportItem("Marketing Packages",Support.MARKETING_PACKAGE)
-            var support9= SupportItem("Payment & Bank Account Query",Support.PAYMENT_BANK)
-
-           // list.add(support0)
+            val support0= SupportItem("Request a call Back", Support.REQUEST_CALL_BACK)
+            val support1= SupportItem("Help With adding Tips",Support.HELP_ADDING_TIPS)
+            val support2= SupportItem("Help with adding extra Item in Order",Support.HELP_ADDING_ITEM)
+            val support3= SupportItem("Help Cancel or Refund Order to customer",Support.HELP_CANCEL_REFUND)
+            val support4= SupportItem("Update of Menu",Support.UPDATE_MENU)
+            val support5= SupportItem("Add New store with Grabull",Support.ADDING_NEW_STORE)
+            val support6= SupportItem("Free website Upgrade and Marketing Help",Support.FREE_WEBSITE)
+            val support7= SupportItem("Reviews on Google (Reputation management)",Support.REVIEW_ON_GOOGLE)
+            val support8= SupportItem("Marketing Packages",Support.MARKETING_PACKAGE)
+            val support9= SupportItem("Payment & Bank Account Query",Support.PAYMENT_BANK)
+            println("apiType>>>>>> ${sessionManager.getApiType()}")
+            if(sessionManager.getApiType()===Constant.API_TYPE.GB) {
+                println("apiType>>>>>> ${sessionManager.getApiType()}")
+                list.add(support0)
+            }
             list.add(support1)
             list.add(support2)
             list.add(support3)

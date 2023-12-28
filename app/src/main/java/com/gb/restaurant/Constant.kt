@@ -30,6 +30,13 @@ class Constant {
         }
     }
 
+    interface API_TYPE{
+        companion object{
+            const val GB = "GB"
+            const val GD = "GD"
+        }
+    }
+
     interface SERVICE_TYPE{
         companion object{
             const val GET_NEW_ORDER = "GetNewOrder"

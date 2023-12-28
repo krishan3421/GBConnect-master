@@ -631,8 +631,11 @@ class NewDetailActivity : BaseActivity() {
                     MyApp.instance.data = it.data
                     data = MyApp.instance.data
                     //createItmList()
-                    newDetailAdapter.addAll(it.data?.items as List<Item>)
-                    initView()
+                    it.data?.let {updateData->
+                        newDetailAdapter.addAll(updateData.items as List<Item>)
+                        initView()
+                    }
+
                     /* if(data!!.items.isNullOrEmpty()){
                          orders_item_count.text = "Order(0 items)"
                      }else{
