@@ -293,9 +293,11 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
                         0
                     )
                     strtDateCalendar = date
+                    endDateCalendar=date
                     var dateText = Util.get_yyyy_mm_dd(date)
                     //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
                     binding.startDateText.setText(dateText)
+                    binding.endDateText.setText(dateText)
 
                 }
 
@@ -312,7 +314,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
            // println("time>>> ${calendar.time}")
             val calendarMinMaxDate = Util.getSelMonthEndDate(strtDateCalendar!!);
             MaterialDialog(fragmentBaseActivity).show {
-                datePicker(strtDateCalendar, calendarMinMaxDate, calendar) { _, date ->
+                datePicker(strtDateCalendar, calendarMinMaxDate, strtDateCalendar) { _, date ->
                     if (strtDateCalendar != null) {
                         if (strtDateCalendar!!.before(date) || strtDateCalendar!! == date) {
                             date.set(
