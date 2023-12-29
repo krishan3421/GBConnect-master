@@ -69,8 +69,6 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     private lateinit var viewModel: DestinViewModel
     private lateinit var binding: ActivitySettingBinding
     var sessionManager: SessionManager? = null
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_setting)
@@ -211,11 +209,11 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
                     stopOpenButton.text = getString(R.string.stop_order_today)
                     //stop_open_button.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary_one))
                     // stop_open_button.background = getDrawable(R.drawable.romance_color_round_corner)
-                    stopOpenButton.background = getDrawable(R.drawable.colorprimary_round_corner)
+                    stopOpenButton.background = ContextCompat.getDrawable(this@SettingActivity,R.drawable.colorprimary_round_corner)//getDrawable(R.drawable.colorprimary_round_corner)
                     stopOpenButton.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.white))
                 } else {
                     stopOpenButton.text = getString(R.string.open_order_today)
-                    stopOpenButton.background = getDrawable(R.drawable.green_round_corner)
+                    stopOpenButton.background = ContextCompat.getDrawable(this@SettingActivity,R.drawable.green_round_corner)
                     stopOpenButton.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.white))
                 }
             }
@@ -486,12 +484,12 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     private fun openStopOpenPopUp(type: String) {
         try {
             MaterialDialog(this).show {
-                title(R.string.grabull_lower)
-                message(null, "Order $type for ${Util.getMMM_DD_YYYY(Date())}")
+                title(null,"Order $type for ${Util.getMMM_DD_YYYY(Date())}")
+               // message(null, "Order $type for ${Util.getMMM_DD_YYYY(Date())}")
                 positiveButton {
                     callService()
                 }
-                positiveButton(R.string.ok)
+                positiveButton(R.string.yes)
                 negativeButton(R.string.no)
             }
         } catch (e: Exception) {
@@ -686,11 +684,11 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
         })
         viewModel.stopOrderResponse.observe(this, Observer<StopOrderResponse> {
             it?.let {
-
+                println("response>>>>> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
-                    showToast(it.result!!)
+                    showToast(it.data?.message?:"")
                 } else {
-                    showToast(it.result!!)
+                    showToast(it.data?.message?:"")
                     if (it.data?.message?.contains("Order Stopped Today", true)!!) {
                         rsLoginResponse!!.data!!.stoptoday = Util.getYYYYMMDD()
                     } else {

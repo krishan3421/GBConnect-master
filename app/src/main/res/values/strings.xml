@@ -4,6 +4,7 @@
     <string name="action_settings">Settings</string>
     <string name="grabull_lower">Grabull</string>
     <string name="ok">OK</string>
+    <string name="yes">YES</string>
     <string name="exit_app">Are you sure,You want to exit App?</string>
     <string name="logout_app">Are you sure,You want to Logout?</string>
     <string name="restart">RESTART</string>

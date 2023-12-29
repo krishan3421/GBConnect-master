@@ -314,28 +314,20 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
            // println("time>>> ${calendar.time}")
             val calendarMinMaxDate = Util.getSelMonthEndDate(strtDateCalendar!!);
             MaterialDialog(fragmentBaseActivity).show {
-                datePicker(strtDateCalendar, calendarMinMaxDate, strtDateCalendar) { _, date ->
+                datePicker(strtDateCalendar, calendarMinMaxDate, calendar) { _, date ->
                     if (strtDateCalendar != null) {
-                        if (strtDateCalendar!!.before(date) || strtDateCalendar!! == date) {
-                            date.set(
-                                date.get(Calendar.YEAR),
-                                date.get(Calendar.MONTH),
-                                date.get(Calendar.DATE),
-                                23,
-                                59,
-                                59
-                            )
-                            endDateCalendar = date
-                            var dateText = Util.get_yyyy_mm_dd(date)
-                            //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                            binding.endDateText.setText(dateText)
-                            //callService()
-                        } else {
-                            fragmentBaseActivity.showSnackBar(
-                                binding.endDateText,
-                                "start-Date should be equal or less then end-Date"
-                            )
-                        }
+                        date.set(
+                            date.get(Calendar.YEAR),
+                            date.get(Calendar.MONTH),
+                            date.get(Calendar.DATE),
+                            23,
+                            59,
+                            59
+                        )
+                        endDateCalendar = date
+                        var dateText = Util.get_yyyy_mm_dd(date)
+                        //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
+                        binding.endDateText.setText(dateText)
                     } else {
                         fragmentBaseActivity.showSnackBar(
                             binding.endDateText,

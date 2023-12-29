@@ -266,8 +266,10 @@ class HomeDetailActivity : BaseActivity() {
                     detailHomeFooter.totalTax.text = "Total $${data?.total}"
                 }
                 if (!data?.tip2.isNullOrEmpty()) {
+                    addItemsTipsLayout.addTipButton.visibility=View.INVISIBLE
                     detailHomeFooter.tipTwoText.text = "Tips $${data?.tip2}"
                 } else {
+                    addItemsTipsLayout.addTipButton.visibility=View.VISIBLE
                     detailHomeFooter.tipTwoText.text = "Tips_____"
                 }
                 if (!data?.date2.isNullOrEmpty()) {
@@ -445,7 +447,7 @@ class HomeDetailActivity : BaseActivity() {
     }
 
     private fun showCustomViewDialog(data: Data?) {
-        println("data>>>>>>> ${Util.getStringFromBean(data!!)}")
+       // println("data>>>>>>> ${Util.getStringFromBean(data!!)}")
         var orderTipsRequest = OrderTipsRequest()
         var dialog = Dialog(this, R.style.AppCompatAlertDialogStyle)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
