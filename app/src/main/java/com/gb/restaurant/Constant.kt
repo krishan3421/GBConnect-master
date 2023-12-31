@@ -75,6 +75,7 @@ class Constant {
             const val FORGOT_PASSWORD = "ForgotPassword"
             const val GET_BANK_DETAIL = "GetBankDetails"
             const val ADD_BANK_DETAIL = "AddBankDetails"
+            const val GETSTATUSTODAY= "GetStatustoday"
         }
     }
 

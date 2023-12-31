@@ -35,6 +35,8 @@ import com.gb.restaurant.model.order.OrderRequest
 import com.gb.restaurant.model.order.OrderResponse
 import com.gb.restaurant.model.orderdetail.OrderDetailRequest
 import com.gb.restaurant.model.orderdetail.OrderDetailResponse
+import com.gb.restaurant.model.orderstatus.ResturantStatusResponse
+import com.gb.restaurant.model.orderstatus.StatusRequest
 import com.gb.restaurant.model.register.RegisterRequest
 import com.gb.restaurant.model.register.RegisterResponse
 import com.gb.restaurant.model.report.ReportRequest
@@ -101,4 +103,5 @@ interface GBRepository {
     fun forgotPass(forgotPassRequest: ForgotPassRequest, successHandler: (ForgotPassResponse) -> Unit, failureHandler: (String?) -> Unit)
     fun getBankDetail(bankDetailRequest: BankDetailRequest, successHandler: (GetBankDetailResponse) -> Unit, failureHandler: (String?) -> Unit)
     fun addBankDetail(addBankDetailRequest: AddBankDetailRequest, successHandler: (AddBankDetailResponse) -> Unit, failureHandler: (String?) -> Unit)
+ fun getRestaurantStatus(statusRequest: StatusRequest, successHandler: (ResturantStatusResponse) -> Unit, failureHandler: (String?) -> Unit)
 }

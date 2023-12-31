@@ -68,9 +68,7 @@ class SupportActivity : BaseActivity() {
             val support7= SupportItem("Reviews on Google (Reputation management)",Support.REVIEW_ON_GOOGLE)
             val support8= SupportItem("Marketing Packages",Support.MARKETING_PACKAGE)
             val support9= SupportItem("Payment & Bank Account Query",Support.PAYMENT_BANK)
-            println("apiType>>>>>> ${sessionManager.getApiType()}")
             if(sessionManager.getApiType()===Constant.API_TYPE.GB) {
-                println("apiType>>>>>> ${sessionManager.getApiType()}")
                 list.add(support0)
             }
             list.add(support1)
@@ -112,23 +110,27 @@ class SupportActivity : BaseActivity() {
         super.onResume()
         supportAdapter.setOnItemClickListener(object :SupportAdapter.SupportClickListener{
             override fun onItemClick(supportItem: SupportItem,position:Int, v: View) {
-//                if(supportItem.index==Support.REQUEST_CALL_BACK){
-//                    showCustomViewDialog()
-//                }else
-              if(supportItem.index==Support.HELP_ADDING_TIPS){
+                if(supportItem.index==Support.REQUEST_CALL_BACK){
+                    showCustomViewDialog()
+                }else if(supportItem.index==Support.HELP_ADDING_TIPS){
                     goToPage(AddTipsActivity::class.java)
                 }else if(supportItem.index==Support.HELP_ADDING_ITEM){
                     goToPage(AddItemActivity::class.java)
                 }else if(supportItem.index==Support.HELP_CANCEL_REFUND){
                     goToPage(CancelRefundActivity::class.java)
                 }else if(supportItem.index==Support.UPDATE_MENU){//Update of Menu
-                    Util.alert("Comming soon",this@SupportActivity)
+                   // Util.alert("Comming soon",this@SupportActivity)
+                    if(sessionManager.getApiType()===Constant.API_TYPE.GB){
+                        Util.alert("Coming soon",this@SupportActivity)
+                    }else {
+                        openURL("https://www.storemanage.grabulldirect.com")
+                    }
                 }else if(supportItem.index==Support.ADDING_NEW_STORE){//Update of Menu
                   openURL("https://www.grabullmarketing.com/new-restaurant-sign-up/")
                 }else if(supportItem.index==Support.FREE_WEBSITE){//Update of Menu
                     openURL("https://www.grabullmarketing.com/free-website-for-restaurants/")
                 }else if(supportItem.index==Support.REVIEW_ON_GOOGLE){//Update of Menu
-                    Util.alert("Comming soon",this@SupportActivity)
+                    Util.alert("Coming soon",this@SupportActivity)
                 }else if(supportItem.index==Support.MARKETING_PACKAGE){//Update of Menu
                     openURL("https://www.grabullmarketing.com/restaurant-marketing-services/")
                 }else if(supportItem.index==Support.PAYMENT_BANK){//Update of Menu

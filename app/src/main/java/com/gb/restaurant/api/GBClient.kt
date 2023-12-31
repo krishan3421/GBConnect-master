@@ -36,6 +36,8 @@ import com.gb.restaurant.model.order.OrderRequest
 import com.gb.restaurant.model.order.OrderResponse
 import com.gb.restaurant.model.orderdetail.OrderDetailRequest
 import com.gb.restaurant.model.orderdetail.OrderDetailResponse
+import com.gb.restaurant.model.orderstatus.ResturantStatusResponse
+import com.gb.restaurant.model.orderstatus.StatusRequest
 import com.gb.restaurant.model.register.RegisterRequest
 import com.gb.restaurant.model.register.RegisterResponse
 import com.gb.restaurant.model.report.ReportRequest
@@ -162,4 +164,6 @@ interface GBClient {
 
     @POST(Constant.SERVICE_API.COMMON_URL)
     fun addBankDetail(@Body addBankDetailRequest: AddBankDetailRequest): Call<AddBankDetailResponse>
+    @POST(Constant.SERVICE_API.COMMON_URL)
+    fun getRestaurantStatus(@Body statusRequest: StatusRequest): Call<ResturantStatusResponse>
 }

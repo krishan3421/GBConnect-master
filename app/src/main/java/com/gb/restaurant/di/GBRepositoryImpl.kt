@@ -39,6 +39,8 @@ import com.gb.restaurant.model.order.OrderRequest
 import com.gb.restaurant.model.order.OrderResponse
 import com.gb.restaurant.model.orderdetail.OrderDetailRequest
 import com.gb.restaurant.model.orderdetail.OrderDetailResponse
+import com.gb.restaurant.model.orderstatus.ResturantStatusResponse
+import com.gb.restaurant.model.orderstatus.StatusRequest
 import com.gb.restaurant.model.register.RegisterRequest
 import com.gb.restaurant.model.register.RegisterResponse
 import com.gb.restaurant.model.report.ReportRequest
@@ -886,6 +888,35 @@ class GBRepositoryImpl(private val gbClient: GBClient, private val gdClient: GBC
             }
 
             override fun onFailure(call: Call<AddBankDetailResponse>, t: Throwable) {
+                failureHandler(t.message)
+            }
+
+        })
+    }
+
+    override fun getRestaurantStatus(
+        statusRequest: StatusRequest,
+        successHandler: (ResturantStatusResponse) -> Unit,
+        failureHandler: (String?) -> Unit
+    ) {
+        apiService.getRestaurantStatus(statusRequest).enqueue(object:retrofit2.Callback<ResturantStatusResponse>{
+
+            override fun onResponse(call: Call<ResturantStatusResponse>, response: Response<ResturantStatusResponse>) {
+                if(response?.body()!=null){
+                    response?.body()?.let {
+                        successHandler(it)
+                    }
+                }else{
+                    if(response.code() ==500){
+                        failureHandler(ERROR_500)
+                    }else{
+                        failureHandler("Error Code ${response.code()}")
+                    }
+                }
+
+            }
+
+            override fun onFailure(call: Call<ResturantStatusResponse>, t: Throwable) {
                 failureHandler(t.message)
             }
 

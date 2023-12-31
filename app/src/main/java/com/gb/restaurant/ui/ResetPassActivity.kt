@@ -87,7 +87,7 @@ class ResetPassActivity : BaseActivity() {
                 resetPassRequest.user_id = rsLoginResponse?.data?.loginId!!
                 resetPassRequest.password = binding.contentResetPass.newPassText.text.toString()
                 resetPassRequest.deviceversion = Util.getVersionName(this)
-               // println("data>>>>>> ${Util.getStringFromBean(resetPassRequest)}")
+                println("data>>>>>> ${Util.getStringFromBean(resetPassRequest)}")
                 viewModel.resetPass(resetPassRequest)
             }
         }catch (e:Exception){
@@ -106,6 +106,7 @@ class ResetPassActivity : BaseActivity() {
         })
         viewModel.resetPassResponse.observe(this, Observer<ResetPassResponse> {
             it?.let {
+                println("data>>>>>> ${Util.getStringFromBean(it)}")
                 if(it.status != Constant.STATUS.FAIL){
                     if(it.data !=null) {
                         var sessionManager = SessionManager(this)

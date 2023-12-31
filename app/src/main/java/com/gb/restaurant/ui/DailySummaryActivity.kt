@@ -103,7 +103,8 @@ class DailySummaryActivity : BaseActivity() {
                     layoutManager = LinearLayoutManager(this@DailySummaryActivity)
                     adapter = gbSummAdapter
                 }
-                callDailySummService()
+                var dateApiText = Util.get_yyyy_mm_dd(Calendar.getInstance())
+                callDailySummService(dateApiText?:"")
             }
 
         }catch (e:Exception){
@@ -112,14 +113,14 @@ class DailySummaryActivity : BaseActivity() {
         }
     }
 
-    private fun callDailySummService(){
+    private fun callDailySummService(summeryDate:String){
         try{
             if(!Validation.isOnline(this)){
                 showSnackBar(binding.progressBar,getString(R.string.internet_connected))
                 return
             }else{
 
-                var dailySumRequest=DailySumRequest()
+                var dailySumRequest=DailySumRequest(summarydate = summeryDate)
                 dailySumRequest.deviceversion = Util.getVersionName(this)
                 dailySumRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                  println("request date>>>>>> ${Util.getStringFromBean(dailySumRequest)}")
@@ -127,7 +128,7 @@ class DailySummaryActivity : BaseActivity() {
             }
         }catch (e:Exception){
             e.printStackTrace()
-            Log.e(TAG,e.message!!)
+            Log.e(TAG,e.message?:"")
         }
     }
 
@@ -141,6 +142,7 @@ class DailySummaryActivity : BaseActivity() {
 
         viewModel.dailySummResponse.observe(this, Observer<DailySummResponse> {
             it?.let {
+                println("request date>>>>>> ${Util.getStringFromBean(it)}")
                 if(it.status == Constant.STATUS.FAIL){
                     showToast(it.result!!)
                 }else{
@@ -180,14 +182,15 @@ class DailySummaryActivity : BaseActivity() {
 
     fun openDateDialog(view:View){
         try{
-            var calendar = Calendar.getInstance()
+            val calendar = Calendar.getInstance()
             MaterialDialog(this).show {
                 datePicker(null,calendar,calendar) { _, date ->
                     date.set(date.get(Calendar.YEAR),date.get(Calendar.MONTH),date.get(Calendar.DATE),0,0,0)
                     var dateText = Util.getMM_day_yyyy(date.time)
+                    var dateApiText = Util.get_yyyy_mm_dd(date)
                     //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
                     binding.contentDailySummary.dateButton.text = dateText
-
+                     callDailySummService(dateApiText?:"")
                 }
 
             }
