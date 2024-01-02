@@ -1,6 +1,7 @@
 package com.gb.restaurant.ui
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -123,7 +124,7 @@ class SupportActivity : BaseActivity() {
                     if(sessionManager.getApiType()===Constant.API_TYPE.GB){
                         Util.alert("Coming soon",this@SupportActivity)
                     }else {
-                        openURL("https://www.storemanage.grabulldirect.com")
+                        openUrlInBrowser("https://www.storemanage.grabulldirect.com")
                     }
                 }else if(supportItem.index==Support.ADDING_NEW_STORE){//Update of Menu
                   openURL("https://www.grabullmarketing.com/new-restaurant-sign-up/")
@@ -151,6 +152,10 @@ class SupportActivity : BaseActivity() {
             e.printStackTrace()
             Log.e(TAG,e.message!!)
         }
+    }
+    private fun openUrlInBrowser(url:String){
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(browserIntent)
     }
     private fun openURL(url:String){
         var intent = Intent(this, ViewInvoiceActivity::class.java)
