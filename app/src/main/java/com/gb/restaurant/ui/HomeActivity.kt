@@ -50,6 +50,7 @@ companion object{
 
     var loginResponse:RsLoginResponse?=null
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var sessionManager: SessionManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
@@ -67,6 +68,7 @@ companion object{
         }catch (e:Exception){
             e.printStackTrace()
         }
+        sessionManager = SessionManager(this@HomeActivity)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -82,7 +84,11 @@ companion object{
         addressText.text = "${loginResponse?.data?.address}"
         delPackgText.text = "Delivery Orders - ${loginResponse?.data?.del_pckg}"
         pickupPackgText.text = "Pickup Orders - ${loginResponse?.data?.pick_pckg}"
-        if(loginResponse?.data?.gbtype.equals("Admin",true)){
+        var bankNavItem = navView.menu?.findItem(R.id.nav_bank_info)
+        if(sessionManager.getApiType() != "GB"){
+            bankNavItem?.isVisible = false
+        }
+        if(loginResponse?.data?.gbtype.equals("Admin",true) && sessionManager.getApiType() == "GB"){
             createUserButton.visibility=View.VISIBLE
         }else{
             createUserButton.visibility=View.GONE

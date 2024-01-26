@@ -129,6 +129,12 @@ class HomeDetailActivity : BaseActivity() {
             Log.e(TAG, e.message!!)
         }
     }
+    private fun openURL(url:String){
+        var intent = Intent(this, ViewInvoiceActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra(ViewInvoiceActivity.INVOICE, "$url")
+        startActivity(intent)
+    }
 
     private fun setStatusBarColor() {
         try {
@@ -169,6 +175,9 @@ class HomeDetailActivity : BaseActivity() {
                 data?.name?.let {
                     orderDetailItem.nameText.text = "$it"
                 }
+                trackOrderText.setOnClickListener {
+                    openURL("https://www.google.com/")
+                }
                 if (data?.payment!!.contains("Paid", true)) {
                     orderDetailItem.prepaidText.text = "PREPAID"
                     orderDetailItem.prepaidText.setBackgroundColor(ContextCompat.getColor(this@HomeDetailActivity, R.color.green))
@@ -202,9 +211,11 @@ class HomeDetailActivity : BaseActivity() {
                 if (!data?.type.isNullOrEmpty() && data?.type!!.contains("Pickup", true)) {
                     orderDetailItem.addressLayout.visibility = View.INVISIBLE
                     detailHomeFooter.deliveryFeeHomeLayout.visibility = View.GONE
+                    trackOrderText.visibility=View.GONE
                 } else {
                     orderDetailItem.addressLayout.visibility = View.VISIBLE
                     detailHomeFooter.deliveryFeeHomeLayout.visibility = View.VISIBLE
+                    trackOrderText.visibility=View.VISIBLE
                 }
                 data?.rewards?.let {reward->
                     if(reward.isNotEmpty()){

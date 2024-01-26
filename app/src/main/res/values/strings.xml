@@ -243,6 +243,7 @@
     <string name="title_activity_registration">Sign Up</string>
     <string name="title_activity_home">GRABULL</string>
     <string name="bank_name_empty">Bank Name should not empty.</string>
+    <string name="track_order"><u>Track Order</u></string>
     <string name="account_holder_empty">Account Holder Name should not empty.</string>
     <string name="account_number_empty">Account Number should not empty.</string>
     <string name="account_number_length">Account Number should not less then 3 and greater then 14 digits.</string>

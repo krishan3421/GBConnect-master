@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Build;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -30,7 +31,12 @@ public class BluetoothDiscovery {
         filter.addAction(BluetoothDevice.ACTION_FOUND);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        context.registerReceiver(mReceiver, filter);
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            context.registerReceiver(mReceiver, filter,Context.RECEIVER_EXPORTED);
+        }else{
+            context.registerReceiver(mReceiver, filter);
+        }
+
         Log.i(TAG, "registerReceiver");
     }
 
