@@ -533,6 +533,7 @@ class ComDetailActivity : BaseActivity() {
                 var orderDetailRequest = OrderDetailRequest()
                 orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 orderDetailRequest.order_id = data!!.id!!
+                orderDetailRequest.order_type="Completed"
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
                 println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
                 viewModel.getOrderDetailResponse(orderDetailRequest)
@@ -604,19 +605,23 @@ class ComDetailActivity : BaseActivity() {
         })
 
         viewModel.orderDetailResponse.observe(this, Observer<OrderDetailResponse> {
-            it?.let {
+            it.let {order->
+                println("complete>>> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
                     showToast(it.result!!)
                 } else {
                     // showToast(it.result!!)
-                    MyApp.instance.data = it.data
+                    MyApp.instance.data = order?.data
                     createItmList()
-                    newDetailAdapter.addAll(it.data?.items as List<Item>)
+                    if(!order.data?.items.isNullOrEmpty()){
+                        newDetailAdapter.addAll(order?.data?.items as List<Item>)
+                    }
+
                     /* if(data!!.items.isNullOrEmpty()){
-                         orders_item_count.text = "Order(0 items)"
-                     }else{
-                         orders_item_count.text = "Order(${data!!.items!!.size} items)"
-                     }*/
+                                 orders_item_count.text = "Order(0 items)"
+                             }else{
+                                 orders_item_count.text = "Order(${data!!.items!!.size} items)"
+                             }*/
                 }
             }
         })

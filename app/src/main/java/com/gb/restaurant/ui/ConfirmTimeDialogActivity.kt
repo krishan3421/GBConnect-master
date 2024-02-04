@@ -55,9 +55,9 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
             viewModel = createViewModel()
             rsLoginResponse = MyApp.instance.rsLoginResponse
             intent.apply {
-                orderId = this.getStringExtra(ORDER_ID)!!
-                orderType =  this.getStringExtra(TYPE)!!
-                hold =  this.getStringExtra(HOLD)!!
+                orderId = this.getStringExtra(ORDER_ID)?:""
+                orderType =  this.getStringExtra(TYPE) ?:""
+                hold =  this.getStringExtra(HOLD) ?:"";
             }
             rsLoginResponse?.data?.let {
                 if(!hold.equals("Yes",true)) {

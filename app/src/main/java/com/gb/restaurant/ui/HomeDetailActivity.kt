@@ -277,8 +277,13 @@ class HomeDetailActivity : BaseActivity() {
                     detailHomeFooter.totalTax.text = "Total $${data?.total}"
                 }
                 if (!data?.tip2.isNullOrEmpty()) {
-                    addItemsTipsLayout.addTipButton.visibility=View.INVISIBLE
-                    detailHomeFooter.tipTwoText.text = "Tips $${data?.tip2}"
+                    if(data?.tip2 != "0.0" ||  data?.tip2 != "0") {
+                        addItemsTipsLayout.addTipButton.visibility = View.INVISIBLE
+                        detailHomeFooter.tipTwoText.text = "Tips $${data?.tip2}"
+                    }else{
+                        addItemsTipsLayout.addTipButton.visibility=View.VISIBLE
+                        detailHomeFooter.tipTwoText.text = "Tips_____"
+                    }
                 } else {
                     addItemsTipsLayout.addTipButton.visibility=View.VISIBLE
                     detailHomeFooter.tipTwoText.text = "Tips_____"
@@ -545,7 +550,7 @@ class HomeDetailActivity : BaseActivity() {
                     priceEditText.text.toString()
                 )
                 itemList.add(item)
-                println("data>>> ${Util.getStringFromBean(item)}")
+               // println("data>>> ${Util.getStringFromBean(item)}")
                 myAdapter.notifyDataSetChanged()
                 itemEditText.setText("")
                 priceEditText.setText("")
@@ -590,7 +595,7 @@ class HomeDetailActivity : BaseActivity() {
                     }
                 }
             }
-            println("data>>> ${Util.getStringFromBean(itemList)}")
+            //println("data>>> ${Util.getStringFromBean(itemList)}")
             if (itemList.isNotEmpty()) {
                 if (myAdapter.getPriceCount() <= 500) {
                     addOrderItemRequest.itemslist = itemList
@@ -697,7 +702,8 @@ class HomeDetailActivity : BaseActivity() {
                 orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 orderDetailRequest.order_id = data!!.id!!
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
-                println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
+                orderDetailRequest.order_type="Inhouse"
+                //println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
                 viewModel.getOrderDetailResponse(orderDetailRequest)
             } else {
                 showToast(getString(R.string.internet_connected))
@@ -780,6 +786,7 @@ class HomeDetailActivity : BaseActivity() {
         try {
             if (Validation.isOnline(this)) {
                 orderStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
+                println("status request>>>> ${Util.getStringFromBean(orderStatusRequest)}")
                 viewModel.orderStatus(orderStatusRequest)
             } else {
                 showToast(getString(R.string.internet_connected))
@@ -893,6 +900,7 @@ class HomeDetailActivity : BaseActivity() {
         })
         viewModel.orderStatusResponse.observe(this, Observer<OrderStatusResponse> {
             it?.let {
+                println("orderStatusResponse >> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
                     showToast(it.result!!)
                 } else {

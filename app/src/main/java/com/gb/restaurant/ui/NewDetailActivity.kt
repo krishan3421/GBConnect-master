@@ -384,9 +384,9 @@ class NewDetailActivity : BaseActivity() {
         try {
             var intent = Intent(this, ConfirmTimeDialogActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            intent.putExtra(ConfirmTimeDialogActivity.ORDER_ID, data!!.id)
-            intent.putExtra(ConfirmTimeDialogActivity.TYPE, data!!.type)
-            intent.putExtra(ConfirmTimeDialogActivity.HOLD, data!!.hold)
+            intent.putExtra(ConfirmTimeDialogActivity.ORDER_ID, data?.id)
+            intent.putExtra(ConfirmTimeDialogActivity.TYPE, data?.type)
+            intent.putExtra(ConfirmTimeDialogActivity.HOLD, data?.hold)
             startActivityForResult(intent, CONFIRM_PAGE)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -552,6 +552,7 @@ class NewDetailActivity : BaseActivity() {
                 var orderDetailRequest = OrderDetailRequest()
                 orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 orderDetailRequest.order_id = data!!.id!!
+                orderDetailRequest.order_type="New"
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
                // println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
                 viewModel.getOrderDetailResponse(orderDetailRequest)
@@ -624,6 +625,7 @@ class NewDetailActivity : BaseActivity() {
 
         viewModel.orderDetailResponse.observe(this, Observer<OrderDetailResponse> {
             it?.let {
+                //println("response>>>>>> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
                     showToast(it.result!!)
                 } else {
