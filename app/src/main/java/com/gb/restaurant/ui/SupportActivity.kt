@@ -135,7 +135,9 @@ class SupportActivity : BaseActivity() {
                 }else if(supportItem.index==Support.MARKETING_PACKAGE){//Update of Menu
                     openURL("https://www.grabullmarketing.com/restaurant-marketing-services/")
                 }else if(supportItem.index==Support.PAYMENT_BANK){//Update of Menu
-                    paymentQueryDialog()
+                    if(sessionManager.getApiType()===Constant.API_TYPE.GB) {
+                        paymentQueryDialog()
+                    }
                 }
 
             }

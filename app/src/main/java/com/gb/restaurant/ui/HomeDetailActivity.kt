@@ -900,13 +900,13 @@ class HomeDetailActivity : BaseActivity() {
         })
         viewModel.orderStatusResponse.observe(this, Observer<OrderStatusResponse> {
             it?.let {
-                println("orderStatusResponse >> ${Util.getStringFromBean(it)}")
+                //println("orderStatusResponse >> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
-                    showToast(it.result!!)
+                    showToast(it.result?:"")
                 } else {
-                    showToast(it.result!!)
+                    showToast(it.result?:"")
                     if (materialDialog != null) {
-                        materialDialog!!.dismiss()
+                        materialDialog?.dismiss()
                     }
                     finishPage()
                     //callService()

@@ -1,6 +1,7 @@
 package com.gb.restaurant.ui
 
 import android.app.Dialog
+import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
@@ -118,11 +119,20 @@ class AddItemActivity : BaseActivity() {
                 layoutManager = LinearLayoutManager(this@AddItemActivity)
                 adapter = addingItemAdapter
             }
+            binding.contentItem.needMoreHelpButton.setOnClickListener {
+                openURL("https://www.grabulldirect.com/contact-us/");
+            }
             callService()
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
         }
+    }
+    private fun openURL(url:String){
+        var intent = Intent(this, ViewInvoiceActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra(ViewInvoiceActivity.INVOICE, "$url")
+        startActivity(intent)
     }
 
     private fun callService(){

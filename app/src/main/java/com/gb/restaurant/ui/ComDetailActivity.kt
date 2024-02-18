@@ -305,7 +305,7 @@ class ComDetailActivity : BaseActivity() {
                             PrintingTask().execute()
 
                         } else {
-                            showDialog(this, data!!)
+                            showDialog(this@ComDetailActivity, data)
                         }
 
                     } else {
@@ -362,7 +362,7 @@ class ComDetailActivity : BaseActivity() {
                         PrintingTask().execute()
 
                     } else {
-                        showDialog(this, MyApp.instance.data!!)
+                        showDialog(this, MyApp.instance.data)
                     }
                 } else {
 
@@ -640,7 +640,7 @@ class ComDetailActivity : BaseActivity() {
     }
 
 
-    private fun showDialog(mContext: Context, data: Data) {
+    private fun showDialog(mContext: Context, data: Data?) {
 
         val printerList = ArrayList<PrinterModel>()
         lateinit var bluetoothDiscovery: BluetoothDiscovery
