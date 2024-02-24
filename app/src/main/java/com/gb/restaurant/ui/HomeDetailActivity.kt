@@ -86,7 +86,7 @@ class HomeDetailActivity : BaseActivity() {
 
     var sessionManager: SessionManager? = null
     private lateinit var binding: HomeDetailActivityBinding
-
+    private var isGbDirect =false
     companion object {
         private val TAG: String = HomeDetailActivity::class.java.simpleName
         private val CONFIRM_PAGE: Int = 11
@@ -108,6 +108,9 @@ class HomeDetailActivity : BaseActivity() {
 
     private fun initData() {
         try {
+            if(sessionManager?.getApiType() == "GD"){
+                isGbDirect =true
+            }
             rsLoginResponse = MyApp.instance.rsLoginResponse
             intent.apply {
                 fromPage = this.getIntExtra(FROMPAGE, 0)
@@ -153,10 +156,11 @@ class HomeDetailActivity : BaseActivity() {
         try {
             binding.apply {
                 setSupportActionBar(toolbar)
+                supportActionBar?.setDisplayShowTitleEnabled(false);
                 toolbar.navigationIcon = ContextCompat.getDrawable(this@HomeDetailActivity, R.drawable.ic_back)
                 toolbar.setNavigationOnClickListener { onBackPressed() }
                 titleHome.setOnClickListener { onBackPressed() }
-                toolbar.title = ""// "${getString(R.string.back)}"//"${rsLoginResponse?.data?.name}"
+                toolbar.title = null// "${getString(R.string.back)}"//"${rsLoginResponse?.data?.name}"
                 toolbar.setTitleTextColor(ContextCompat.getColor(this@HomeDetailActivity, R.color.colorPrimaryDark_one));
 
             }
@@ -721,7 +725,7 @@ class HomeDetailActivity : BaseActivity() {
                 addOrderItemRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 addOrderItemRequest.order_id = data?.orderid!!
                 addOrderItemRequest.deviceversion = Util.getVersionName(this)
-                println("request add item>>>> ${Util.getStringFromBean(addOrderItemRequest)}")
+               //println("request add item>>>> ${Util.getStringFromBean(addOrderItemRequest)}")
                 viewModel.addItemsOrder(addOrderItemRequest)
             } else {
                 showToast(getString(R.string.internet_connected))
@@ -801,15 +805,14 @@ class HomeDetailActivity : BaseActivity() {
     private fun attachObserver() {
         val  cardProgress=cardDialog?.findViewById<ProgressBar>(R.id.card_progress)
         viewModel.isLoading.observe(this, Observer<Boolean> {
-            it?.let { showLoadingDialog(it) }
+            showLoadingDialog(it)
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { showToast(it) }
+            showToast(it)
         })
         viewModel.addTipsResponse.observe(this, Observer<OrderTipsResponse> {
-            it?.let {
-
-                println("tipsResponse>>>>>>>>> ${Util.getStringFromBean(it)}")
+            it.let {
+                //println("tipsResponse>>>>>>>>> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
                     // showToast(it.result!!)
                     Util.alertDialog(it.result ?: "", this)
@@ -830,12 +833,14 @@ class HomeDetailActivity : BaseActivity() {
                         Util.alertDialog(it.result ?: "", this)
                     } else {
                         cardProgress?.visibility = View.GONE
-                        selOrderTipsRequest?.newcard = "Yes"
-                        if (cardDialog == null) {
-                            showCardDetailDialog(data!!, fromItem = false)
-                        } else {
-                            if (!cardDialog!!.isShowing) {
+                        if(!isGbDirect) {
+                            selOrderTipsRequest?.newcard = "Yes"
+                            if (cardDialog == null) {
                                 showCardDetailDialog(data!!, fromItem = false)
+                            } else {
+                                if (!cardDialog!!.isShowing) {
+                                    showCardDetailDialog(data!!, fromItem = false)
+                                }
                             }
                         }
                         if (it.data?.payment.equals("Failed"))
@@ -847,6 +852,7 @@ class HomeDetailActivity : BaseActivity() {
         })
 
         viewModel.addItemsOrderResponse.observe(this, Observer<AddOrderItemResponse> {
+            println("itemsResponse>>>>>>>>> ${Util.getStringFromBean(it)}")
             it?.let {
                 if (it.status == Constant.STATUS.FAIL) {
                     Util.alertDialog(it?.result ?: "", this)
@@ -860,11 +866,13 @@ class HomeDetailActivity : BaseActivity() {
                     } else {
                         cardProgress?.visibility = View.GONE
                         selOrderItemRequest?.newcard = "Yes"
-                        if (cardDialog == null) {
-                            showCardDetailDialog(data!!, fromItem = true)
-                        } else {
-                            if (!cardDialog!!.isShowing) {
+                        if(!isGbDirect) {
+                            if (cardDialog == null) {
                                 showCardDetailDialog(data!!, fromItem = true)
+                            } else {
+                                if (!cardDialog!!.isShowing) {
+                                    showCardDetailDialog(data!!, fromItem = true)
+                                }
                             }
                         }
                         if (it.data?.payment.equals("Failed"))

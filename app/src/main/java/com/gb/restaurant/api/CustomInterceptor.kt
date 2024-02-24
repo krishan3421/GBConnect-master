@@ -9,9 +9,9 @@ class CustomInterceptor:Interceptor {
         val request: Request = chain.request()
             .newBuilder()
             .build()
-        println("path>>>> ${request.url().url().host.toString()}")
-        val response =  chain.proceed(request)
-        println("url_response>>>> ${response.request().url().toString()}")
+        //println("path>>>> ${request.url().url().host.toString()}")
+        //val response =  chain.proceed(request)
+        //println("url_response>>>> ${response.request().url().toString()}")
         return chain.proceed(request)
     }
 }
