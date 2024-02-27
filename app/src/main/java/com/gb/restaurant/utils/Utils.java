@@ -21,6 +21,8 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.core.content.ContextCompat;
 import com.gb.restaurant.CATPrintSDK.Canvas;
 import com.gb.restaurant.R;
@@ -56,7 +58,17 @@ public class Utils {
 
     public static Bitmap createOrderReceipt(Context ctx, Canvas mCanvas, int nPrintWidth, Data
             receiptData) {
-
+       if(receiptData ==null){
+           new Handler(Looper.getMainLooper()).post(new Runnable() {
+               @Override
+               public void run() {
+                   Toast.makeText(ctx,
+                           "There is some issue in data or Printer not connected, Please try later",
+                           Toast.LENGTH_LONG).show();
+               }
+           });
+           return null;
+       }
         Bitmap bitmap = null;
         int lineHeight = 0;
         Canvas canvas = mCanvas;
@@ -81,7 +93,7 @@ public class Utils {
 
         lineHeight += 20;
 
-        if(receiptData.getHolddate2() ==null || receiptData.getHolddate2().isEmpty()){
+        if(receiptData.getHolddate2() ==null){
             canvas.DrawText(receiptData.getDate2(), -2, lineHeight, 0, defaultFont, 30, 0);
         }else {
             canvas.DrawText("Future Order", -2, lineHeight, 0, defaultFont, 40, FONTSTYLE_BOLD);
