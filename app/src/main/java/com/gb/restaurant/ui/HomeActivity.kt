@@ -1,6 +1,9 @@
 package com.gb.restaurant.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -115,8 +118,28 @@ companion object{
         viewModel = createViewModel()
         attachObserver()
         checkBundle(intent)
+        makeRunTimeNotificationPermission()
+    }
+    private fun makeRunTimeNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.POST_NOTIFICATIONS),
+                1111)
+        }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1111 -> {
+                if (grantResults.isEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED ) {
+                    makeRunTimeNotificationPermission()
+                }
+            }
+        }
+
+    }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         try{
