@@ -67,7 +67,7 @@ class NotificationHelper(val mContext: Context) {
 
 
         val bigText =NotificationCompat.BigTextStyle()
-        bigText.bigText("${pushMessage.body}")
+        bigText.bigText(pushMessage.body)
         mBuilder = NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL_ID)
         mBuilder?.setSmallIcon(R.mipmap.ic_launcher)
         mBuilder?.setContentTitle(pushMessage.title)!!
