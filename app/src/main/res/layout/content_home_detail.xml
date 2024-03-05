@@ -80,8 +80,11 @@
             android:id="@+id/track_order_text"
             android:visibility="gone"
             android:text="@string/track_order"
+            android:layout_marginStart="@dimen/activity_horizontal_margin"
             android:layout_marginTop="@dimen/dimen_10"
-            android:textColor="@color/blue_color"/>
+            android:textColor="@color/blue_color"
+            android:drawablePadding="@dimen/dimen_5"
+            app:drawableLeftCompat="@drawable/baseline_my_location_24" />
         <LinearLayout android:layout_width="match_parent"
                 android:layout_height="@dimen/dimen_30"
                 android:orientation="vertical"

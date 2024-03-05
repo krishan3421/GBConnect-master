@@ -179,7 +179,7 @@ class ReservationActivity : BaseActivity(),TabLayout.OnTabSelectedListener {
         override fun onReceive(context: Context?, intent: Intent?) {
             //showToast("broadcast>>>>>")
             val pushMessage = intent?.getParcelableExtra<PushMessage>(MyFirebaseMessagingService.PUSH_KEY)
-            println("datapush>>>>> ${pushMessage?.let { Util.getStringFromBean(it) }}")
+            //println("datapush>>>>> ${pushMessage?.let { Util.getStringFromBean(it) }}")
             pushMessage?.let {handlePushMessage(it)  }
 
         }

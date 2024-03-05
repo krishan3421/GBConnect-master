@@ -180,7 +180,7 @@ class HomeDetailActivity : BaseActivity() {
                     orderDetailItem.nameText.text = "$it"
                 }
                 trackOrderText.setOnClickListener {
-                    openURL("https://www.google.com/")
+                    openURL(data?.trackorder?:"")
                 }
                 if (data?.payment!!.contains("Paid", true)) {
                     orderDetailItem.prepaidText.text = "PREPAID"
@@ -219,12 +219,26 @@ class HomeDetailActivity : BaseActivity() {
                 } else {
                     orderDetailItem.addressLayout.visibility = View.VISIBLE
                     detailHomeFooter.deliveryFeeHomeLayout.visibility = View.VISIBLE
-                    trackOrderText.visibility=View.VISIBLE
+                   // println("data?.trackorder "+data?.trackorder)
+                    if(data?.trackorder.isNullOrEmpty()) {
+                        trackOrderText.visibility = View.GONE
+                    }else{
+                        trackOrderText.visibility = View.VISIBLE
+                    }
                 }
                 data?.rewards?.let {reward->
                     if(reward.isNotEmpty()){
                         detailHomeFooter.rewardLayout.visibility = View.VISIBLE
                         detailHomeFooter.rewards.text="$$reward"
+                    }
+                }
+               // println("details>>>> "+data?.details)
+                data?.details?.let {noteDetail->
+                    if(noteDetail.isNotEmpty()){
+                        detailHomeFooter.noteLayout.visibility = View.VISIBLE
+                        detailHomeFooter.noteDetailsText.text=noteDetail
+                    }else{
+                        detailHomeFooter.noteLayout.visibility = View.GONE
                     }
                 }
                 /*if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)

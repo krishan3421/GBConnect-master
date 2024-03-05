@@ -202,6 +202,14 @@ class NewDetailActivity : BaseActivity() {
                         detailFooter.rewards.text="$$reward"
                     }
                 }
+                data?.details?.let {noteDetail->
+                    if(noteDetail.isNotEmpty()){
+                        detailFooter.noteLayout.visibility = View.VISIBLE
+                        detailFooter.noteDetailsText.text=noteDetail
+                    }else{
+                        detailFooter.noteLayout.visibility = View.GONE
+                    }
+                }
                 /*  if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)
                       var paymentStatus = ""
                     if(data?.payment!!.contains("pending",true)){

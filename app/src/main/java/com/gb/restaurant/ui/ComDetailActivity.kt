@@ -257,6 +257,14 @@ class ComDetailActivity : BaseActivity() {
             } else {
                 binding.contentComDetail.detailComFooter.tipTwoText.text = "Tips_____"
             }
+            data?.details?.let {noteDetail->
+                if(noteDetail.isNotEmpty()){
+                    binding.contentComDetail.detailComFooter.noteLayout.visibility = View.VISIBLE
+                    binding.contentComDetail.detailComFooter.noteDetailsText.text=noteDetail
+                }else{
+                    binding.contentComDetail.detailComFooter.noteLayout.visibility = View.GONE
+                }
+            }
             if (!data?.date2.isNullOrEmpty()) {
                 binding.contentComDetail.orderTimeText.text = "ORDER TIME: ${data?.date2}"
             } else {

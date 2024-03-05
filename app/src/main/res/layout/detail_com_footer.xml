@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_10"
-        android:gravity="right"
-        android:orientation="vertical"
-        android:paddingLeft="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/dimen_5"
-        android:paddingRight="@dimen/activity_horizontal_margin"
-        android:paddingBottom="@dimen/dimen_5">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_marginTop="@dimen/dimen_10"
+    android:gravity="right"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/dimen_5"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingBottom="@dimen/dimen_5">
 
     <LinearLayout
             android:layout_width="match_parent"
@@ -245,5 +246,30 @@
 
         </LinearLayout>
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/note_layout"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:gravity="left"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:orientation="vertical"
+        tools:ignore="RtlHardcoded">
 
+        <TextView
+            style="@style/normal_text_16"
+            android:layout_width="@dimen/dimen_100"
+            android:layout_height="@dimen/dimen_30"
+            android:gravity="left"
+            android:text="Note:- "
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/note_details_text"
+            style="@style/normal_text_14"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:layout_marginLeft="@dimen/activity_horizontal_margin"
+            android:textStyle="normal" />
+
+    </LinearLayout>
 </LinearLayout>

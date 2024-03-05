@@ -160,7 +160,7 @@ public class Utils {
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
 
 
-        lineHeight += 20;
+        lineHeight += 40;
 
         for (int i = 0; i < receiptData.getItems().size(); i++) {
 
@@ -173,6 +173,8 @@ public class Utils {
                     canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 15, lineHeight - 5, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 } else if (receiptData.getItems().get(i).getQty().length() == 3) {
                     canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 10, lineHeight - 5, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                }else{
+                    canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 10, lineHeight - 5, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 }
             }
 
@@ -182,9 +184,9 @@ public class Utils {
             if (headingData != null && !headingData.isEmpty()) {
                 List<String> headingList = wrapLines(headingData, 25);
                 for (int k = 0; k < headingList.size(); k++) {
-                    canvas.DrawText("" + headingList.get(k), 60, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                    canvas.DrawText("" + headingList.get(k), 60, lineHeight-20, 0, defaultFont, 30, FONTSTYLE_BOLD);
                     if (k == 0) {
-                        canvas.DrawText("$" + receiptData.getItems().get(i).getPrice(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                        canvas.DrawText("$" + receiptData.getItems().get(i).getPrice(), -3, lineHeight-20, 0, defaultFont, 30, FONTSTYLE_BOLD);
                     }
                     lineHeight += 30;
                 }
@@ -254,7 +256,7 @@ public class Utils {
             lineHeight += 30;
         }
 
-        lineHeight += 10;
+        lineHeight += 30;
 
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
         lineHeight++;
@@ -262,14 +264,14 @@ public class Utils {
         lineHeight++;
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
 
-        lineHeight += 10;
+        lineHeight += 20;
 
         if (receiptData.getTotal() != null) {
             canvas.DrawText("TOTAL: $" + receiptData.getTotal(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 30;
         }
 
-        lineHeight += 10;
+        lineHeight += 30;
 
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
         lineHeight++;
@@ -277,7 +279,7 @@ public class Utils {
         lineHeight++;
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
 
-        lineHeight += 10;
+        lineHeight += 30;
 
         ArrayList<String> instructionList;
 

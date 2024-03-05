@@ -432,7 +432,7 @@ class TodayFragment : BaseFragment(),View.OnClickListener {
             val replyText = this.findViewById<TextView>(R.id.reply_text);
             val replyTextVal = this.findViewById<TextView>(R.id.reply_text_val);
             titleDialogText.text = "${data.name?:""}"
-            peopleText.text ="${data.peoples}"
+            peopleText.text ="Peoples: ${data.peoples}"
             dateText.text ="Date: ${data.date2}"
             bookingDateText.text ="Booking Date: ${data.bookingtime}"
             if(data.location.isNullOrEmpty()){
