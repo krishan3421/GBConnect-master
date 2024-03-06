@@ -315,13 +315,15 @@ public class Utils {
             if (receiptData.getDelivery() != null) {
                 if (!receiptData.getDelivery().isEmpty()) {
                     addressList = wrapLines(receiptData.getDelivery(), 35);
+
                     int i = 0;
                     for (String li : addressList) {
+                        System.out.println("li>> "+li);
                         canvas.DrawText(li, 0, lineHeight, 0, defaultFont, 30, 0);
                         i++;
                         lineHeight += 40;
                     }
-
+                    lineHeight += 30;
                 }
             }
         }
@@ -341,6 +343,7 @@ public class Utils {
         try {
             bitmap = Bitmap.createBitmap(bmpp, 0, 0, nPrintWidth, lineHeight);
         }catch(Exception e) {
+            e.printStackTrace();
             bitmap= bmpp;
         }
         return bitmap;
@@ -439,6 +442,17 @@ public class Utils {
 
 
         lineHeight += 100;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
         lineHeight += 300;
         lineHeight += 300;
         return lineHeight;
