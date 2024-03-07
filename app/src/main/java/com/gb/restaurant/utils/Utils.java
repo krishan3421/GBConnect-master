@@ -164,7 +164,10 @@ public class Utils {
 
         for (int i = 0; i < receiptData.getItems().size(); i++) {
 
-
+            if(i > 0) {
+                canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
+                lineHeight += 40;
+            }
             if (receiptData.getItems().get(i).getQty() != null) {
                 canvas.DrawBoxLight(5, lineHeight - 7, 55, lineHeight + 30);
                 if (receiptData.getItems().get(i).getQty().length() == 1) {
@@ -243,6 +246,21 @@ public class Utils {
             lineHeight += 30;
         }
 
+        if (receiptData.getOfferamount() !=null) {
+            if(!receiptData.getOfferamount().isEmpty()) {
+                canvas.DrawText("Discount", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$" + receiptData.getOfferamount(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                lineHeight += 30;
+            }
+        }
+        if (receiptData.getDeliverycharge() !=null && receiptData.getType().equalsIgnoreCase("Delivery")) {
+            if(!receiptData.getOfferamount().isEmpty() ) {
+                canvas.DrawText("Delivery Fee", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$" + receiptData.getDeliverycharge(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                lineHeight += 30;
+            }
+        }
+
         if (receiptData.getTax() != null) {
             canvas.DrawText("Tax", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             canvas.DrawText("$" + receiptData.getTax(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
@@ -253,6 +271,12 @@ public class Utils {
         if (receiptData.getTip() != null) {
             canvas.DrawText("Tip", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             canvas.DrawText("$" + receiptData.getTip(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            lineHeight += 30;
+        }
+
+        if (receiptData.getRewards() != null) {
+            canvas.DrawText("Rewards Applied", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText("$" + receiptData.getRewards(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 30;
         }
 
@@ -270,7 +294,11 @@ public class Utils {
             canvas.DrawText("TOTAL: $" + receiptData.getTotal(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 30;
         }
-
+        if (receiptData.getTip2() != null) {
+            canvas.DrawText("Tip2", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText("$" + receiptData.getTip2(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            lineHeight += 30;
+        }
         lineHeight += 30;
 
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
