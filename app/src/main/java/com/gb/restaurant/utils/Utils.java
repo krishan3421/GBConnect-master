@@ -295,7 +295,7 @@ public class Utils {
             lineHeight += 30;
         }
         if (receiptData.getTip2() != null) {
-            canvas.DrawText("Tip2", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText("Tips", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             canvas.DrawText("$" + receiptData.getTip2(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 30;
         }
@@ -470,6 +470,9 @@ public class Utils {
 
 
         lineHeight += 100;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
         lineHeight += 300;
         lineHeight += 300;
         lineHeight += 300;
