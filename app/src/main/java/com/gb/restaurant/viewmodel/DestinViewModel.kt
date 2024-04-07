@@ -3,6 +3,8 @@ package com.gb.restaurant.viewmodel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.gb.restaurant.di.GBRepository
+import com.gb.restaurant.model.orderstatus.ResturantStatusResponse
+import com.gb.restaurant.model.orderstatus.StatusRequest
 import com.gb.restaurant.model.stoporder.StopOrderRequest
 import com.gb.restaurant.model.stoporder.StopOrderResponse
 import com.gb.restaurant.model.updatesetting.UpdateSettingRequest
@@ -20,12 +22,26 @@ class DestinViewModel :ViewModel(){
 
     var stopOrderResponse = MutableLiveData<StopOrderResponse>()
     var updateSettingResponse = MutableLiveData<UpdateSettingResponse>()
-
+    var restaurantStatus = MutableLiveData<ResturantStatusResponse>()
     fun stopOrderToday(stopOrderRequest: StopOrderRequest) {
         isLoading.value = true
         repository.getStopOrder(stopOrderRequest,
             {
                 stopOrderResponse.value = it
+                isLoading.value = false
+            },
+
+            {
+                apiError.value = it
+                isLoading.value = false
+            })
+    }
+
+    fun getStatusRestaurant(statusRequest: StatusRequest) {
+        isLoading.value = true
+        repository.getRestaurantStatus(statusRequest,
+            {
+                restaurantStatus.value = it
                 isLoading.value = false
             },
 

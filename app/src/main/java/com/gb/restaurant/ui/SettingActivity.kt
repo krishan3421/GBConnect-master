@@ -38,6 +38,8 @@ import com.gb.restaurant.databinding.ActivitySearchBinding
 import com.gb.restaurant.databinding.ActivitySettingBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.PrinterModel
+import com.gb.restaurant.model.orderstatus.ResturantStatusResponse
+import com.gb.restaurant.model.orderstatus.StatusRequest
 import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.model.stoporder.StopOrderRequest
 import com.gb.restaurant.model.stoporder.StopOrderResponse
@@ -69,8 +71,6 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     private lateinit var viewModel: DestinViewModel
     private lateinit var binding: ActivitySettingBinding
     var sessionManager: SessionManager? = null
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_setting)
@@ -167,8 +167,6 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
                 } else {
                     Constant.GB_DELIVERY.SELF
                 }
-
-                stopOpenButtonText()
             }
             pickUpEstimate(pickEstimateValue, fromButtonClick = false)
             deliveryEstimate(deliveryEstimateValue, fromButtonClick = false)
@@ -198,24 +196,28 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
                     //submit(doller_radio)
                 }
             })
+            callStatusService()
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, e.message!!)
         }
     }
 
-    private fun stopOpenButtonText() {
+    private fun stopOpenButtonText(isStoped:Boolean) {
         try {
             binding.contentSetting.apply {
-                if (rsLoginResponse?.data?.stoptoday.isNullOrEmpty()) {
+                if (!isStoped) {
+                    closedStatusText.visibility=View.GONE
                     stopOpenButton.text = getString(R.string.stop_order_today)
                     //stop_open_button.setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimary_one))
                     // stop_open_button.background = getDrawable(R.drawable.romance_color_round_corner)
-                    stopOpenButton.background = getDrawable(R.drawable.colorprimary_round_corner)
+                    stopOpenButton.background = ContextCompat.getDrawable(this@SettingActivity,R.drawable.colorprimary_round_corner)//getDrawable(R.drawable.colorprimary_round_corner)
                     stopOpenButton.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.white))
                 } else {
+                    closedStatusText.visibility=View.VISIBLE
+                    closedStatusText.text="Order Closed for Today"
                     stopOpenButton.text = getString(R.string.open_order_today)
-                    stopOpenButton.background = getDrawable(R.drawable.green_round_corner)
+                    stopOpenButton.background = ContextCompat.getDrawable(this@SettingActivity,R.drawable.green_round_corner)
                     stopOpenButton.setTextColor(ContextCompat.getColor(this@SettingActivity, R.color.white))
                 }
             }
@@ -486,12 +488,12 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     private fun openStopOpenPopUp(type: String) {
         try {
             MaterialDialog(this).show {
-                title(R.string.grabull_lower)
-                message(null, "Order $type for ${Util.getMMM_DD_YYYY(Date())}")
+                title(null,"Order $type for")
+                message(null, "${Util.getMMM_DD_YYYY(Date())}")
                 positiveButton {
                     callService()
                 }
-                positiveButton(R.string.ok)
+                positiveButton(R.string.yes)
                 negativeButton(R.string.no)
             }
         } catch (e: Exception) {
@@ -677,6 +679,22 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
         }
     }
 
+    private fun callStatusService() {
+        try {
+            if (Validation.isOnline(this)) {
+                var statusRequest = StatusRequest()
+                statusRequest.deviceversion = Util.getVersionName(this)
+                statusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
+                viewModel.getStatusRestaurant(statusRequest)
+            } else {
+                showSnackBar(binding.progressBar, getString(R.string.internet_connected))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e(TAG, e.message!!)
+        }
+    }
+
     private fun attachObserver() {
         viewModel.isLoading.observe(this, Observer<Boolean> {
             it?.let { showLoadingDialog(it) }
@@ -684,21 +702,31 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
         viewModel.apiError.observe(this, Observer<String> {
             it?.let { showSnackBar(binding.progressBar, it) }
         })
+        viewModel.restaurantStatus.observe(this, Observer<ResturantStatusResponse> {
+            it?.let {
+                println("response>>>>> ${Util.getStringFromBean(it)}")
+                if (it.result == "Closed") {
+                    stopOpenButtonText(false)
+                } else {
+                    stopOpenButtonText(true)
+                }
+            }
+        })
         viewModel.stopOrderResponse.observe(this, Observer<StopOrderResponse> {
             it?.let {
-
+                println("response>>>>> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
-                    showToast(it.result!!)
+                    showToast(it.data?.message?:"")
                 } else {
-                    showToast(it.result!!)
+                    showToast(it.data?.message?:"")
                     if (it.data?.message?.contains("Order Stopped Today", true)!!) {
                         rsLoginResponse!!.data!!.stoptoday = Util.getYYYYMMDD()
                     } else {
                         rsLoginResponse!!.data!!.stoptoday = ""
                     }
                     MyApp.instance.rsLoginResponse = rsLoginResponse
-                    stopOpenButtonText()
                 }
+                callStatusService()
             }
         })
 

@@ -29,6 +29,7 @@ class HttpClientService {
                 return OkHttpClient.Builder()
                         .readTimeout(60, TimeUnit.SECONDS)
                         .connectTimeout(60, TimeUnit.SECONDS)
+                         .addInterceptor(CustomInterceptor())
                         .sslSocketFactory(sslSocketFactory,trustManager)
                         .build()
             } catch (e: Exception) {

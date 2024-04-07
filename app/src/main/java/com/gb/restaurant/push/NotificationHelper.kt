@@ -49,15 +49,25 @@ class NotificationHelper(val mContext: Context) {
         todoBundle.putBoolean(FROMNOTIFICATION,true)
         resultIntent.putExtra(PUSH_KEY,todoBundle)
         println("notification>>>>> ${pushMessage.title} ${pushMessage.body}")
-        val resultPendingIntent = PendingIntent.getActivity(
-            mContext,
-            0 /* Request code */, resultIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
-        )
+        var resultPendingIntent : PendingIntent? =null
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.S) {
+             resultPendingIntent = PendingIntent.getActivity(
+                mContext,
+                0 /* Request code */, resultIntent,
+                PendingIntent.FLAG_MUTABLE
+            )
+        }else{
+             resultPendingIntent = PendingIntent.getActivity(
+                mContext,
+                0 /* Request code */, resultIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
+        }
+
 
 
         val bigText =NotificationCompat.BigTextStyle()
-        bigText.bigText("${pushMessage.body}")
+        bigText.bigText(pushMessage.body)
         mBuilder = NotificationCompat.Builder(mContext, NOTIFICATION_CHANNEL_ID)
         mBuilder?.setSmallIcon(R.mipmap.ic_launcher)
         mBuilder?.setContentTitle(pushMessage.title)!!
@@ -90,7 +100,7 @@ class NotificationHelper(val mContext: Context) {
 
             mNotificationManager?.createNotificationChannel(notificationChannel)
         }
-        assert(mNotificationManager != null)
+        if(mNotificationManager != null)
         mNotificationManager?.notify(NOTIFICATION__ID /* Request Code */, mBuilder?.build())
     }
 }

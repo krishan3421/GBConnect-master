@@ -57,7 +57,8 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
     private lateinit var viewModel: OrderViewModel
     var strtDateCalendar: Calendar? = null
     var endDateCalendar: Calendar? = null
-
+    val currentMonthStartDate = Util.currentMonthStartDate()
+    val currentMonthEndDate = Util.currentMonthEndDate()
     private var _binding: FragmentCompletedBinding? = null
     private val binding get() = _binding!!
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -134,7 +135,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -282,7 +283,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
         try {
             var calendar = Calendar.getInstance()
             MaterialDialog(fragmentBaseActivity).show {
-                datePicker(null, null, calendar) { _, date ->
+                datePicker(null, calendar, calendar) { _, date ->
                     date.set(
                         date.get(Calendar.YEAR),
                         date.get(Calendar.MONTH),
@@ -292,9 +293,11 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
                         0
                     )
                     strtDateCalendar = date
+                    endDateCalendar=date
                     var dateText = Util.get_yyyy_mm_dd(date)
                     //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
                     binding.startDateText.setText(dateText)
+                    binding.endDateText.setText(dateText)
 
                 }
 
@@ -308,30 +311,23 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
     fun endDateMethod() {
         try {
             var calendar = Calendar.getInstance()
-            println("time>>> ${calendar.time}")
+           // println("time>>> ${calendar.time}")
+            val calendarMinMaxDate = Util.getSelMonthEndDate(strtDateCalendar!!);
             MaterialDialog(fragmentBaseActivity).show {
-                datePicker(null, null, calendar) { _, date ->
+                datePicker(strtDateCalendar, calendarMinMaxDate, calendar) { _, date ->
                     if (strtDateCalendar != null) {
-                        if (strtDateCalendar!!.before(date) || strtDateCalendar!! == date) {
-                            date.set(
-                                date.get(Calendar.YEAR),
-                                date.get(Calendar.MONTH),
-                                date.get(Calendar.DATE),
-                                23,
-                                59,
-                                59
-                            )
-                            endDateCalendar = date
-                            var dateText = Util.get_yyyy_mm_dd(date)
-                            //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                            binding.endDateText.setText(dateText)
-                            //callService()
-                        } else {
-                            fragmentBaseActivity.showSnackBar(
-                                binding.endDateText,
-                                "start-Date should be equal or less then end-Date"
-                            )
-                        }
+                        date.set(
+                            date.get(Calendar.YEAR),
+                            date.get(Calendar.MONTH),
+                            date.get(Calendar.DATE),
+                            23,
+                            59,
+                            59
+                        )
+                        endDateCalendar = date
+                        var dateText = Util.get_yyyy_mm_dd(date)
+                        //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
+                        binding.endDateText.setText(dateText)
                     } else {
                         fragmentBaseActivity.showSnackBar(
                             binding.endDateText,

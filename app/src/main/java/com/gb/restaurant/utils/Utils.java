@@ -21,6 +21,8 @@ import android.os.Looper;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
+
 import androidx.core.content.ContextCompat;
 import com.gb.restaurant.CATPrintSDK.Canvas;
 import com.gb.restaurant.R;
@@ -56,7 +58,17 @@ public class Utils {
 
     public static Bitmap createOrderReceipt(Context ctx, Canvas mCanvas, int nPrintWidth, Data
             receiptData) {
-
+       if(receiptData ==null){
+           new Handler(Looper.getMainLooper()).post(new Runnable() {
+               @Override
+               public void run() {
+                   Toast.makeText(ctx,
+                           "There is some issue in data or Printer not connected, Please try later",
+                           Toast.LENGTH_LONG).show();
+               }
+           });
+           return null;
+       }
         Bitmap bitmap = null;
         int lineHeight = 0;
         Canvas canvas = mCanvas;
@@ -81,7 +93,7 @@ public class Utils {
 
         lineHeight += 20;
 
-        if(receiptData.getHolddate2() ==null || receiptData.getHolddate2().isEmpty()){
+        if(receiptData.getHolddate2() ==null){
             canvas.DrawText(receiptData.getDate2(), -2, lineHeight, 0, defaultFont, 30, 0);
         }else {
             canvas.DrawText("Future Order", -2, lineHeight, 0, defaultFont, 40, FONTSTYLE_BOLD);
@@ -148,11 +160,14 @@ public class Utils {
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
 
 
-        lineHeight += 20;
+        lineHeight += 40;
 
         for (int i = 0; i < receiptData.getItems().size(); i++) {
 
-
+            if(i > 0) {
+                canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
+                lineHeight += 40;
+            }
             if (receiptData.getItems().get(i).getQty() != null) {
                 canvas.DrawBoxLight(5, lineHeight - 7, 55, lineHeight + 30);
                 if (receiptData.getItems().get(i).getQty().length() == 1) {
@@ -160,6 +175,8 @@ public class Utils {
                 } else if (receiptData.getItems().get(i).getQty().length() == 2) {
                     canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 15, lineHeight - 5, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 } else if (receiptData.getItems().get(i).getQty().length() == 3) {
+                    canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 10, lineHeight - 5, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                }else{
                     canvas.DrawText("" + receiptData.getItems().get(i).getQty(), 10, lineHeight - 5, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 }
             }
@@ -170,9 +187,9 @@ public class Utils {
             if (headingData != null && !headingData.isEmpty()) {
                 List<String> headingList = wrapLines(headingData, 25);
                 for (int k = 0; k < headingList.size(); k++) {
-                    canvas.DrawText("" + headingList.get(k), 60, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                    canvas.DrawText("" + headingList.get(k), 60, lineHeight-20, 0, defaultFont, 30, FONTSTYLE_BOLD);
                     if (k == 0) {
-                        canvas.DrawText("$" + receiptData.getItems().get(i).getPrice(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                        canvas.DrawText("$" + receiptData.getItems().get(i).getPrice(), -3, lineHeight-20, 0, defaultFont, 30, FONTSTYLE_BOLD);
                     }
                     lineHeight += 30;
                 }
@@ -229,6 +246,21 @@ public class Utils {
             lineHeight += 30;
         }
 
+        if (receiptData.getOfferamount() !=null) {
+            if(!receiptData.getOfferamount().isEmpty()) {
+                canvas.DrawText("Discount", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$" + receiptData.getOfferamount(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                lineHeight += 30;
+            }
+        }
+        if (receiptData.getDeliverycharge() !=null && receiptData.getType().equalsIgnoreCase("Delivery")) {
+            if(!receiptData.getOfferamount().isEmpty() ) {
+                canvas.DrawText("Delivery Fee", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$" + receiptData.getDeliverycharge(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                lineHeight += 30;
+            }
+        }
+
         if (receiptData.getTax() != null) {
             canvas.DrawText("Tax", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             canvas.DrawText("$" + receiptData.getTax(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
@@ -242,7 +274,13 @@ public class Utils {
             lineHeight += 30;
         }
 
-        lineHeight += 10;
+        if (receiptData.getRewards() != null) {
+            canvas.DrawText("Rewards Applied", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText("$" + receiptData.getRewards(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            lineHeight += 30;
+        }
+
+        lineHeight += 30;
 
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
         lineHeight++;
@@ -250,14 +288,18 @@ public class Utils {
         lineHeight++;
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
 
-        lineHeight += 10;
+        lineHeight += 20;
 
         if (receiptData.getTotal() != null) {
             canvas.DrawText("TOTAL: $" + receiptData.getTotal(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 30;
         }
-
-        lineHeight += 10;
+        if (receiptData.getTip2() != null) {
+            canvas.DrawText("Tips", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText("$" + receiptData.getTip2(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            lineHeight += 30;
+        }
+        lineHeight += 30;
 
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
         lineHeight++;
@@ -265,7 +307,7 @@ public class Utils {
         lineHeight++;
         canvas.DrawLine(0, lineHeight, nPrintWidth, lineHeight);
 
-        lineHeight += 10;
+        lineHeight += 30;
 
         ArrayList<String> instructionList;
 
@@ -301,13 +343,15 @@ public class Utils {
             if (receiptData.getDelivery() != null) {
                 if (!receiptData.getDelivery().isEmpty()) {
                     addressList = wrapLines(receiptData.getDelivery(), 35);
+
                     int i = 0;
                     for (String li : addressList) {
+                        System.out.println("li>> "+li);
                         canvas.DrawText(li, 0, lineHeight, 0, defaultFont, 30, 0);
                         i++;
                         lineHeight += 40;
                     }
-
+                    lineHeight += 30;
                 }
             }
         }
@@ -327,6 +371,7 @@ public class Utils {
         try {
             bitmap = Bitmap.createBitmap(bmpp, 0, 0, nPrintWidth, lineHeight);
         }catch(Exception e) {
+            e.printStackTrace();
             bitmap= bmpp;
         }
         return bitmap;
@@ -425,6 +470,20 @@ public class Utils {
 
 
         lineHeight += 100;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
         lineHeight += 300;
         lineHeight += 300;
         return lineHeight;

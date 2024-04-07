@@ -5,11 +5,12 @@ class Constant {
 
     companion object{
         //const val URL ="https://www.grabull.com.au"
-        const val URL ="https://www.grabull.com"
+        const val GB_URL ="https://www.grabull.com/web-api/"
+        const val GD_URL ="https://www.webapi.grabulldirect.com/"
     }
     interface WEBSERVICE{
           companion object{
-              const val RESTSERVICEURL = "$URL/web-api/"
+             // const val RESTSERVICEURL = "$URL/web-api/"
               const val API_ID = "GB19AP01"
               const val API_KEY = "ba6ee13256e5f0d75eacbf87de167541"
           }
@@ -26,6 +27,13 @@ class Constant {
             const val RESERVATION_STATUS = "restaurant-connect/reservation-status.php"
             const val ENQUIRY_STATUS = "restaurant-connect/enquiry-status.php"
 
+        }
+    }
+
+    interface API_TYPE{
+        companion object{
+            const val GB = "GB"
+            const val GD = "GD"
         }
     }
 
@@ -67,6 +75,7 @@ class Constant {
             const val FORGOT_PASSWORD = "ForgotPassword"
             const val GET_BANK_DETAIL = "GetBankDetails"
             const val ADD_BANK_DETAIL = "AddBankDetails"
+            const val GETSTATUSTODAY= "GetStatustoday"
         }
     }
 

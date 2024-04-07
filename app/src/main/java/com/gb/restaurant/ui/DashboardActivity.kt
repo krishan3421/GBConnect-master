@@ -27,6 +27,7 @@ class DashboardActivity : BaseActivity() {
     private lateinit var viewModel: RsLoginViewModel
     private var userName:String?=null
     private lateinit var binding: ActivityDashboardBinding
+    private lateinit var sessionManager: SessionManager
     companion object{
         private val TAG:String = DashboardActivity::class.java.simpleName
     }
@@ -52,12 +53,12 @@ class DashboardActivity : BaseActivity() {
         try{
             viewModel = createViewModel()
             attachObserver()
-            var sessionManager= SessionManager(this)
+             sessionManager= SessionManager(this)
             if(sessionManager.isAutoLoggedIn()){
                 binding.contentDashboard.buttonRest.visibility=View.GONE
-                var userDetail=sessionManager.getUserDetails()
+                val userDetail=sessionManager.getUserDetails()
                 userName = userDetail[SessionManager.USERNAME]
-                var password = userDetail[SessionManager.PASSWORD]
+                val password = userDetail[SessionManager.PASSWORD]
                 loginMethod(userName?:"",password?:"")
             }else{
                 binding.contentDashboard.buttonRest.visibility=View.VISIBLE
@@ -117,6 +118,7 @@ class DashboardActivity : BaseActivity() {
                 }else{
                     MyApp.instance.rsLoginResponse = it
                     MyApp.instance.rsLoginResponse?.data?.loginId=userName
+                    sessionManager.setApiType(it.apitype?:"GD")
                     callHomePage()
                 }
 

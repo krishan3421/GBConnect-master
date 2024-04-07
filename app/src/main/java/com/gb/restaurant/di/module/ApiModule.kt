@@ -8,6 +8,7 @@ import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Named
 import javax.inject.Singleton
 
 
@@ -17,16 +18,35 @@ import javax.inject.Singleton
 @Module
 class ApiModule {
     @Provides @Singleton
+    @Named("gbClient")
     fun provideApiService(): GBClient {
         val gson = GsonBuilder()
             .setLenient()
             .create()
 
-        return Retrofit.Builder()
-                .baseUrl(Constant.WEBSERVICE.RESTSERVICEURL)
-                .client(HttpClientService.getUnsafeOkHttpClient())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build().create(GBClient::class.java)
+        val retrofit = Retrofit.Builder()
+            .baseUrl(Constant.GB_URL)
+            .client(HttpClientService.getUnsafeOkHttpClient())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+       // RetrofitHolder.retrofit = retrofit
+      return retrofit.create(GBClient::class.java)
+    }
+
+    @Provides @Singleton
+    @Named("gdClient")
+    fun provideApiServiceNew(): GBClient {
+        val gson = GsonBuilder()
+            .setLenient()
+            .create()
+
+        val retrofit = Retrofit.Builder()
+            .baseUrl(Constant.GD_URL)
+            .client(HttpClientService.getUnsafeOkHttpClient())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+        //RetrofitHolder.retrofit = retrofit
+        return retrofit.create(GBClient::class.java)
     }
 
 

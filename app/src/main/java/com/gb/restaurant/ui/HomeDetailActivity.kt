@@ -86,7 +86,7 @@ class HomeDetailActivity : BaseActivity() {
 
     var sessionManager: SessionManager? = null
     private lateinit var binding: HomeDetailActivityBinding
-
+    private var isGbDirect =false
     companion object {
         private val TAG: String = HomeDetailActivity::class.java.simpleName
         private val CONFIRM_PAGE: Int = 11
@@ -108,6 +108,9 @@ class HomeDetailActivity : BaseActivity() {
 
     private fun initData() {
         try {
+            if(sessionManager?.getApiType() == "GD"){
+                isGbDirect =true
+            }
             rsLoginResponse = MyApp.instance.rsLoginResponse
             intent.apply {
                 fromPage = this.getIntExtra(FROMPAGE, 0)
@@ -129,6 +132,12 @@ class HomeDetailActivity : BaseActivity() {
             Log.e(TAG, e.message!!)
         }
     }
+    private fun openURL(url:String){
+        var intent = Intent(this, ViewInvoiceActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra(ViewInvoiceActivity.INVOICE, "$url")
+        startActivity(intent)
+    }
 
     private fun setStatusBarColor() {
         try {
@@ -147,10 +156,11 @@ class HomeDetailActivity : BaseActivity() {
         try {
             binding.apply {
                 setSupportActionBar(toolbar)
+                supportActionBar?.setDisplayShowTitleEnabled(false);
                 toolbar.navigationIcon = ContextCompat.getDrawable(this@HomeDetailActivity, R.drawable.ic_back)
                 toolbar.setNavigationOnClickListener { onBackPressed() }
                 titleHome.setOnClickListener { onBackPressed() }
-                toolbar.title = ""// "${getString(R.string.back)}"//"${rsLoginResponse?.data?.name}"
+                toolbar.title = null// "${getString(R.string.back)}"//"${rsLoginResponse?.data?.name}"
                 toolbar.setTitleTextColor(ContextCompat.getColor(this@HomeDetailActivity, R.color.colorPrimaryDark_one));
 
             }
@@ -168,6 +178,9 @@ class HomeDetailActivity : BaseActivity() {
                 orderDetailItem.conUpdateButton.visibility = View.VISIBLE
                 data?.name?.let {
                     orderDetailItem.nameText.text = "$it"
+                }
+                trackOrderText.setOnClickListener {
+                    openURL(data?.trackorder?:"")
                 }
                 if (data?.payment!!.contains("Paid", true)) {
                     orderDetailItem.prepaidText.text = "PREPAID"
@@ -202,9 +215,31 @@ class HomeDetailActivity : BaseActivity() {
                 if (!data?.type.isNullOrEmpty() && data?.type!!.contains("Pickup", true)) {
                     orderDetailItem.addressLayout.visibility = View.INVISIBLE
                     detailHomeFooter.deliveryFeeHomeLayout.visibility = View.GONE
+                    trackOrderText.visibility=View.GONE
                 } else {
                     orderDetailItem.addressLayout.visibility = View.VISIBLE
                     detailHomeFooter.deliveryFeeHomeLayout.visibility = View.VISIBLE
+                   // println("data?.trackorder "+data?.trackorder)
+                    if(data?.trackorder.isNullOrEmpty()) {
+                        trackOrderText.visibility = View.GONE
+                    }else{
+                        trackOrderText.visibility = View.VISIBLE
+                    }
+                }
+                data?.rewards?.let {reward->
+                    if(reward.isNotEmpty()){
+                        detailHomeFooter.rewardLayout.visibility = View.VISIBLE
+                        detailHomeFooter.rewards.text="$$reward"
+                    }
+                }
+               // println("details>>>> "+data?.details)
+                data?.details?.let {noteDetail->
+                    if(noteDetail.isNotEmpty()){
+                        detailHomeFooter.noteLayout.visibility = View.VISIBLE
+                        detailHomeFooter.noteDetailsText.text=noteDetail
+                    }else{
+                        detailHomeFooter.noteLayout.visibility = View.GONE
+                    }
                 }
                 /*if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)
                     var paymentStatus = ""
@@ -260,8 +295,15 @@ class HomeDetailActivity : BaseActivity() {
                     detailHomeFooter.totalTax.text = "Total $${data?.total}"
                 }
                 if (!data?.tip2.isNullOrEmpty()) {
-                    detailHomeFooter.tipTwoText.text = "Tips $${data?.tip2}"
+                    if(data?.tip2 != "0.0" ||  data?.tip2 != "0") {
+                        addItemsTipsLayout.addTipButton.visibility = View.INVISIBLE
+                        detailHomeFooter.tipTwoText.text = "Tips $${data?.tip2}"
+                    }else{
+                        addItemsTipsLayout.addTipButton.visibility=View.VISIBLE
+                        detailHomeFooter.tipTwoText.text = "Tips_____"
+                    }
                 } else {
+                    addItemsTipsLayout.addTipButton.visibility=View.VISIBLE
                     detailHomeFooter.tipTwoText.text = "Tips_____"
                 }
                 if (!data?.date2.isNullOrEmpty()) {
@@ -439,7 +481,7 @@ class HomeDetailActivity : BaseActivity() {
     }
 
     private fun showCustomViewDialog(data: Data?) {
-        println("data>>>>>>> ${Util.getStringFromBean(data!!)}")
+       // println("data>>>>>>> ${Util.getStringFromBean(data!!)}")
         var orderTipsRequest = OrderTipsRequest()
         var dialog = Dialog(this, R.style.AppCompatAlertDialogStyle)
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -526,7 +568,7 @@ class HomeDetailActivity : BaseActivity() {
                     priceEditText.text.toString()
                 )
                 itemList.add(item)
-                println("data>>> ${Util.getStringFromBean(item)}")
+               // println("data>>> ${Util.getStringFromBean(item)}")
                 myAdapter.notifyDataSetChanged()
                 itemEditText.setText("")
                 priceEditText.setText("")
@@ -571,7 +613,7 @@ class HomeDetailActivity : BaseActivity() {
                     }
                 }
             }
-            println("data>>> ${Util.getStringFromBean(itemList)}")
+            //println("data>>> ${Util.getStringFromBean(itemList)}")
             if (itemList.isNotEmpty()) {
                 if (myAdapter.getPriceCount() <= 500) {
                     addOrderItemRequest.itemslist = itemList
@@ -678,7 +720,8 @@ class HomeDetailActivity : BaseActivity() {
                 orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 orderDetailRequest.order_id = data!!.id!!
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
-                println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
+                orderDetailRequest.order_type="Inhouse"
+                //println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
                 viewModel.getOrderDetailResponse(orderDetailRequest)
             } else {
                 showToast(getString(R.string.internet_connected))
@@ -696,7 +739,7 @@ class HomeDetailActivity : BaseActivity() {
                 addOrderItemRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 addOrderItemRequest.order_id = data?.orderid!!
                 addOrderItemRequest.deviceversion = Util.getVersionName(this)
-                println("request add item>>>> ${Util.getStringFromBean(addOrderItemRequest)}")
+               //println("request add item>>>> ${Util.getStringFromBean(addOrderItemRequest)}")
                 viewModel.addItemsOrder(addOrderItemRequest)
             } else {
                 showToast(getString(R.string.internet_connected))
@@ -761,6 +804,7 @@ class HomeDetailActivity : BaseActivity() {
         try {
             if (Validation.isOnline(this)) {
                 orderStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
+                println("status request>>>> ${Util.getStringFromBean(orderStatusRequest)}")
                 viewModel.orderStatus(orderStatusRequest)
             } else {
                 showToast(getString(R.string.internet_connected))
@@ -775,15 +819,14 @@ class HomeDetailActivity : BaseActivity() {
     private fun attachObserver() {
         val  cardProgress=cardDialog?.findViewById<ProgressBar>(R.id.card_progress)
         viewModel.isLoading.observe(this, Observer<Boolean> {
-            it?.let { showLoadingDialog(it) }
+            showLoadingDialog(it)
         })
         viewModel.apiError.observe(this, Observer<String> {
-            it?.let { showToast(it) }
+            showToast(it)
         })
         viewModel.addTipsResponse.observe(this, Observer<OrderTipsResponse> {
-            it?.let {
-
-                println("tipsResponse>>>>>>>>> ${Util.getStringFromBean(it)}")
+            it.let {
+                //println("tipsResponse>>>>>>>>> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
                     // showToast(it.result!!)
                     Util.alertDialog(it.result ?: "", this)
@@ -804,12 +847,14 @@ class HomeDetailActivity : BaseActivity() {
                         Util.alertDialog(it.result ?: "", this)
                     } else {
                         cardProgress?.visibility = View.GONE
-                        selOrderTipsRequest?.newcard = "Yes"
-                        if (cardDialog == null) {
-                            showCardDetailDialog(data!!, fromItem = false)
-                        } else {
-                            if (!cardDialog!!.isShowing) {
+                        if(!isGbDirect) {
+                            selOrderTipsRequest?.newcard = "Yes"
+                            if (cardDialog == null) {
                                 showCardDetailDialog(data!!, fromItem = false)
+                            } else {
+                                if (!cardDialog!!.isShowing) {
+                                    showCardDetailDialog(data!!, fromItem = false)
+                                }
                             }
                         }
                         if (it.data?.payment.equals("Failed"))
@@ -821,6 +866,7 @@ class HomeDetailActivity : BaseActivity() {
         })
 
         viewModel.addItemsOrderResponse.observe(this, Observer<AddOrderItemResponse> {
+            println("itemsResponse>>>>>>>>> ${Util.getStringFromBean(it)}")
             it?.let {
                 if (it.status == Constant.STATUS.FAIL) {
                     Util.alertDialog(it?.result ?: "", this)
@@ -834,11 +880,13 @@ class HomeDetailActivity : BaseActivity() {
                     } else {
                         cardProgress?.visibility = View.GONE
                         selOrderItemRequest?.newcard = "Yes"
-                        if (cardDialog == null) {
-                            showCardDetailDialog(data!!, fromItem = true)
-                        } else {
-                            if (!cardDialog!!.isShowing) {
+                        if(!isGbDirect) {
+                            if (cardDialog == null) {
                                 showCardDetailDialog(data!!, fromItem = true)
+                            } else {
+                                if (!cardDialog!!.isShowing) {
+                                    showCardDetailDialog(data!!, fromItem = true)
+                                }
                             }
                         }
                         if (it.data?.payment.equals("Failed"))
@@ -874,12 +922,13 @@ class HomeDetailActivity : BaseActivity() {
         })
         viewModel.orderStatusResponse.observe(this, Observer<OrderStatusResponse> {
             it?.let {
+                //println("orderStatusResponse >> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
-                    showToast(it.result!!)
+                    showToast(it.result?:"")
                 } else {
-                    showToast(it.result!!)
+                    showToast(it.result?:"")
                     if (materialDialog != null) {
-                        materialDialog!!.dismiss()
+                        materialDialog?.dismiss()
                     }
                     finishPage()
                     //callService()

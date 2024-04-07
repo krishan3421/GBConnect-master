@@ -1,10 +1,13 @@
 package com.gb.restaurant.di.module
 
+import android.content.Context
 import com.gb.restaurant.api.GBClient
 import com.gb.restaurant.di.GBRepository
 import com.gb.restaurant.di.GBRepositoryImpl
 import dagger.Module
 import dagger.Provides
+import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 /**
@@ -13,7 +16,7 @@ import javax.inject.Singleton
 @Module
 class GBRepositoryModule {
 
-    @Provides @Singleton
-    fun providePostRepository(apiService: GBClient): GBRepository =
-        GBRepositoryImpl(apiService)
+    @Provides
+    fun providePostRepository(@Named("gbClient") gbClient: GBClient,@Named("gdClient") gdClient: GBClient,context: Context): GBRepository =
+        GBRepositoryImpl(gbClient,gdClient,context)
 }

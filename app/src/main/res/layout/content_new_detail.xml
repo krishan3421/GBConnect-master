@@ -68,7 +68,6 @@
             android:id="@+id/order_detail_item"/>
         <TextView style="@style/normal_text_12"
                 android:layout_gravity="center"
-                android:text="safakjsfh"
                 android:layout_width="match_parent"
                 android:background="@color/black"
                 android:paddingTop="@dimen/dimen_10"

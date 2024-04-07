@@ -1,6 +1,9 @@
 package com.gb.restaurant.ui
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -50,6 +53,7 @@ companion object{
 
     var loginResponse:RsLoginResponse?=null
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var sessionManager: SessionManager
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         statusBarTransparent()
@@ -67,6 +71,7 @@ companion object{
         }catch (e:Exception){
             e.printStackTrace()
         }
+        sessionManager = SessionManager(this@HomeActivity)
         val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
         val navView: NavigationView = findViewById(R.id.nav_view)
         val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
@@ -82,7 +87,11 @@ companion object{
         addressText.text = "${loginResponse?.data?.address}"
         delPackgText.text = "Delivery Orders - ${loginResponse?.data?.del_pckg}"
         pickupPackgText.text = "Pickup Orders - ${loginResponse?.data?.pick_pckg}"
-        if(loginResponse?.data?.gbtype.equals("Admin",true)){
+        var bankNavItem = navView.menu?.findItem(R.id.nav_bank_info)
+        if(sessionManager.getApiType() != "GB"){
+            bankNavItem?.isVisible = false
+        }
+        if(loginResponse?.data?.gbtype.equals("Admin",true) && sessionManager.getApiType() == "GB"){
             createUserButton.visibility=View.VISIBLE
         }else{
             createUserButton.visibility=View.GONE
@@ -109,8 +118,28 @@ companion object{
         viewModel = createViewModel()
         attachObserver()
         checkBundle(intent)
+        makeRunTimeNotificationPermission()
+    }
+    private fun makeRunTimeNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.POST_NOTIFICATIONS),
+                1111)
+        }
     }
 
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when (requestCode) {
+            1111 -> {
+                if (grantResults.isEmpty() && grantResults[0] != PackageManager.PERMISSION_GRANTED ) {
+                    makeRunTimeNotificationPermission()
+                }
+            }
+        }
+
+    }
     override fun onNewIntent(intent: Intent?) {
         super.onNewIntent(intent)
         try{

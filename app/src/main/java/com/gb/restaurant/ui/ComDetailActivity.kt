@@ -257,10 +257,25 @@ class ComDetailActivity : BaseActivity() {
             } else {
                 binding.contentComDetail.detailComFooter.tipTwoText.text = "Tips_____"
             }
+            data?.details?.let {noteDetail->
+                if(noteDetail.isNotEmpty()){
+                    binding.contentComDetail.detailComFooter.noteLayout.visibility = View.VISIBLE
+                    binding.contentComDetail.detailComFooter.noteDetailsText.text=noteDetail
+                }else{
+                    binding.contentComDetail.detailComFooter.noteLayout.visibility = View.GONE
+                }
+            }
             if (!data?.date2.isNullOrEmpty()) {
                 binding.contentComDetail.orderTimeText.text = "ORDER TIME: ${data?.date2}"
             } else {
                 binding.contentComDetail.orderTimeText.text = ""
+            }
+
+            data?.rewards?.let {reward->
+                if(reward.isNotEmpty()){
+                    binding.contentComDetail.detailComFooter.rewardLayout.visibility = View.VISIBLE
+                    binding.contentComDetail.detailComFooter.rewards.text="$$reward"
+                }
             }
 
             callOrderDetailService()
@@ -298,7 +313,7 @@ class ComDetailActivity : BaseActivity() {
                             PrintingTask().execute()
 
                         } else {
-                            showDialog(this, data!!)
+                            showDialog(this@ComDetailActivity, data)
                         }
 
                     } else {
@@ -355,7 +370,7 @@ class ComDetailActivity : BaseActivity() {
                         PrintingTask().execute()
 
                     } else {
-                        showDialog(this, MyApp.instance.data!!)
+                        showDialog(this, MyApp.instance.data)
                     }
                 } else {
 
@@ -526,6 +541,7 @@ class ComDetailActivity : BaseActivity() {
                 var orderDetailRequest = OrderDetailRequest()
                 orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 orderDetailRequest.order_id = data!!.id!!
+                orderDetailRequest.order_type="Completed"
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
                 println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
                 viewModel.getOrderDetailResponse(orderDetailRequest)
@@ -597,19 +613,23 @@ class ComDetailActivity : BaseActivity() {
         })
 
         viewModel.orderDetailResponse.observe(this, Observer<OrderDetailResponse> {
-            it?.let {
+            it.let {order->
+                println("complete>>> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
                     showToast(it.result!!)
                 } else {
                     // showToast(it.result!!)
-                    MyApp.instance.data = it.data
+                    MyApp.instance.data = order?.data
                     createItmList()
-                    newDetailAdapter.addAll(it.data?.items as List<Item>)
+                    if(!order.data?.items.isNullOrEmpty()){
+                        newDetailAdapter.addAll(order?.data?.items as List<Item>)
+                    }
+
                     /* if(data!!.items.isNullOrEmpty()){
-                         orders_item_count.text = "Order(0 items)"
-                     }else{
-                         orders_item_count.text = "Order(${data!!.items!!.size} items)"
-                     }*/
+                                 orders_item_count.text = "Order(0 items)"
+                             }else{
+                                 orders_item_count.text = "Order(${data!!.items!!.size} items)"
+                             }*/
                 }
             }
         })
@@ -628,7 +648,7 @@ class ComDetailActivity : BaseActivity() {
     }
 
 
-    private fun showDialog(mContext: Context, data: Data) {
+    private fun showDialog(mContext: Context, data: Data?) {
 
         val printerList = ArrayList<PrinterModel>()
         lateinit var bluetoothDiscovery: BluetoothDiscovery

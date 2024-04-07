@@ -4,10 +4,13 @@ import android.Manifest
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
+import android.content.Context.RECEIVER_EXPORTED
+import android.content.Context.RECEIVER_NOT_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -327,9 +330,17 @@ class NewFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        fragmentBaseActivity?.registerReceiver(printStatusBroadcast,
-            IntentFilter("com.gb.restaurant.utils.returnPrintStatus")
-        );
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            fragmentBaseActivity?.registerReceiver(printStatusBroadcast,
+                IntentFilter("com.gb.restaurant.utils.returnPrintStatus"),
+                RECEIVER_EXPORTED
+            );
+        }else{
+            fragmentBaseActivity?.registerReceiver(printStatusBroadcast,
+                IntentFilter("com.gb.restaurant.utils.returnPrintStatus")
+            );
+        }
+
         Utils.setBluetooth(true,fragmentBaseActivity)
 
         orderAdapter.setOnItemClickListener(object : NewAdapter.NewOrClickListener {

@@ -196,6 +196,20 @@ class NewDetailActivity : BaseActivity() {
                     orderDetailItem.addressLayout.visibility = View.VISIBLE
                     detailFooter.deliveryFeeLayout.visibility = View.VISIBLE
                 }
+                data?.rewards?.let {reward->
+                    if(reward.isNotEmpty()){
+                       detailFooter.rewardLayout.visibility = View.VISIBLE
+                        detailFooter.rewards.text="$$reward"
+                    }
+                }
+                data?.details?.let {noteDetail->
+                    if(noteDetail.isNotEmpty()){
+                        detailFooter.noteLayout.visibility = View.VISIBLE
+                        detailFooter.noteDetailsText.text=noteDetail
+                    }else{
+                        detailFooter.noteLayout.visibility = View.GONE
+                    }
+                }
                 /*  if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)
                       var paymentStatus = ""
                     if(data?.payment!!.contains("pending",true)){
@@ -378,9 +392,9 @@ class NewDetailActivity : BaseActivity() {
         try {
             var intent = Intent(this, ConfirmTimeDialogActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            intent.putExtra(ConfirmTimeDialogActivity.ORDER_ID, data!!.id)
-            intent.putExtra(ConfirmTimeDialogActivity.TYPE, data!!.type)
-            intent.putExtra(ConfirmTimeDialogActivity.HOLD, data!!.hold)
+            intent.putExtra(ConfirmTimeDialogActivity.ORDER_ID, data?.id)
+            intent.putExtra(ConfirmTimeDialogActivity.TYPE, data?.type)
+            intent.putExtra(ConfirmTimeDialogActivity.HOLD, data?.hold)
             startActivityForResult(intent, CONFIRM_PAGE)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -546,8 +560,9 @@ class NewDetailActivity : BaseActivity() {
                 var orderDetailRequest = OrderDetailRequest()
                 orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 orderDetailRequest.order_id = data!!.id!!
+                orderDetailRequest.order_type="New"
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
-                println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
+               // println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
                 viewModel.getOrderDetailResponse(orderDetailRequest)
             } else {
                 showToast(getString(R.string.internet_connected))
@@ -566,7 +581,7 @@ class NewDetailActivity : BaseActivity() {
                 addOrderItemRequest.order_id = data?.orderid!!
                 addOrderItemRequest.itemslist = itemList
                 addOrderItemRequest.deviceversion = Util.getVersionName(this)
-                println("request add item>>>> ${Util.getStringFromBean(addOrderItemRequest)}")
+               // println("request add item>>>> ${Util.getStringFromBean(addOrderItemRequest)}")
                 viewModel.addItemsOrder(addOrderItemRequest)
             } else {
                 showToast(getString(R.string.internet_connected))
@@ -618,6 +633,7 @@ class NewDetailActivity : BaseActivity() {
 
         viewModel.orderDetailResponse.observe(this, Observer<OrderDetailResponse> {
             it?.let {
+                //println("response>>>>>> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
                     showToast(it.result!!)
                 } else {
@@ -625,8 +641,11 @@ class NewDetailActivity : BaseActivity() {
                     MyApp.instance.data = it.data
                     data = MyApp.instance.data
                     //createItmList()
-                    newDetailAdapter.addAll(it.data?.items as List<Item>)
-                    initView()
+                    it.data?.let {updateData->
+                        newDetailAdapter.addAll(updateData.items as List<Item>)
+                        initView()
+                    }
+
                     /* if(data!!.items.isNullOrEmpty()){
                          orders_item_count.text = "Order(0 items)"
                      }else{

@@ -15,17 +15,21 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
-import com.gb.restaurant.databinding.ActivityResetPassBinding
 import com.gb.restaurant.databinding.ActivityRestaurantLoginBinding
 import com.gb.restaurant.di.ComponentInjector
+import com.gb.restaurant.di.module.RetrofitHolder
 import com.gb.restaurant.enumm.Login
 import com.gb.restaurant.model.forgot.ForgotPassRequest
 import com.gb.restaurant.model.forgot.ForgotPassResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
 import com.gb.restaurant.model.rslogin.RsLoginRq
+import com.gb.restaurant.session.SessionManager
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.RsLoginViewModel
-import com.gb.restaurant.session.SessionManager
+import okhttp3.HttpUrl
+import retrofit2.Retrofit
+import java.lang.reflect.Field
+
 
 class RestaurantLoginActivity : BaseActivity() {
 
@@ -34,6 +38,7 @@ class RestaurantLoginActivity : BaseActivity() {
     private var forgotPopUp:MaterialDialog?=null
     private lateinit var binding: ActivityRestaurantLoginBinding
     private var popupProgress: ProgressBar?=null
+    lateinit var securityManager:SessionManager
     companion object{
      private val TAG = RestaurantLoginActivity::class.java.simpleName
          val LOGIN_TYPE = "LOGIN_TYPE"
@@ -44,6 +49,7 @@ class RestaurantLoginActivity : BaseActivity() {
         binding = ActivityRestaurantLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
+         securityManager= SessionManager(this)
         initData()
         initView()
 
@@ -116,13 +122,22 @@ class RestaurantLoginActivity : BaseActivity() {
 
     fun signUpMethod(view:View){
         try{
-            var  intent = Intent(applicationContext, RegistrationActivity::class.java)
-            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
-            startActivity(intent)
+//            var  intent = Intent(applicationContext, RegistrationActivity::class.java)
+//            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
+//            startActivity(intent)
+
+            openURL("https://www.grabullmarketing.com/new-restaurant-sign-up/")
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
         }
+    }
+
+    private fun openURL(url:String){
+        var intent = Intent(this, ViewInvoiceActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK
+        intent.putExtra(ViewInvoiceActivity.INVOICE, "$url")
+        startActivity(intent)
     }
 
     fun forgotPassClick(view:View){
@@ -148,6 +163,7 @@ class RestaurantLoginActivity : BaseActivity() {
         viewModel.loginResponse.observe(this, Observer<RsLoginResponse> {
             it?.let {
                // println("response>>>>> ${Util.getStringFromBean(it)}")
+               // RetrofitHolder.changeBaseUrl("GB",RetrofitHolder.retrofit)
                 if(it.status == Constant.STATUS.FAIL){
                    // showSnackBar(progressbar,it.result!!)
                     Util.alert(it.result?:"",this)
@@ -155,8 +171,9 @@ class RestaurantLoginActivity : BaseActivity() {
                 }else{
                     MyApp.instance.rsLoginResponse = it
                     MyApp.instance.rsLoginResponse?.data?.loginId=binding.contentRestaurantLogin.userIdText.text.toString()
-                    var securityManager= SessionManager(this)
-                    securityManager.createLoginSession(binding.contentRestaurantLogin.userIdText.text.toString().trim(),binding.contentRestaurantLogin.passwordText.text.toString().trim(),binding.contentRestaurantLogin.autoLoginCheckbox.isChecked)
+                    securityManager.createLoginSession(binding.contentRestaurantLogin.userIdText.text.toString().trim(),
+                        binding.contentRestaurantLogin.passwordText.text.toString().trim(),
+                        binding.contentRestaurantLogin.autoLoginCheckbox.isChecked,it.apitype?:"GD")
                     callHomePage()
                 }
 
