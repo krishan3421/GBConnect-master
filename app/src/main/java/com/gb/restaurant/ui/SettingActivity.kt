@@ -8,6 +8,7 @@ import android.bluetooth.BluetoothDevice
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
@@ -19,6 +20,7 @@ import android.widget.ProgressBar
 import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -881,19 +883,21 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
                                 for (info in mDeviceList) {
                                     if (info != null) {
-                                        if (ActivityCompat.checkSelfPermission(
-                                                this@SettingActivity,
-                                                Manifest.permission.BLUETOOTH_CONNECT
-                                            ) != PackageManager.PERMISSION_GRANTED
-                                        ) {
-                                            // TODO: Consider calling
-                                            //    ActivityCompat#requestPermissions
-                                            // here to request the missing permissions, and then overriding
-                                            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                            //                                          int[] grantResults)
-                                            // to handle the case where the user grants the permission. See the documentation
-                                            // for ActivityCompat#requestPermissions for more details.
-                                            return
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                                            if (ActivityCompat.checkSelfPermission(
+                                                    this@SettingActivity,
+                                                    Manifest.permission.BLUETOOTH_CONNECT
+                                                ) != PackageManager.PERMISSION_GRANTED
+                                            ) {
+                                                // TODO: Consider calling
+                                                //    ActivityCompat#requestPermissions
+                                                // here to request the missing permissions, and then overriding
+                                                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                                                //                                          int[] grantResults)
+                                                // to handle the case where the user grants the permission. See the documentation
+                                                // for ActivityCompat#requestPermissions for more details.
+                                                return
+                                            }
                                         }
                                         if (info.name != null) {
 
