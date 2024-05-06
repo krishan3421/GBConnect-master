@@ -751,6 +751,11 @@ class HomeDetailActivity : BaseActivity() {
     }
 
     private fun showDeliveryDialog(data: Data, dialogBehavior: DialogBehavior = ModalDialog) {
+         var cancelReason="Choose any one reason…"
+        var cancelList = resources.getStringArray(R.array.cancel_reason_list_pickup)
+        if(data.type.equals("Delivery",true)){
+            cancelList = resources.getStringArray(R.array.cancel_reason_list_delivery)
+        }
         val dialog = MaterialDialog(this, dialogBehavior).show {
             this.cancelOnTouchOutside(false)
             cornerRadius(null, R.dimen.dimen_30)
@@ -764,6 +769,21 @@ class HomeDetailActivity : BaseActivity() {
             val deliveryButton = this.findViewById<Button>(R.id.delivery_button)
             val cancelButton = this.findViewById<Button>(R.id.cancel_button)
             val closeDialog = this.findViewById<ImageView>(R.id.close_dialog)
+            val cancelOptionSpinner = this.findViewById<Spinner>(R.id.cancel_option_spinner)
+            val spinnerAdapter = ArrayAdapter(this@HomeDetailActivity,
+                R.layout.custom_cancel_text, cancelList)
+            cancelOptionSpinner.adapter = spinnerAdapter
+            cancelOptionSpinner.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>,
+                                            view: View, position: Int, id: Long) {
+                    // Toast.makeText(this@ConfirmTimeDialogActivity,cancelList[position], Toast.LENGTH_SHORT).show()
+                    cancelReason=cancelList[position]
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                }
+            }
             if (data.type.equals("Delivery", true)) {
                 //order_text.text = "DELIVERY PAID"
                 deliveryButton.text = "DELIVERED"
@@ -776,8 +796,13 @@ class HomeDetailActivity : BaseActivity() {
                 this.dismiss()
             }
             cancelButton.setOnClickListener {
+                if(cancelReason.isEmpty() ||cancelReason.equals("Choose any one reason…",true)){
+                    Toast.makeText(this@HomeDetailActivity,"Please select reason for Cancel",Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
                 this.dismiss()
                 var orderStatusRequest = OrderStatusRequest()
+                orderStatusRequest.reason=cancelReason
                 orderStatusRequest.deviceversion = Util.getVersionName(this@HomeDetailActivity)
                 orderStatusRequest.status = Constant.ORDER_STATUS.CANCEL
                 orderStatusRequest.order_id = data.id!!

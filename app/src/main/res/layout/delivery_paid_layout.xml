@@ -8,7 +8,7 @@
 
     <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_60"
+            android:layout_height="@dimen/dimen_100"
             android:gravity="center_vertical"
             android:padding="@dimen/dimen_10"
             android:background="@drawable/cutom_dialog_title_bg"
@@ -39,6 +39,14 @@
              android:textColor="@color/white"
              android:text="@string/picked_up"
              android:background="@drawable/green_round_corner"/>
+
+    <Spinner
+        android:id="@+id/cancel_option_spinner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_30"
+        android:layout_marginRight="@dimen/dimen_30"
+        android:layout_marginTop="@dimen/dimen_30"/>
     <Button
             android:layout_width="match_parent"
             android:layout_height="@dimen/dimen_50"

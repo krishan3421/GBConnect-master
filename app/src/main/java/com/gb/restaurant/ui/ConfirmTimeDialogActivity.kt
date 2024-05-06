@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
@@ -35,6 +36,7 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
     private var hold:String = ""
     private var timeList:MutableList<String> = mutableListOf<String>()
     private lateinit var binding: ActivityConfirmTimeDialogBinding
+    private var cancelReason="Choose any one reason…"
     companion object{
         private val TAG:String = ConfirmTimeDialogActivity::class.java.simpleName
         public val ORDER_ID:String = "ORDER_ID"
@@ -85,6 +87,10 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
      private fun initView(){
          try{
              attachObserver()
+             var cancelList = resources.getStringArray(R.array.cancel_reason_list_pickup)
+             if(orderType.equals("Delivery",true)){
+                 cancelList = resources.getStringArray(R.array.cancel_reason_list_delivery)
+             }
              binding.apply {
                  cancel.setOnClickListener(this@ConfirmTimeDialogActivity)
                  confirm.setOnClickListener(this@ConfirmTimeDialogActivity)
@@ -110,6 +116,20 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
                      }
                      callService(orderStatusRequest)
                  }
+                 val spinnerAdapter = ArrayAdapter(this@ConfirmTimeDialogActivity,
+                     R.layout.custom_cancel_text, cancelList)
+                 cancelOptionSpinner.adapter = spinnerAdapter
+                 cancelOptionSpinner.onItemSelectedListener = object :
+                     AdapterView.OnItemSelectedListener {
+                     override fun onItemSelected(parent: AdapterView<*>,
+                                                 view: View, position: Int, id: Long) {
+                        // Toast.makeText(this@ConfirmTimeDialogActivity,cancelList[position], Toast.LENGTH_SHORT).show()
+                     cancelReason=cancelList[position]
+                     }
+
+                     override fun onNothingSelected(parent: AdapterView<*>) {
+                     }
+                 }
              }
 
          }catch (e:Exception){
@@ -124,14 +144,19 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
             when(view){
                 binding.cancel->{
                     //cancelStatusPopup()
+                    if(cancelReason.isEmpty() ||cancelReason.equals("Choose any one reason…",true)){
+                        Toast.makeText(this@ConfirmTimeDialogActivity,"Please select reason for Cancel",Toast.LENGTH_SHORT).show()
+                        return
+                    }
+                    orderStatusRequest.reason=cancelReason
                     orderStatusRequest.status = Constant.ORDER_STATUS.CANCEL
+                    callService(orderStatusRequest)
                 }
                 binding.confirm->{
                     orderStatusRequest.status = Constant.ORDER_STATUS.CONFIRMED
-
+                    callService(orderStatusRequest)
                 }
             }
-            callService(orderStatusRequest)
         }catch (e:Exception){
             e.printStackTrace()
             Log.e(TAG,e.message!!)
@@ -139,29 +164,13 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
 
     }
 
-    private fun cancelStatusPopup(){
-        MaterialDialog(this).show {
-            setTheme(R.style.AppThemeMD)
-            title(R.string.choose_reason)
-            listItemsSingleChoice(
-                R.array.cancel_reason_list, initialSelection = 1
-            ) { _, index, text ->
-                var orderStatusRequest = OrderStatusRequest()
-                orderStatusRequest.details=text
-                callService(orderStatusRequest)
-            }
-            positiveButton(R.string.choose)
-        }
-    }
-
-
     private fun callService(orderStatusRequest: OrderStatusRequest){
         try{
             if(Validation.isOnline(this)){
                 orderStatusRequest.deviceversion = Util.getVersionName(this)
                 orderStatusRequest.order_id = orderId
                 orderStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-                println("request>>>>> ${Util.getStringFromBean(orderStatusRequest)}")
+              //  println("request>>>>> ${Util.getStringFromBean(orderStatusRequest)}")
                 viewModel.orderStatus(orderStatusRequest)
             }else{
                 showToast(getString(R.string.internet_connected))
