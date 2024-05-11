@@ -144,7 +144,7 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
             when(view){
                 binding.cancel->{
                     //cancelStatusPopup()
-                    if(cancelReason.isEmpty() ||cancelReason.equals("Choose any one reason…",true)){
+                    if(cancelReason.isEmpty() ||cancelReason.equals("Choose cancel reason",true)){
                         Toast.makeText(this@ConfirmTimeDialogActivity,"Please select reason for Cancel",Toast.LENGTH_SHORT).show()
                         return
                     }

@@ -796,7 +796,7 @@ class HomeDetailActivity : BaseActivity() {
                 this.dismiss()
             }
             cancelButton.setOnClickListener {
-                if(cancelReason.isEmpty() ||cancelReason.equals("Choose any one reason…",true)){
+                if(cancelReason.isEmpty() ||cancelReason.equals("Choose cancel reason",true)){
                     Toast.makeText(this@HomeDetailActivity,"Please select reason for Cancel",Toast.LENGTH_SHORT).show()
                     return@setOnClickListener
                 }

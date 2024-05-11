@@ -28,7 +28,7 @@
     </string-array>
 
     <string-array name="cancel_reason_list_pickup">
-        <item>Choose any one reason…</item>
+        <item>Choose cancel reason</item>
         <item>Ordered twice</item>
         <item>Changed Mind</item>
         <item>Food Complaint compensating</item>
@@ -37,10 +37,9 @@
         <item>Out of Items</item>
         <item>Temporary Outage</item>
         <item>Did not Receive order at store</item>
-        <item>Fraud Alert</item>
     </string-array>
     <string-array name="cancel_reason_list_delivery">
-        <item>Choose any one reason…</item>
+        <item>Choose cancel reason</item>
         <item>Ordered twice</item>
         <item>Changed Mind</item>
         <item>Food Complaint compensating</item>
@@ -51,6 +50,5 @@
         <item>Out of Items</item>
         <item>Temporary Outage</item>
         <item>Did not Receive order at store</item>
-        <item>Fraud Alert</item>
     </string-array>
 </resources>
