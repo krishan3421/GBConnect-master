@@ -271,11 +271,13 @@ class NewFragment : BaseFragment() {
     }
 
 
-    private fun confirmNewOrder(orderId: String, orderType: String) {
-        var orderStatusRequest = OrderStatusRequest()
-        orderStatusRequest.deviceversion = Util.getVersionName(requireContext())
-        orderStatusRequest.status = Constant.ORDER_STATUS.CONFIRMED
-        orderStatusRequest.order_id = orderId
+    public fun confirmNewOrder(orderId: String, orderType: String) {
+        val orderStatusRequest = OrderStatusRequest(deviceversion=Util.getVersionName(requireContext()),
+            status=Constant.ORDER_STATUS.CONFIRMED ,
+            order_id=orderId)
+//        orderStatusRequest.deviceversion = Util.getVersionName(requireContext())
+//        orderStatusRequest.status = Constant.ORDER_STATUS.CONFIRMED
+//        orderStatusRequest.order_id = orderId
         if (orderType.equals("Delivery", true)) {
             orderStatusRequest.readytime = "${rsLoginResponse?.data?.deliverytime?.get(0)} minutes"
         } else {
