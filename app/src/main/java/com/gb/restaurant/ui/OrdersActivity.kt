@@ -505,11 +505,11 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
         })
         viewModel.orderResponse.observe(this, Observer<OrderResponse> {
             it?.let {
-                var list = it.data
-                if (list?.size!! > 0)
-                    onFragmentInteraction(0, list?.size!!)
+                var list = it.data?: emptyList()
+                if (list.isNotEmpty())
+                    onFragmentInteraction(0, list.size)
 
-                println("item count>>>>>> " + it.reservation ?: 0)
+                //println(("item count>>>>>> " + it.reservation) ?: 0)
                 var reservationCount = it.reservation ?: 0
                 onStartStop(reservationCount)
             }
