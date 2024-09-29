@@ -28,6 +28,7 @@ class SessionManager(mContext: Context) {
         val PRINTER_ADDRESS = "printer_address"
         val PRINTER_TYPE = "printer_type"
         val API_TYPE = "GD"
+        val PRINT_PAGE_SIZE = "PRINT_PAGE_SIZE"
 
     }
 
@@ -128,5 +129,18 @@ class SessionManager(mContext: Context) {
 
     fun getApiType(): String {
         return pref.getString(API_TYPE, "GD")?:"GD"
+    }
+
+    fun setPrintPageSize(page: Int) {
+        editor.putInt(PRINT_PAGE_SIZE, page)
+        editor.commit()
+    }
+
+    fun getPrintPageSize(): Int {
+       var size =  pref.getInt(PRINT_PAGE_SIZE, 1)
+        if(size==0){
+            size=1
+        }
+        return size
     }
 }

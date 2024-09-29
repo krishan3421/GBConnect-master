@@ -834,7 +834,7 @@ class ComDetailActivity : BaseActivity() {
     }
 
     fun print(printer_type: Int, printer_id: String) {
-
+      val printSize = sessionManager?.getPrintPageSize()?:1
         mCanvas = Canvas(canvasBitmap)
         mBitmap = Utils.createOrderReceipt(this, mCanvas, 576, data)
         if (mBitmap != null) {
@@ -844,7 +844,8 @@ class ComDetailActivity : BaseActivity() {
                 this,
                 mBitmap,
                 printer_type,
-                printer_id
+                printer_id,
+                printSize
             )
 
         }

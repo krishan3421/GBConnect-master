@@ -388,7 +388,8 @@ public class Utils {
     }
 
 
-    public static Boolean munbynPrinting(Context mContext, Bitmap bitmap, int printerType, String targetAddress) {
+    public static Boolean munbynPrinting(Context mContext, Bitmap bitmap, int printerType, String targetAddress,int printSize) {
+
         if (printerType == 1) {
             isBluetooth = true;
         }
@@ -404,7 +405,7 @@ public class Utils {
                                 if (connectStatus == MunbynPrinter.CONNECT_SUCCESS) {
                                     new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
                                         public void run() {
-                                            MunbynPrinter.getInstance().printBitmap(bitmap);
+                                            MunbynPrinter.getInstance().printBitmap(bitmap,printSize);
                                         }
                                     }, 500);
                                 }

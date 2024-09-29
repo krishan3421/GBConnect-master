@@ -471,7 +471,7 @@ class NewFragment : BaseFragment() {
 
 
     fun print(printer_type: Int, printer_id: String, data: Data?) {
-
+        val printSize = sessionManager?.getPrintPageSize()?:1
         mCanvas = Canvas(canvasBitmap)
         mBitmap = Utils.createOrderReceipt(context, mCanvas, 576, data)
         if (mBitmap != null) {
@@ -481,7 +481,8 @@ class NewFragment : BaseFragment() {
                 context,
                 mBitmap,
                 printer_type,
-                printer_id
+                printer_id,
+                printSize
             )
 
 

@@ -436,7 +436,37 @@
             </LinearLayout>
         </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:background="@color/white"
+        android:orientation="horizontal"
+        android:paddingLeft="@dimen/dimen_20"
+        android:paddingTop="@dimen/dimen_20"
+        android:paddingRight="@dimen/dimen_20"
+        android:paddingBottom="@dimen/dimen_20">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="left|center_vertical"
+            android:text="@string/print_copies"
+            android:textColor="@color/blue_color"
+            android:textSize="@dimen/sp_size_16"
+            android:layout_marginEnd="@dimen/dimen_40"
+            android:layout_weight="1"
+            android:textStyle="bold" />
 
+        <Spinner
+            android:id="@+id/print_copy_spinner"
+            android:layout_width="@dimen/dimen_80"
+            android:layout_height="@dimen/dimen_35"
+            android:layout_gravity="center"
+            android:background="@drawable/printer_spinner_bg"
+            android:spinnerMode="dialog"/>
+    </LinearLayout>
         <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

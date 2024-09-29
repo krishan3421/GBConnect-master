@@ -14,6 +14,8 @@ import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.view.Window
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.CompoundButton
 import android.widget.ImageView
 import android.widget.ProgressBar
@@ -73,6 +75,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     private lateinit var viewModel: DestinViewModel
     private lateinit var binding: ActivitySettingBinding
     var sessionManager: SessionManager? = null
+    private var selectPrintSize = 1
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //setContentView(R.layout.activity_setting)
@@ -101,6 +104,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
     private fun initData() {
         try {
             rsLoginResponse = MyApp.instance.rsLoginResponse
+            selectPrintSize = sessionManager?.getPrintPageSize()?:1
             viewModel = createViewModel()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -198,6 +202,24 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
                     //submit(doller_radio)
                 }
             })
+            var printerPages = resources.getStringArray(R.array.printer_pages)
+            val spinnerAdapter = ArrayAdapter(this@SettingActivity,
+                R.layout.custom_print_text, printerPages)
+            val spinnerPosition = spinnerAdapter.getPosition("$selectPrintSize");
+            binding.contentSetting.printCopySpinner.adapter = spinnerAdapter
+            binding.contentSetting.printCopySpinner.setSelection(spinnerPosition)
+            binding.contentSetting.printCopySpinner.onItemSelectedListener = object :
+                AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: AdapterView<*>,
+                                            view: View, position: Int, id: Long) {
+                    sessionManager?.setPrintPageSize(printerPages[position].toInt())
+                     //Toast.makeText(this@SettingActivity,printerPages[position], Toast.LENGTH_SHORT).show()
+
+                }
+
+                override fun onNothingSelected(parent: AdapterView<*>) {
+                }
+            }
             callStatusService()
         } catch (e: Exception) {
             e.printStackTrace()

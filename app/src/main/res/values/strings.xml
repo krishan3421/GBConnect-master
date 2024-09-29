@@ -163,6 +163,7 @@
     <string name="gb_delivery">GB Delivery</string>
     <string name="view_terms">View <font color='#108AE5'>Terms</font></string>
     <string name="store_profile">Store Profile</string>
+    <string name="print_copies">Select Print Copies</string>
     <!--Dialog activity-->
     <string name="items">ITEMS</string>
     <string name="qty">QTY</string>

@@ -131,9 +131,12 @@ public class MunbynPrinter {
         }
     }
 
-    public void printBitmap(Bitmap bitmap1) {
-
+    public void printBitmap(Bitmap bitmap1,int printSize) {
+       if(printSize==0){
+           printSize =1;
+       }
         if (ISCONNECT) {
+            int finalPrintSize = printSize;
             Utils.myBinder.WriteSendData(new TaskCallback() {
                 @Override
                 public void OnSucceed() {
@@ -150,18 +153,19 @@ public class MunbynPrinter {
                 @Override
                 public List<byte[]> processDataBeforeSend() {
                     List<byte[]> list = new ArrayList<>();
-                    list.add(DataForSendToPrinterPos80.initializePrinter());
-                    List<Bitmap> blist = new ArrayList<>();
-                    blist = BitmapProcess.cutBitmap(150, bitmap1);
-                    for (int i = 0; i < blist.size(); i++) {
-                        list.add(DataForSendToPrinterPos80.printRasterBmp(0, blist.get(i), BitmapToByteData.BmpType.Dithering, BitmapToByteData.AlignType.Center, 576));
-                    }
+                    for(int j = 0; j < finalPrintSize; j++) {
+                        list.add(DataForSendToPrinterPos80.initializePrinter());
+                        List<Bitmap> blist = new ArrayList<>();
+                        blist = BitmapProcess.cutBitmap(150, bitmap1);
+                        for (int i = 0; i < blist.size(); i++) {
+                            list.add(DataForSendToPrinterPos80.printRasterBmp(0, blist.get(i), BitmapToByteData.BmpType.Dithering, BitmapToByteData.AlignType.Center, 576));
+                        }
 //                    list.add(StringUtils.strTobytes("1234567890qwertyuiopakjbdscm nkjdv mcdskjb"));
-                    list.add(DataForSendToPrinterPos80.printAndFeedLine());
+                        list.add(DataForSendToPrinterPos80.printAndFeedLine());
 
-                    //To cut
-                    list.add(DataForSendToPrinterPos80.selectCutPagerModerAndCutPager(0x42, 0x66));
-
+                        //To cut
+                        list.add(DataForSendToPrinterPos80.selectCutPagerModerAndCutPager(0x42, 0x66));
+                    }
                     return list;
                 }
             });
