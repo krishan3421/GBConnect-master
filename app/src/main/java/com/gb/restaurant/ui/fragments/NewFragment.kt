@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Context.RECEIVER_EXPORTED
-import android.content.Context.RECEIVER_NOT_EXPORTED
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
@@ -27,7 +26,6 @@ import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
-import com.gb.restaurant.databinding.FragmentMonthlyInvoiceBinding
 import com.gb.restaurant.databinding.FragmentNewBinding
 import com.gb.restaurant.di.ComponentInjector
 import com.gb.restaurant.model.confirmorder.OrderStatusRequest
@@ -36,13 +34,13 @@ import com.gb.restaurant.model.order.Data
 import com.gb.restaurant.model.order.OrderRequest
 import com.gb.restaurant.model.order.OrderResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
+import com.gb.restaurant.session.SessionManager
 import com.gb.restaurant.ui.NewDetailActivity
 import com.gb.restaurant.ui.OrdersActivity
 import com.gb.restaurant.ui.adapter.NewAdapter
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.utils.Utils
 import com.gb.restaurant.viewmodel.OrderViewModel
-import com.gb.restaurant.session.SessionManager
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -81,6 +79,8 @@ class NewFragment : BaseFragment() {
     var confirmData:Data?=null
     private var _binding: FragmentNewBinding? = null
     private val binding get() = _binding!!
+
+     private var orderList:MutableList<Data?> = mutableListOf()
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         if (activity is OrdersActivity)
@@ -115,14 +115,14 @@ class NewFragment : BaseFragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+       // _binding = null
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         try {
             sessionManager = SessionManager(requireContext())
 
-            orderAdapter = NewAdapter(fragmentBaseActivity as OrdersActivity, viewModel)
+            orderAdapter = NewAdapter(fragmentBaseActivity as OrdersActivity, orderList)
             binding.newOrderRecycler.apply {
                 setHasFixedSize(true)
                 layoutManager = LinearLayoutManager(fragmentBaseActivity)
@@ -131,27 +131,48 @@ class NewFragment : BaseFragment() {
 
             attachObserver()
 
-            callService(false)
+           // callService(false)
 
             binding.newSwipeRefresh.setOnRefreshListener {
-                callService(false)
+                //callService(false)
+                listener?.callApiOnRefresh(false)
             }
+
         } catch (e: Exception) {
             e.printStackTrace()
             Log.e(TAG, e.message!!)
         }
     }
 
+
+
+    fun updateNewAdapter(newListList: List<Data?>){
+          orderList = newListList?.toMutableList()?: mutableListOf()
+          orderAdapter.updateOrderList(orderList)
+            if (binding?.newSwipeRefresh != null)
+                binding?.newSwipeRefresh?.isRefreshing = false
+          orderList?.let {
+               // orderAdapter.notifyDataSetChanged()
+                if (orderAdapter.itemCount > 0) {
+                    binding?.newOrderRecycler?.visibility = View.VISIBLE
+                    binding?.noOrderText?.visibility = View.GONE
+                } else {
+                    binding?.newOrderRecycler?.visibility = View.GONE
+                    binding?.noOrderText?.visibility = View.VISIBLE
+                }
+          }
+    }
     fun callService(isPrintLastOrder: Boolean) {
         try {
             if (Validation.isOnline(fragmentBaseActivity)) {
                 // fragmentBaseActivity.showToast("broadcast new")
-                var orderRequest = OrderRequest()
+                val orderRequest = OrderRequest()
                 orderRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
                 orderRequest.service_type =
                     Constant.SERVICE_TYPE.GET_NEW_ORDER//Constant.SERVICE_TYPE.GET_NEW_ORDER
                 orderRequest.deviceversion = Util.getVersionName(fragmentBaseActivity)
                 // println("new request>>>>> ${Util.getStringFromBean(orderRequest)}")
+
                 viewModel.getOrderResponse(orderRequest, isPrintLastOrder)
             } else {
                 fragmentBaseActivity.showSnackBar(
@@ -161,111 +182,95 @@ class NewFragment : BaseFragment() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
-
-    /*fun callService(context:Context=fragmentBaseActivity,restId:String=rsLoginResponse?.data?.restaurantId!!){
-        try{
-            if(Validation.isOnline(context)){
-                var orderRequest = OrderRequest()
-                orderRequest.restaurant_id = restId
-                orderRequest.service_type = Constant.SERVICE_TYPE.GET_NEW_ORDER//Constant.SERVICE_TYPE.GET_NEW_ORDER
-                orderRequest.deviceversion = Util.getVersionName(context)
-                // println("new request>>>>> ${Util.getStringFromBean(orderRequest)}")
-                viewModel.getOrderResponse(orderRequest)
-            }else{
-                fragmentBaseActivity.showSnackBar(progress_bar,getString(R.string.internet_connected))
-            }
-        }catch (e:Exception){
-            e.printStackTrace()
-            Log.e(TAG,e.message)
-        }
-    }*/
 
     private fun attachObserver() {
         viewModel.isLoading.observe(fragmentBaseActivity, Observer<Boolean> {
             it?.let { showLoadingDialog(it) }
         })
-        viewModel.apiError.observe(fragmentBaseActivity, Observer<String> {
-            if (binding.newSwipeRefresh != null)
-                binding.newSwipeRefresh.isRefreshing = false
-            it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar, it) }
-        })
+//        viewModel.apiError.observe(fragmentBaseActivity, Observer<String> {
+//            if (binding.newSwipeRefresh != null)
+//                binding.newSwipeRefresh.isRefreshing = false
+//            it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar, it) }
+//        })
         viewModel.orderResponse.observe(fragmentBaseActivity, Observer<OrderResponse> {
-            if (binding.newSwipeRefresh != null)
-                binding.newSwipeRefresh.isRefreshing = false
+
+            if (binding?.newSwipeRefresh != null)
+                binding?.newSwipeRefresh?.isRefreshing = false
             it?.let {
                 orderAdapter.notifyDataSetChanged()
                 if (orderAdapter.itemCount > 0) {
-                    binding.newOrderRecycler?.visibility = View.VISIBLE
-                    binding.noOrderText?.visibility = View.GONE
-                    orderAdapter?.itemCount?.let { it1 -> onButtonPressed(Constant.TAB.NEW, it1) }
-
+                    binding?.newOrderRecycler?.visibility = View.VISIBLE
+                    binding?.noOrderText?.visibility = View.GONE
                 } else {
-                    binding.newOrderRecycler?.visibility = View.GONE
-                    binding.noOrderText?.visibility = View.VISIBLE
-                }
-                var reservationCount = it.reservation ?: 0
-                reservationListener?.onStartStop(reservationCount)
-            }
-        })
-
-        viewModel.printLastOrder.observe(fragmentBaseActivity, Observer<Boolean> {
-            stopListener?.onStop(Constant.TAB.NEW, orderAdapter.itemCount)
-            it?.let {
-
-                if (it) {
-                    if (checkSelfPermission(
-                            requireActivity(),
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
-                            requireActivity(),
-                            Manifest.permission.ACCESS_COARSE_LOCATION
-                        ) != PackageManager.PERMISSION_GRANTED
-                    ) {
-                        requestPermissions(
-                            arrayOf(
-                                Manifest.permission.ACCESS_FINE_LOCATION,
-                                Manifest.permission.ACCESS_COARSE_LOCATION
-                            ), 1
-                        )
-                    } else {
-                        if (Utils.isLocationEnabled(context)!!) {
-                            if (sessionManager!!.getPrinterAddress().isNotEmpty()) {
-                                Handler().postDelayed({
-                                    print(
-                                        sessionManager!!.getPrinterType(),
-                                        sessionManager!!.getPrinterAddress(),
-                                        viewModel.getOrderAt(0)
-                                    )
-                                }, 5*1000)
-                            }
-                            stopListener?.onStop(Constant.TAB.NEW, orderAdapter.itemCount)
-                        }
-
-                    }
-
-                }
-
-
-            }
-        })
-
-
-
-        viewModel.orderStatusResponse.observe(viewLifecycleOwner, Observer<OrderStatusResponse> {
-            it?.let {
-                if (it.status == Constant.STATUS.FAIL) {
-                    fragmentBaseActivity.showToast(it.result!!)
-                } else {
-                    fragmentBaseActivity.showToast(it.result!!)
-                    callService(false)
-                    (activity as OrdersActivity?)!!.refreshActiveFragment()
-
+                    binding?.newOrderRecycler?.visibility = View.GONE
+                    binding?.noOrderText?.visibility = View.VISIBLE
                 }
             }
         })
+
+//        viewModel.printLastOrder.observe(fragmentBaseActivity, Observer<Boolean> {
+//            stopListener?.onStop(Constant.TAB.NEW, orderAdapter.itemCount)
+//            try {
+//                it?.let {
+//
+//                    if (it) {
+//                        if (checkSelfPermission(
+//                                requireActivity(),
+//                                Manifest.permission.ACCESS_FINE_LOCATION
+//                            ) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(
+//                                requireActivity(),
+//                                Manifest.permission.ACCESS_COARSE_LOCATION
+//                            ) != PackageManager.PERMISSION_GRANTED
+//                        ) {
+//                            requestPermissions(
+//                                arrayOf(
+//                                    Manifest.permission.ACCESS_FINE_LOCATION,
+//                                    Manifest.permission.ACCESS_COARSE_LOCATION
+//                                ), 1
+//                            )
+//                        } else {
+//                            if (Utils.isLocationEnabled(context)!!) {
+//                                if (sessionManager!!.getPrinterAddress().isNotEmpty()) {
+//                                    Handler().postDelayed({
+//                                        print(
+//                                            sessionManager!!.getPrinterType(),
+//                                            sessionManager!!.getPrinterAddress(),
+//                                            viewModel.getOrderAt(0)
+//                                        )
+//                                    }, 5*1000)
+//                                }
+//                                stopListener?.onStop(Constant.TAB.NEW, orderAdapter.itemCount)
+//                            }
+//
+//                        }
+//
+//                    }
+//
+//
+//                }
+//            }catch (e:Exception){
+//                e.printStackTrace()
+//            }
+//
+//        })
+
+
+
+//        viewModel.orderStatusResponse.observe(viewLifecycleOwner, Observer<OrderStatusResponse> {
+//            it?.let {
+//                if (it.status == Constant.STATUS.FAIL) {
+//                    fragmentBaseActivity.showToast(it.result!!)
+//                } else {
+//                    fragmentBaseActivity.showToast(it.result!!)
+//                    callService(false)
+//                    (activity as OrdersActivity?)!!.refreshActiveFragment()
+//
+//                }
+//            }
+//        })
 
 
     }
@@ -332,18 +337,8 @@ class NewFragment : BaseFragment() {
 
     override fun onResume() {
         super.onResume()
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
-            fragmentBaseActivity?.registerReceiver(printStatusBroadcast,
-                IntentFilter("com.gb.restaurant.utils.returnPrintStatus"),
-                RECEIVER_EXPORTED
-            );
-        }else{
-            fragmentBaseActivity?.registerReceiver(printStatusBroadcast,
-                IntentFilter("com.gb.restaurant.utils.returnPrintStatus")
-            );
-        }
-
-        Utils.setBluetooth(true,fragmentBaseActivity)
+        updateNewAdapter(orderContext?.newOrderList?: emptyList())
+       // Utils.setBluetooth(true,fragmentBaseActivity)
 
         orderAdapter.setOnItemClickListener(object : NewAdapter.NewOrClickListener {
             override fun onItemClick(data: Data, position: Int, v: View) {
@@ -364,7 +359,7 @@ class NewFragment : BaseFragment() {
 
     override fun onPause() {
         super.onPause()
-        fragmentBaseActivity?.unregisterReceiver(printStatusBroadcast);
+       // fragmentBaseActivity?.unregisterReceiver(printStatusBroadcast);
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -397,6 +392,7 @@ class NewFragment : BaseFragment() {
     interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         fun onFragmentInteraction(position: Int, count: Int)
+        fun callApiOnRefresh(isPrint: Boolean)
     }
 
     interface OnStopListener {
@@ -445,7 +441,7 @@ class NewFragment : BaseFragment() {
         }
 
     private fun showLoadingDialog(show: Boolean) {
-        if (show) binding.progressBar?.visibility = View.VISIBLE else binding.progressBar?.visibility = View.GONE
+        if (show) binding?.progressBar?.visibility = View.VISIBLE else binding?.progressBar?.visibility = View.GONE
     }
 
 
@@ -471,22 +467,25 @@ class NewFragment : BaseFragment() {
 
 
     fun print(printer_type: Int, printer_id: String, data: Data?) {
-        val printSize = sessionManager?.getPrintPageSize()?:1
-        mCanvas = Canvas(canvasBitmap)
-        mBitmap = Utils.createOrderReceipt(context, mCanvas, 576, data)
-        if (mBitmap != null) {
-            confirmData = data
-            //Print Munbyn
-          Utils.munbynPrinting(
-                context,
-                mBitmap,
-                printer_type,
-                printer_id,
-                printSize
-            )
+        data?.let {
+            val printSize = sessionManager?.getPrintPageSize()?:1
+            mCanvas = Canvas(canvasBitmap)
+            mBitmap = Utils.createOrderReceipt(context, mCanvas, 576, it)
+            if (mBitmap != null) {
+                confirmData = it
+                //Print Munbyn
+                Utils.munbynPrinting(
+                    context,
+                    mBitmap,
+                    printer_type,
+                    printer_id,
+                    printSize
+                )
 
 
+            }
         }
+
 
     }
     private val printStatusBroadcast:BroadcastReceiver = object : BroadcastReceiver() {

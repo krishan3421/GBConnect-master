@@ -86,7 +86,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null
+       // _binding = null
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -108,7 +108,6 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
         }
 
         attachObserver()
-
         callService()
 
         binding.compSwipeRefresh.setOnRefreshListener {
@@ -149,20 +148,24 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
             it?.let { fragmentBaseActivity.showSnackBar(binding.progressBar, it) }
         })
         viewModel.orderResponse.observe(fragmentBaseActivity, Observer<OrderResponse> {
-            if (binding.compSwipeRefresh != null)
-                binding.compSwipeRefresh.isRefreshing = false
+            binding?.let {binding->
+                if (binding.compSwipeRefresh != null)
+                    binding.compSwipeRefresh.isRefreshing = false
 
-            it?.let {
-                compAdapter.notifyDataSetChanged()
-                if (compAdapter.itemCount > 0) {
-                    binding.compRecycler?.visibility = View.VISIBLE
-                    binding.noOrderText?.visibility = View.GONE
+                it?.let {
+                   // println("data>>>> ${Util.getStringFromBean(it)}")
+                    compAdapter.notifyDataSetChanged()
+                    if (compAdapter.itemCount > 0) {
+                        binding.compRecycler?.visibility = View.VISIBLE
+                        binding.noOrderText?.visibility = View.GONE
 
-                } else {
-                    binding.compRecycler?.visibility = View.GONE
-                    binding.noOrderText?.visibility = View.VISIBLE
+                    } else {
+                        binding.compRecycler?.visibility = View.GONE
+                        binding.noOrderText?.visibility = View.VISIBLE
+                    }
                 }
             }
+
         })
 
 
@@ -279,61 +282,74 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
         }
     }
 
-    fun startDateMethod() {
+    private fun startDateMethod() {
         try {
-            var calendar = Calendar.getInstance()
+            val calendar = Calendar.getInstance()
+            val pastCalendar = Calendar.getInstance()
+            pastCalendar.add(Calendar.DAY_OF_MONTH, -30);
             MaterialDialog(fragmentBaseActivity).show {
-                datePicker(null, calendar, calendar) { _, date ->
-                    date.set(
-                        date.get(Calendar.YEAR),
-                        date.get(Calendar.MONTH),
-                        date.get(Calendar.DATE),
-                        0,
-                        0,
-                        0
-                    )
-                    strtDateCalendar = date
-                    endDateCalendar=date
-                    var dateText = Util.get_yyyy_mm_dd(date)
-                    //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                    binding.startDateText.setText(dateText)
-                    binding.endDateText.setText(dateText)
-
-                }
-
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.e(TAG, e.message!!)
-        }
-    }
-
-    fun endDateMethod() {
-        try {
-            var calendar = Calendar.getInstance()
-           // println("time>>> ${calendar.time}")
-            val calendarMinMaxDate = Util.getSelMonthEndDate(strtDateCalendar!!);
-            MaterialDialog(fragmentBaseActivity).show {
-                datePicker(strtDateCalendar, calendarMinMaxDate, calendar) { _, date ->
-                    if (strtDateCalendar != null) {
+                try {
+                    datePicker(pastCalendar, calendar, calendar) { _, date ->
                         date.set(
                             date.get(Calendar.YEAR),
                             date.get(Calendar.MONTH),
                             date.get(Calendar.DATE),
-                            23,
-                            59,
-                            59
+                            0,
+                            0,
+                            0
                         )
-                        endDateCalendar = date
-                        var dateText = Util.get_yyyy_mm_dd(date)
+                        strtDateCalendar = date
+                        //endDateCalendar=date
+                        val dateText = Util.get_yyyy_mm_dd(date)
                         //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
-                        binding.endDateText.setText(dateText)
-                    } else {
-                        fragmentBaseActivity.showSnackBar(
-                            binding.endDateText,
-                            "Please select start-Date"
-                        )
+                        binding.startDateText.setText(dateText)
+                       // binding.endDateText.setText(dateText)
+
                     }
+                }catch (e:Exception){
+                    e.printStackTrace()
+                }
+
+
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e(TAG, e.message?:"")
+        }
+    }
+
+    private fun endDateMethod() {
+        try {
+            val calendar = Calendar.getInstance()
+           // println("time>>> ${calendar.time}")
+            val pastCalendar = Calendar.getInstance()
+            pastCalendar.add(Calendar.DAY_OF_MONTH, -30);
+           // val calendarMinMaxDate = Util.getSelMonthEndDate(strtDateCalendar!!);
+            MaterialDialog(fragmentBaseActivity).show {
+                try {
+                    datePicker(pastCalendar, calendar, calendar) { _, date ->
+                        if (strtDateCalendar != null) {
+                            date.set(
+                                date.get(Calendar.YEAR),
+                                date.get(Calendar.MONTH),
+                                date.get(Calendar.DATE),
+                                23,
+                                59,
+                                59
+                            )
+                            endDateCalendar = date
+                            val dateText = Util.get_yyyy_mm_dd(date)
+                            //Util.getSelectedDate(date)?.let { fragmentBaseActivity.showToast(it) }
+                            binding.endDateText.setText(dateText)
+                        } else {
+                            fragmentBaseActivity.showSnackBar(
+                                binding.endDateText,
+                                "Please select start-Date"
+                            )
+                        }
+                    }
+                }catch (e:Exception){
+                    e.printStackTrace()
                 }
             }
         } catch (e: Exception) {

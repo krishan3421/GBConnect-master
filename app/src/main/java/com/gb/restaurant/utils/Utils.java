@@ -25,6 +25,8 @@ import android.widget.Toast;
 
 import androidx.core.content.ContextCompat;
 import com.gb.restaurant.CATPrintSDK.Canvas;
+import com.gb.restaurant.Constant;
+import com.gb.restaurant.MyApp;
 import com.gb.restaurant.R;
 import com.gb.restaurant.model.PrinterModel;
 import com.gb.restaurant.model.order.Data;
@@ -74,7 +76,7 @@ public class Utils {
         Canvas canvas = mCanvas;
 
         Typeface defaultFont;
-        defaultFont = Typeface.createFromAsset(ctx.getAssets(), "fonts" + File.separator + CURRENT_FONT);
+        defaultFont = Typeface.createFromAsset(MyApp.Companion.getInstance().getAssets(), "fonts" + File.separator + CURRENT_FONT);
 
 
         int nPrintHeight = calculateHeight(receiptData);
@@ -82,7 +84,7 @@ public class Utils {
         canvas.CanvasBegin(nPrintWidth, nPrintHeight);
         canvas.SetPrintDirection(0);
 
-        Bitmap icon = BitmapFactory.decodeResource(ctx.getResources(), R.drawable.receipt_logo);
+        Bitmap icon = BitmapFactory.decodeResource(MyApp.Companion.getInstance().getResources(), R.drawable.receipt_logo);
 
         if (icon != null) {
             lineHeight += 40;
@@ -361,10 +363,8 @@ public class Utils {
 //            canvas.DrawText(receiptData.getMobile(), -2, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
 //            lineHeight += 40;
 //        }
-
-
-        lineHeight += 10;
-
+       // lineHeight += drawEmptyCanvas(canvas,defaultFont);
+        lineHeight+=10;
         canvas.CanvasEnd();
         System.gc();
         Bitmap bmpp = canvas.getBitmap().copy(Bitmap.Config.RGB_565, true);
@@ -378,6 +378,48 @@ public class Utils {
 
     }
 
+
+    public static Bitmap dummyOrderReceipt(Context ctx, Canvas mCanvas, int nPrintWidth) {
+
+        Bitmap bitmap = null;
+        int lineHeight = 0;
+        Canvas canvas = mCanvas;
+        int nPrintHeight = 300;
+
+        canvas.CanvasBegin(nPrintWidth, nPrintHeight);
+        canvas.SetPrintDirection(0);
+
+        Typeface defaultFont = Typeface.createFromAsset(ctx.getAssets(), "fonts" + File.separator + CURRENT_FONT);
+
+        lineHeight += drawEmptyCanvas(canvas,defaultFont);
+        lineHeight+=10;
+        canvas.CanvasEnd();
+        System.gc();
+        Bitmap bmpp = canvas.getBitmap().copy(Bitmap.Config.RGB_565, true);
+        try {
+            bitmap = Bitmap.createBitmap(bmpp, 0, 0, nPrintWidth, lineHeight);
+        }catch(Exception e) {
+            e.printStackTrace();
+            bitmap= bmpp;
+        }
+        return bitmap;
+
+    }
+
+    public static int drawEmptyCanvas(Canvas canvas,Typeface defaultFont){
+        int lineHeight = 400;
+        canvas.DrawText("  ", 0, lineHeight, 0, defaultFont, 10, FONTSTYLE_BOLD);
+        lineHeight += 30;
+        canvas.DrawText("    ", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+        lineHeight += 100;
+        canvas.DrawText("  ", 0, lineHeight, 0, defaultFont, 10, FONTSTYLE_BOLD);
+        lineHeight += 30;
+        canvas.DrawText("    ", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+        lineHeight += 100;
+
+        return lineHeight;
+    }
+
     public void DrawBoxLight(float left, float top, float right, float bottom) {
         Paint DrawBoxPaint = new Paint();
         DrawBoxPaint.setStrokeWidth(3);
@@ -385,6 +427,14 @@ public class Utils {
         this.canvas.drawLine(right, top, right, bottom, DrawBoxPaint);
         this.canvas.drawLine(right, bottom, left, bottom, DrawBoxPaint);
         this.canvas.drawLine(left, bottom, left, top, DrawBoxPaint);
+    }
+
+    public static Bitmap  dummyPrint(Context context){
+        Bitmap bitmap = null;
+           Canvas  mCanvas = new Canvas(bitmap);
+        bitmap =   dummyOrderReceipt(context,mCanvas,576);
+        Constant.setBitmap(bitmap);
+       return bitmap;
     }
 
 
@@ -450,7 +500,7 @@ public class Utils {
     private static void returnPrintStatus(int status, Context context) {
         Intent printStatus = new Intent("com.gb.restaurant.utils.returnPrintStatus");
         printStatus.putExtra("PRINT_STATUS", status);
-        context.sendBroadcast(printStatus);
+        MyApp.Companion.getInstance().sendBroadcast(printStatus);
         //LocalBroadcastManager.getInstance(context).sendBroadcast(printStatus);
     }
 
@@ -467,7 +517,7 @@ public class Utils {
             e.printStackTrace();
         }
 
-        lineHeight += 20;
+        lineHeight += 30000;
 
 
         lineHeight += 100;

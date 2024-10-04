@@ -57,5 +57,7 @@ data class Data(
     @SerializedName("rewards")
     var rewards: String?,
     @SerializedName("trackorder")
-    var trackorder: String?
+    var trackorder: String?,
+    @SerializedName("tabletype")
+    var tableType: String?
 )

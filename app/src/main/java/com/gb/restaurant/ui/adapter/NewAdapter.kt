@@ -1,5 +1,6 @@
 package com.gb.restaurant.ui.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,7 +14,7 @@ import com.gb.restaurant.model.order.Data
 import com.gb.restaurant.ui.OrdersActivity
 import com.gb.restaurant.viewmodel.OrderViewModel
 
-class NewAdapter(val mContext:OrdersActivity, var viewModel: OrderViewModel) : RecyclerView.Adapter<NewAdapter.OrderViewHolder>() {
+class NewAdapter(val mContext:OrdersActivity, var orderList: MutableList<Data?>) : RecyclerView.Adapter<NewAdapter.OrderViewHolder>() {
 
     lateinit var newOrClickListener: NewOrClickListener
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OrderViewHolder {
@@ -21,12 +22,21 @@ class NewAdapter(val mContext:OrdersActivity, var viewModel: OrderViewModel) : R
     }
 
     override fun getItemCount(): Int {
-       return viewModel.getOrderSize()
+       return orderList.size
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    fun updateOrderList(localList : List<Data?>){
+        localList?.let {
+            orderList.clear()
+            orderList.addAll(localList)
+            notifyDataSetChanged()
+        }
     }
 
     override fun onBindViewHolder(holder: OrderViewHolder, position: Int) {
 
-        viewModel.getOrderAt(position)?.let {
+        orderList[position]?.let {
             holder.apply {
                // restaurantId.text = "${it.id}"
                 var name=""
@@ -75,7 +85,7 @@ class NewAdapter(val mContext:OrdersActivity, var viewModel: OrderViewModel) : R
         }*/
 
         holder.viewLayout.setOnClickListener {
-            newOrClickListener.onItemClick(viewModel.getOrderAt(position)!!,position, it)
+            newOrClickListener.onItemClick(orderList[position]!!,position, it)
         }
 
     }

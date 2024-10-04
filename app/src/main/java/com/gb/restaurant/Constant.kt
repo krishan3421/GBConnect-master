@@ -1,12 +1,18 @@
 package com.gb.restaurant
+
+import android.graphics.Bitmap
+
 //https://www.grabull.com/web-api/
 //admin/api_gb@2019
 class Constant {
+
 
     companion object{
         //const val URL ="https://www.grabull.com.au"
         const val GB_URL ="https://www.grabull.com/web-api/"
         const val GD_URL ="https://www.webapi.grabulldirect.com/"
+        @JvmStatic
+        var bitmap:Bitmap?=null
     }
     interface WEBSERVICE{
           companion object{

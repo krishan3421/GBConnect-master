@@ -124,7 +124,7 @@ class ComDetailActivity : BaseActivity() {
             createItmList()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -134,7 +134,7 @@ class ComDetailActivity : BaseActivity() {
             data = MyApp.instance.data
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -338,7 +338,7 @@ class ComDetailActivity : BaseActivity() {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -410,7 +410,7 @@ class ComDetailActivity : BaseActivity() {
             onBackPressed()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -420,7 +420,7 @@ class ComDetailActivity : BaseActivity() {
             addItemsViewDialog()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -429,7 +429,7 @@ class ComDetailActivity : BaseActivity() {
             showCustomViewDialog(data)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -480,7 +480,7 @@ class ComDetailActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -543,14 +543,15 @@ class ComDetailActivity : BaseActivity() {
                 orderDetailRequest.order_id = data!!.id!!
                 orderDetailRequest.order_type="Completed"
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
-                println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
+                orderDetailRequest.tabletype = data?.tableType?:""
+               // println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
                 viewModel.getOrderDetailResponse(orderDetailRequest)
             } else {
                 showToast(getString(R.string.internet_connected))
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -569,7 +570,7 @@ class ComDetailActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 

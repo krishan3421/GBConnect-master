@@ -64,6 +64,9 @@ class OrderViewModel :ViewModel(){
      * Adapter Callback
      */
 
+    fun updateNewOrdersList(ordersList:List<Data?>){
+        orderResponse.value?.data = ordersList
+    }
     fun getOrderAt(position: Int): Data? {
         if (position < getOrderSize()) {
             return orderResponse.value?.data?.get(position)

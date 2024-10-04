@@ -1,12 +1,16 @@
 package com.gb.restaurant.ui
 
+import android.Manifest
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.content.pm.PackageManager
+import android.graphics.Bitmap
 import android.graphics.Color
 import android.media.MediaPlayer
+import android.os.Build
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -25,12 +29,16 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.gb.restaurant.CATPrintSDK.Canvas
 import com.gb.restaurant.Constant
 import com.gb.restaurant.MyApp
 import com.gb.restaurant.R
 import com.gb.restaurant.Validation
 import com.gb.restaurant.databinding.ActivityOrdersBinding
 import com.gb.restaurant.di.ComponentInjector
+import com.gb.restaurant.model.confirmorder.OrderStatusRequest
+import com.gb.restaurant.model.confirmorder.OrderStatusResponse
+import com.gb.restaurant.model.order.Data
 import com.gb.restaurant.model.order.OrderRequest
 import com.gb.restaurant.model.order.OrderResponse
 import com.gb.restaurant.model.rslogin.RsLoginResponse
@@ -41,6 +49,7 @@ import com.gb.restaurant.ui.fragments.*
 import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.OrderViewModel
 import com.gb.restaurant.session.SessionManager
+import com.gb.restaurant.utils.Utils
 
 //https://stackoverflow.com/questions/17685787/access-a-method-of-a-fragment-from-the-viewpager-activity
 class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
@@ -63,6 +72,12 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
     var sessionManager: SessionManager? = null
     lateinit var mainHandler: Handler
     private lateinit var binding: ActivityOrdersBinding
+    var newOrderList :List<Data?> = emptyList()
+    private var mCanvas: Canvas? = null
+    private var canvasBitmap: Bitmap? = null
+    private var mBitmap: Bitmap? = null
+    var confirmData:Data?=null
+    var handler = Handler()
     companion object {
         private val TAG: String = OrdersActivity::class.java.simpleName
         var isPageVisible: Boolean = false
@@ -115,18 +130,19 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             mediaPlayer = MediaPlayer.create(this, R.raw.sound);
             mediaPlayer.isLooping = true
             //blinkTab(1)
+            handler.post(runnableCode);
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
 
     }
 
-    fun callNewOrderService() {
+    private fun callNewOrderService() {
         try {
             if (Validation.isOnline(this)) {
                 // fragmentBaseActivity.showToast("broadcast new")
-                var orderRequest = OrderRequest()
-                orderRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
+                val orderRequest = OrderRequest()
+                orderRequest.restaurant_id = rsLoginResponse?.data?.restaurantId?:""
                 orderRequest.service_type =
                     Constant.SERVICE_TYPE.GET_NEW_ORDER//Constant.SERVICE_TYPE.GET_NEW_ORDER
                 orderRequest.deviceversion = Util.getVersionName(this)
@@ -139,7 +155,17 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
         }
     }
 
-
+    private val runnableCode: Runnable = object : Runnable {
+        override fun run() {
+            println("call>>>>>>>>>>handler")
+            // Do something here on the main thread
+            Log.d("Handlers", "Called on main thread")
+            // Repeat this the same runnable code block again another 2 seconds
+            // 'this' is referencing the Runnable object
+            callService(isPrintLastOrder = true)
+            handler.postDelayed(this, 70 * 1000)
+        }
+    }
     inner class MyReceiver : BroadcastReceiver() {
         override fun onReceive(context: Context, intent: Intent) {
             println("call>>>>>>>>>>>>>")
@@ -162,6 +188,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
             WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS
         );
+        window.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 //        if (Build.VERSION.SDK_INT in 19..20) {
 //            setWindowFlag(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true)
 //        }
@@ -196,12 +223,26 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             pushBroadcastReceiver,
             IntentFilter(MyFirebaseMessagingService.PUSHBROADCAST)
         )
+
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE){
+            registerReceiver(printStatusBroadcast,
+                IntentFilter("com.gb.restaurant.utils.returnPrintStatus"),
+                RECEIVER_EXPORTED
+            );
+        }else{
+            registerReceiver(printStatusBroadcast,
+                IntentFilter("com.gb.restaurant.utils.returnPrintStatus")
+            );
+        }
+        Utils.setBluetooth(true,MyApp.instance)
+        callService(false)
        // mainHandler.post(updateTextTask)
 
     }
     override fun onPause() {
         super.onPause()
         isPageVisible = false
+        unregisterReceiver(printStatusBroadcast);
         LocalBroadcastManager.getInstance(this).unregisterReceiver(pushBroadcastReceiver)
        // mainHandler.removeCallbacks(updateTextTask)
     }
@@ -271,6 +312,10 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             e.printStackTrace()
             Log.e(TAG, e.message!!)
         }
+    }
+
+    override fun callApiOnRefresh(isPrint: Boolean) {
+        callService(isPrint)
     }
 
     private fun blinkTab(tab: View, position: Int) {
@@ -473,7 +518,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
                         callNewOrderService()
                     } else {
                         //println("other>>>>>>>>")
-                        NewFragment.getInstance()?.callService(true)
+                        callService(true)
                     }
                     //fragment.callService()
                 }
@@ -505,19 +550,160 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
         })
         viewModel.orderResponse.observe(this, Observer<OrderResponse> {
             it?.let {
-                var list = it.data?: emptyList()
-                if (list.isNotEmpty())
-                    onFragmentInteraction(0, list.size)
+                newOrderList = it.data?: emptyList()
+                if (newOrderList.isNotEmpty())
+                    onFragmentInteraction(0, newOrderList.size)
 
                 //println(("item count>>>>>> " + it.reservation) ?: 0)
-                var reservationCount = it.reservation ?: 0
+                val reservationCount = it.reservation ?: 0
                 onStartStop(reservationCount)
+                NewFragment.getInstance()?.updateNewAdapter(newOrderList)
+            }
+        })
+
+        viewModel.printLastOrder.observe(this, Observer<Boolean> {
+            onStop(Constant.TAB.NEW, newOrderList.size)
+            try {
+                it?.let {
+                    if (it) {
+                        if (ContextCompat.checkSelfPermission(
+                                this,
+                                Manifest.permission.ACCESS_FINE_LOCATION
+                            ) != PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
+                                this,
+                                Manifest.permission.ACCESS_COARSE_LOCATION
+                            ) != PackageManager.PERMISSION_GRANTED
+                        ) {
+                            requestPermissions(
+                                arrayOf(
+                                    Manifest.permission.ACCESS_FINE_LOCATION,
+                                    Manifest.permission.ACCESS_COARSE_LOCATION
+                                ), 1
+                            )
+                        } else {
+                            if (Utils.isLocationEnabled(this) ==true) {
+                                if (sessionManager!!.getPrinterAddress().isNotEmpty()) {
+                                    Handler().postDelayed({
+                                        print(
+                                            sessionManager!!.getPrinterType(),
+                                            sessionManager!!.getPrinterAddress(),
+                                            viewModel.getOrderAt(0)
+                                        )
+                                    }, 5*1000)
+                                }
+                                onStop(Constant.TAB.NEW, newOrderList.size)
+                            }
+
+                        }
+
+                    }
+
+
+                }
+            }catch (e:Exception){
+                e.printStackTrace()
+            }
+
+        })
+        viewModel.orderStatusResponse.observe(this, Observer<OrderStatusResponse> {
+            it?.let {
+                if (it.status == Constant.STATUS.FAIL) {
+                   showToast(it.result?:"")
+                } else {
+                    showToast(it.result?:"")
+                    callService(false)
+                    //(activity as OrdersActivity?)!!.refreshActiveFragment()
+
+                }
             }
         })
 
 
     }
 
+    fun callService(isPrintLastOrder: Boolean) {
+        try {
+            if (Validation.isOnline(this)) {
+                // fragmentBaseActivity.showToast("broadcast new")
+                var orderRequest = OrderRequest()
+                orderRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
+                orderRequest.service_type =
+                    Constant.SERVICE_TYPE.GET_NEW_ORDER//Constant.SERVICE_TYPE.GET_NEW_ORDER
+                orderRequest.deviceversion = Util.getVersionName(this)
+
+                viewModel.getOrderResponse(orderRequest, isPrintLastOrder)
+            } else {
+                showSnackBar(
+                    binding.progressBar,
+                    getString(R.string.internet_connected)
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e(BaseFragment.TAG, e.message?:"")
+        }
+    }
+
+    fun print(printerType: Int, printerId: String, data: Data?) {
+        data?.let {
+            val printSize = sessionManager?.getPrintPageSize()?:1
+            mCanvas = Canvas(canvasBitmap)
+            mBitmap = Utils.createOrderReceipt(MyApp.instance, mCanvas, 576, it)
+            if (mBitmap != null) {
+                confirmData = it
+                //Print Munbyn
+                Utils.munbynPrinting(
+                    MyApp.instance,
+                    mBitmap,
+                    printerType,
+                    printerId,
+                    printSize
+                )
+
+
+            }
+        }
+
+
+    }
+    private val printStatusBroadcast:BroadcastReceiver = object : BroadcastReceiver() {
+        override fun onReceive(p0: Context?, p1: Intent?) {
+            p1?.let {
+                println("printStatusBroadcast>>>>")
+                val status = it.getIntExtra("PRINT_STATUS",0)
+                println("printStatusBroadcast>>>> $status")
+                if(status==1){
+                    confirmNewOrder("" + confirmData!!.orderid, "" + confirmData!!.type!!)
+                }
+            }
+
+        }
+    }
+
+    private fun confirmNewOrder(orderId: String, orderType: String) {
+        val orderStatusRequest = OrderStatusRequest(deviceversion=Util.getVersionName(MyApp.instance),
+            status=Constant.ORDER_STATUS.CONFIRMED ,
+            order_id=orderId)
+        if (orderType.equals("Delivery", true)) {
+            orderStatusRequest.readytime = "${rsLoginResponse?.data?.deliverytime?.get(0)} minutes"
+        } else {
+            orderStatusRequest.readytime = "${rsLoginResponse?.data?.pickuptime?.get(0)} minutes"
+        }
+
+        try {
+            if (Validation.isOnline(this)) {
+                orderStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
+               // println("request>>>>> ${Util.getStringFromBean(orderStatusRequest)}")
+                viewModel.orderStatus(orderStatusRequest)
+            } else {
+                showToast(getString(R.string.internet_connected))
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.e(BaseFragment.TAG, e.message!!)
+        }
+
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {

@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.widget.Toast;
 
+import com.gb.restaurant.Constant;
 import com.gb.restaurant.MyApp;
 import com.gb.restaurant.utils.Util;
 import com.gb.restaurant.utils.Utils;
@@ -18,6 +19,7 @@ import net.posprinter.utils.DataForSendToPrinterPos80;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 public class MunbynPrinter {
@@ -135,19 +137,22 @@ public class MunbynPrinter {
        if(printSize==0){
            printSize =1;
        }
+        if(printSize > 1){
+            printSize +=1;
+        }
         if (ISCONNECT) {
-            int finalPrintSize = printSize;
+            int finalPrintSize =printSize;
             Utils.myBinder.WriteSendData(new TaskCallback() {
                 @Override
                 public void OnSucceed() {
                     munbynCallBack.onMunbynWriteStatus(1, "Sent successfully");
-                    Toast.makeText(mContext, "Sent successfully", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyApp.Companion.getInstance(), "Sent successfully", Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void OnFailed() {
                     munbynCallBack.onPrintFail(0, "Print fail");
-                    Toast.makeText(mContext, "Print Fail", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MyApp.Companion.getInstance(), "Print Fail", Toast.LENGTH_SHORT).show();
                 }
             }, new ProcessData() {
                 @Override
@@ -156,7 +161,11 @@ public class MunbynPrinter {
                     for(int j = 0; j < finalPrintSize; j++) {
                         list.add(DataForSendToPrinterPos80.initializePrinter());
                         List<Bitmap> blist = new ArrayList<>();
-                        blist = BitmapProcess.cutBitmap(150, bitmap1);
+                        if(j==finalPrintSize-1 && finalPrintSize > 1){
+                            blist = BitmapProcess.cutBitmap(150, Constant.getBitmap());
+                        }else {
+                            blist = BitmapProcess.cutBitmap(150, bitmap1);
+                        }
                         for (int i = 0; i < blist.size(); i++) {
                             list.add(DataForSendToPrinterPos80.printRasterBmp(0, blist.get(i), BitmapToByteData.BmpType.Dithering, BitmapToByteData.AlignType.Center, 576));
                         }

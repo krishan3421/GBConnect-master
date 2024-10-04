@@ -8,6 +8,7 @@ import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.View
 import com.gb.restaurant.databinding.ActivitySplashBinding
+import com.gb.restaurant.utils.Utils
 
 
 class SplashActivity : BaseActivity() {
@@ -56,6 +57,7 @@ class SplashActivity : BaseActivity() {
                 println("density>>>>>>>>> DENSITY_XXXHIGH")
             }
         }
+        Utils.dummyPrint(this);
         println("density>>>>>>>>> ${metrics.densityDpi}")
     }
 

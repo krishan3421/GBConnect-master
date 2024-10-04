@@ -94,7 +94,7 @@
                         android:textStyle="bold"
                         android:textIsSelectable="true"
                         android:layout_gravity="left|center_vertical"
-                        android:text="GB11123238769321"/>
+                        android:text=""/>
                 <TextView android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
