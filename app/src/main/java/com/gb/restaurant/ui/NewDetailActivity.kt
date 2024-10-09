@@ -71,9 +71,9 @@ class NewDetailActivity : BaseActivity() {
     private lateinit var viewModel: TipsViewModel
     var rsLoginResponse: RsLoginResponse? = null
 
-    public var mCanvas: Canvas? = null
-    public var canvasBitmap: Bitmap? = null
-    public var mBitmap: Bitmap? = null
+    var mCanvas: Canvas? = null
+    var canvasBitmap: Bitmap? = null
+    var mBitmap: Bitmap? = null
 
     var sessionManager: SessionManager? = null
 
@@ -158,7 +158,7 @@ class NewDetailActivity : BaseActivity() {
                 data?.name?.let {
                     orderDetailItem.nameText.text = "$it"
                 }
-                if (data?.payment!!.contains("Paid", true)) {
+                if (data?.payment?.contains("Paid", true)==true) {
                     orderDetailItem.prepaidText.text = "PREPAID"
                     orderDetailItem.prepaidText.setBackgroundColor(ContextCompat.getColor(this@NewDetailActivity, R.color.green))
                     orderDetailItem.deliveryTypeText.setTextColor(ContextCompat.getColor(this@NewDetailActivity, R.color.green))
@@ -390,6 +390,7 @@ class NewDetailActivity : BaseActivity() {
 
     fun confirmMethod(view: View) {
         try {
+            println("iddddd>>> ${data?.id}")
             var intent = Intent(this, ConfirmTimeDialogActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_CLEAR_TASK
             intent.putExtra(ConfirmTimeDialogActivity.ORDER_ID, data?.id)
@@ -492,7 +493,7 @@ class NewDetailActivity : BaseActivity() {
                 orderTipsRequest.order_id = data?.id!!
                 orderTipsRequest.order_tips = tips
                 orderTipsRequest.deviceversion = Util.getVersionName(this)
-                println("tips request>>>>>>> ${Util.getStringFromBean(orderTipsRequest)}")
+               // println("tips request>>>>>>> ${Util.getStringFromBean(orderTipsRequest)}")
                 viewModel.addTips(orderTipsRequest)
             } else {
                 showToast(getString(R.string.internet_connected))

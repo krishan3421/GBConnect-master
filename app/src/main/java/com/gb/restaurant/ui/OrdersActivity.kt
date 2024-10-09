@@ -626,7 +626,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             if (Validation.isOnline(this)) {
                 // fragmentBaseActivity.showToast("broadcast new")
                 var orderRequest = OrderRequest()
-                orderRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
+                orderRequest.restaurant_id = rsLoginResponse?.data?.restaurantId?:""
                 orderRequest.service_type =
                     Constant.SERVICE_TYPE.GET_NEW_ORDER//Constant.SERVICE_TYPE.GET_NEW_ORDER
                 orderRequest.deviceversion = Util.getVersionName(this)
@@ -669,11 +669,11 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
     private val printStatusBroadcast:BroadcastReceiver = object : BroadcastReceiver() {
         override fun onReceive(p0: Context?, p1: Intent?) {
             p1?.let {
-                println("printStatusBroadcast>>>>")
+                //println("printStatusBroadcast>>>>")
                 val status = it.getIntExtra("PRINT_STATUS",0)
-                println("printStatusBroadcast>>>> $status")
+                //println("printStatusBroadcast>>>> $status")
                 if(status==1){
-                    confirmNewOrder("" + confirmData!!.orderid, "" + confirmData!!.type!!)
+                    confirmNewOrder("" + confirmData?.orderid, "" + confirmData?.type?:"")
                 }
             }
 

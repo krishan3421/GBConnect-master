@@ -140,7 +140,7 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
 
     override fun onClick(view: View?) {
         try{
-            var orderStatusRequest = OrderStatusRequest()
+            val orderStatusRequest = OrderStatusRequest()
             when(view){
                 binding.cancel->{
                     //cancelStatusPopup()
@@ -150,6 +150,7 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
                     }
                     orderStatusRequest.reason=cancelReason
                     orderStatusRequest.status = Constant.ORDER_STATUS.CANCEL
+                   // println("data>>>> ${Util.getStringFromBean(orderStatusRequest)}")
                     callService(orderStatusRequest)
                 }
                 binding.confirm->{
@@ -196,9 +197,9 @@ class ConfirmTimeDialogActivity : FragmentActivity() ,View.OnClickListener{
         viewModel.orderStatusResponse.observe(this, Observer<OrderStatusResponse> {
             it?.let {
                if(it.status == Constant.STATUS.FAIL){
-                   showToast(it.result!!)
+                   showToast(it.result?:"")
                }else{
-                   showToast(it.result!!)
+                   showToast(it.result?:"")
                    finishPage()
                }
             }

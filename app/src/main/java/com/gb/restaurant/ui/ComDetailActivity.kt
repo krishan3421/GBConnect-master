@@ -539,8 +539,8 @@ class ComDetailActivity : BaseActivity() {
         try {
             if (Validation.isOnline(this)) {
                 var orderDetailRequest = OrderDetailRequest()
-                orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-                orderDetailRequest.order_id = data!!.id!!
+                orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId?:""
+                orderDetailRequest.order_id = data?.id?:""
                 orderDetailRequest.order_type="Completed"
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
                 orderDetailRequest.tabletype = data?.tableType?:""
