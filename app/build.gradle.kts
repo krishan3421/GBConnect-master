@@ -14,8 +14,8 @@ android {
         applicationId = "com.gb.restaurant"
         minSdk = 24
         targetSdk = 34
-        versionCode = 26
-        versionName = "5.3"
+        versionCode = 28
+        versionName = "5.5"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -79,6 +79,8 @@ dependencies {
     implementation("com.afollestad.material-dialogs:datetime:3.1.0")
     implementation("com.afollestad.material-dialogs:input:3.1.0")
     implementation("androidx.fragment:fragment-ktx:1.6.1")
-    implementation("com.google.android.play:core:1.10.3")
+    implementation("com.google.android.play:app-update:2.1.0")
+    // For Kotlin users, also import the Kotlin extensions library for Play In-App Update:
+    implementation("com.google.android.play:app-update-ktx:2.1.0")
     implementation("org.glassfish:javax.annotation:10.0-b28")
 }
