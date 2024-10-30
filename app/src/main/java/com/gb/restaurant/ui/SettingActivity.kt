@@ -141,19 +141,19 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             attachObserver()
             if (rsLoginResponse != null && rsLoginResponse!!.data != null) {
                 if (!rsLoginResponse?.data?.pickup.isNullOrEmpty())
-                    pickEstimateValue = rsLoginResponse?.data?.pickup!!.toInt()
+                    pickEstimateValue = rsLoginResponse?.data?.pickup?.toInt()?:0
 
                 if (!rsLoginResponse?.data?.delivery.isNullOrEmpty())
-                    deliveryEstimateValue = rsLoginResponse?.data?.delivery!!.toInt()
+                    deliveryEstimateValue = rsLoginResponse?.data?.delivery?.toInt()?:0
 
                 if (!rsLoginResponse?.data?.miles.isNullOrEmpty())
-                    defaultMilesValue = rsLoginResponse?.data?.miles!!.toInt()
+                    defaultMilesValue = rsLoginResponse?.data?.miles?.toInt()?:0
 
                 if (!rsLoginResponse?.data?.mindelivery.isNullOrEmpty())
-                    minDeliveryValue = rsLoginResponse?.data?.mindelivery!!.toInt()
+                    minDeliveryValue = rsLoginResponse?.data?.mindelivery?.toFloat()?.toInt()?:0
 
                 if (!rsLoginResponse?.data?.dcharge.isNullOrEmpty())
-                    deliveryChargeValue = rsLoginResponse?.data?.dcharge!!.toDouble()
+                    deliveryChargeValue = rsLoginResponse?.data?.dcharge?.toDouble()?:0.00
 
                 if (!rsLoginResponse?.data?.dchargetype.isNullOrEmpty())
                     binding.contentSetting.minimumDeliveryTitle.text =
@@ -161,7 +161,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
                 if (!rsLoginResponse?.data?.dchargetype.isNullOrEmpty()) {
 
-                    if (rsLoginResponse?.data?.dchargetype!!.contains("$", true)) {
+                    if (rsLoginResponse?.data?.dchargetype?.contains("$", true)==true) {
                         binding.contentSetting.dollerRadio.isChecked = true
                     } else {
                         binding.contentSetting.percentRadio.isChecked = true
