@@ -69,11 +69,13 @@ import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.POST
+import retrofit2.http.Url
 
 interface GBClient {
 
-    @POST(Constant.SERVICE_API.RESTAURANT_LOGIN)
-   suspend fun restaurantLogin(@Body rsLoginRq: RsLoginRq): Response<RsLoginResponse>
+    @POST
+   suspend fun restaurantLogin(@Url url:String = "https://www.webapi.grabulldirect.com/restaurant-connect/api.php",
+                               @Body rsLoginRq: RsLoginRq): Response<RsLoginResponse>
 
     @POST(Constant.SERVICE_API.GET_ALL_ORDER)
     fun getOrder(@Body orderRequest: OrderRequest): Call<OrderResponse>

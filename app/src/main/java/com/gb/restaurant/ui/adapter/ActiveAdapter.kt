@@ -49,7 +49,11 @@ class ActiveAdapter(val mContext:Context, var viewModel: OrderViewModel) : Recyc
                  //mobileText.text = "${it.mobile}"
                      if(it.hold.equals("Yes",true)){
                          futureOrderLayout.visibility=View.VISIBLE
-                         futureOrderText.text="Future Delivery on : ${it.holddate2}"
+                         if(it.type?.equals("PICKUP",true)==true) {
+                             futureOrderText.text = "Future Pickup on : ${it.holddate2}"
+                         }else{
+                             futureOrderText.text = "Future Delivery on : ${it.holddate2}"
+                         }
                      }else{
                          futureOrderLayout.visibility=View.GONE
                      }

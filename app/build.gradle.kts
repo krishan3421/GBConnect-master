@@ -14,8 +14,8 @@ android {
         applicationId = "com.gb.restaurant"
         minSdk = 24
         targetSdk = 34
-        versionCode = 29
-        versionName = "5.6"
+        versionCode = 30
+        versionName = "5.7"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

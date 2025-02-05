@@ -203,9 +203,9 @@ class HomeDetailActivity : BaseActivity() {
                 if (!data?.holddate2.isNullOrEmpty()) {
                     futureOrderLayout.visibility = View.VISIBLE
                     if (data!!.type.equals("Delivery", true)) {
-                        holdTimeText.text = "Hold Order: Delivery Time: ${data!!.holddate2}"
+                        holdTimeText.text = "Delivery Time: ${data?.holddate2?:""}"
                     } else {
-                        holdTimeText.text = "Hold Order: Pickup Time: ${data!!.holddate2}"
+                        holdTimeText.text = "Pickup Time: ${data?.holddate2?:""}"
                     }
                 } else {
                     futureOrderLayout.visibility = View.GONE

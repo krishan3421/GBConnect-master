@@ -98,7 +98,7 @@ class GBRepositoryImpl(private val gbClient: GBClient, private val gdClient: GBC
     }
 
    override suspend fun reLogin(rsLoginRq: RsLoginRq): Response<RsLoginResponse> {
-      return  apiService.restaurantLogin(rsLoginRq)
+      return  apiService.restaurantLogin(rsLoginRq =rsLoginRq)
 
     }
 

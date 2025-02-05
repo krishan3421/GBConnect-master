@@ -78,6 +78,7 @@
                 android:background="@drawable/edt_bg_selector"
                 android:drawableRight="@drawable/ic_user"
                 android:textColorHint="@color/login_title_color"
+                android:importantForAutofill="no"
                 android:inputType="text"
                 android:textColor="@color/black"
                 android:hint="@string/user_name" />
@@ -88,6 +89,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="@dimen/dimen_40"
+                android:importantForAutofill="no"
                 android:textColorHint="@color/login_title_color"
                 app:passwordToggleEnabled="true"
                 android:layout_marginLeft="@dimen/dimen_40"

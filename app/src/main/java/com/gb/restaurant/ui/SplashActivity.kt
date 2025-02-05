@@ -59,6 +59,7 @@ class SplashActivity : BaseActivity() {
         }
         Utils.dummyPrint(this);
         println("density>>>>>>>>> ${metrics.densityDpi}")
+        //getAccessToken()
     }
 
 
@@ -86,4 +87,20 @@ class SplashActivity : BaseActivity() {
         startActivity(intent)
         finish()
     }
+
+//    @Throws(IOException::class)
+//    private fun getAccessToken() {
+//        lifecycleScope.launch(Dispatchers.IO){
+//            val googleCredentials: GoogleCredentials = GoogleCredentials
+//                .fromStream(assets.open("service-account.json"))
+//                .createScoped(
+//                    listOf("https://www.googleapis.com/auth/firebase",
+//                        "https://www.googleapis.com/auth/cloud-platform",
+//                        "https://www.googleapis.com/auth/firebase.readonly")
+//                )
+//            googleCredentials.refresh()
+//            val token =  googleCredentials.accessToken.tokenValue
+//            println("token>>>> $token")
+//        }
+//    }
 }

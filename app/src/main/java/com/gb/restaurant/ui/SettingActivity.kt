@@ -728,17 +728,17 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
         })
         viewModel.restaurantStatus.observe(this, Observer<ResturantStatusResponse> {
             it?.let {
-                println("response>>>>> ${Util.getStringFromBean(it)}")
-                if (it.result == "Closed") {
-                    stopOpenButtonText(false)
-                } else {
+                //println("response1>>>>> ${Util.getStringFromBean(it)}")
+                if (it.result.equals("Closed",true)) {
                     stopOpenButtonText(true)
+                } else {
+                    stopOpenButtonText(false)
                 }
             }
         })
         viewModel.stopOrderResponse.observe(this, Observer<StopOrderResponse> {
             it?.let {
-                println("response>>>>> ${Util.getStringFromBean(it)}")
+                //println("response>>>>> ${Util.getStringFromBean(it)}")
                 if (it.status == Constant.STATUS.FAIL) {
                     showToast(it.data?.message?:"")
                 } else {
