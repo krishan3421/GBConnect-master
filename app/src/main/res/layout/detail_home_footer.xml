@@ -33,29 +33,7 @@
                 android:text="$0.00"
                 android:textStyle="bold" />
     </LinearLayout>
-    <LinearLayout
-        android:id="@+id/reward_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        android:orientation="horizontal">
 
-        <TextView
-            style="@style/normal_text_12"
-            android:layout_width="match_parent"
-            android:layout_weight="1"
-            android:gravity="right"
-            android:text="@string/rewards"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/rewards"
-            style="@style/normal_text_12"
-            android:layout_width="match_parent"
-            android:layout_weight="3"
-            android:gravity="right"
-            android:textStyle="bold" />
-    </LinearLayout>
     <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -119,6 +97,7 @@
     </LinearLayout>
 
     <LinearLayout
+            android:id="@+id/tipLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_10"
@@ -141,12 +120,35 @@
                 android:text="$0.00"
                 android:textStyle="bold" />
     </LinearLayout>
+    <LinearLayout
+        android:id="@+id/reward_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_10"
+        android:visibility="gone"
+        android:orientation="horizontal">
+
+        <TextView
+            style="@style/normal_text_12"
+            android:layout_width="match_parent"
+            android:layout_weight="1"
+            android:gravity="right"
+            android:text="@string/rewards"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/rewards"
+            style="@style/normal_text_12"
+            android:layout_width="match_parent"
+            android:layout_weight="3"
+            android:gravity="right"
+            android:textStyle="bold" />
+    </LinearLayout>
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_10"
-            android:gravity="center_vertical"
             android:orientation="horizontal">
 
 
@@ -230,14 +232,15 @@
                 android:orientation="vertical">
 
             <TextView
-                    android:id="@+id/total_tax"
-                    style="@style/normal_text_12"
-                    android:layout_width="@dimen/dimen_100"
-                    android:layout_height="@dimen/dimen_30"
-                    android:background="@drawable/black_color"
-                    android:gravity="center"
-                    android:text="Total $ 0.00"
-                    android:textStyle="bold" />
+                android:id="@+id/total_tax"
+                style="@style/normal_text_18"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_40"
+                android:background="@drawable/black_color"
+                android:padding="@dimen/dimen_5"
+                android:gravity="center"
+                android:text="Total $0.00"
+                android:textStyle="bold" />
 
             <TextView
                     android:id="@+id/tip_two_text"
@@ -255,13 +258,14 @@
         android:layout_weight="1"
         android:gravity="left"
         android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginBottom="@dimen/activity_horizontal_margin"
         android:orientation="vertical"
         tools:ignore="RtlHardcoded">
 
         <TextView
             style="@style/normal_text_16"
-            android:layout_width="@dimen/dimen_100"
-            android:layout_height="@dimen/dimen_30"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:gravity="left"
             android:text="Note:- "
             android:textStyle="bold" />
@@ -270,7 +274,7 @@
             android:id="@+id/note_details_text"
             style="@style/normal_text_14"
             android:layout_marginLeft="@dimen/activity_horizontal_margin"
-            android:layout_marginTop="@dimen/dimen_5"
+            android:layout_marginTop="@dimen/dimen_2"
             android:textStyle="normal" />
 
     </LinearLayout>

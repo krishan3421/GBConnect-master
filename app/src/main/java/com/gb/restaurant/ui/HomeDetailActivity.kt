@@ -227,9 +227,12 @@ class HomeDetailActivity : BaseActivity() {
                     }
                 }
                 data?.rewards?.let {reward->
-                    if(reward.isNotEmpty()){
+                    val localReward = Util.convToDouble(reward)
+                    if(localReward.equals("0.00")==true){
+                        detailHomeFooter.rewardLayout.visibility = View.GONE
+                    }else{
                         detailHomeFooter.rewardLayout.visibility = View.VISIBLE
-                        detailHomeFooter.rewards.text="$$reward"
+                        detailHomeFooter.rewards.text="$$localReward"
                     }
                 }
                // println("details>>>> "+data?.details)
@@ -269,16 +272,17 @@ class HomeDetailActivity : BaseActivity() {
                 }
 
 
-                if (data!!.items.isNullOrEmpty()) {
+                if (data?.items.isNullOrEmpty()) {
                     ordersItemCount.text = "Order(0 items)"
                 } else {
-                    ordersItemCount.text = "Order(${data!!.items!!.size} items)"
+                    ordersItemCount.text = "Order(${data?.items?.size?:0} items)"
                 }
 
 
-                orderIdText.text = "ORDER # ${data!!.id}"
+                orderIdText.text = "ORDER # ${data?.id?:""}"
                 if (data?.subtotal != null) {
-                    detailHomeFooter.subTotalText.text = "$${data?.subtotal}"
+                    val subTotal =  Util.convToDouble(data?.subtotal?.toString()?:"0.00")
+                    detailHomeFooter.subTotalText.text = "$$subTotal"
                 }
                 if (!data?.offeramount.isNullOrEmpty()) {
                     data?.offeramount?.let {
@@ -289,22 +293,31 @@ class HomeDetailActivity : BaseActivity() {
                     detailHomeFooter.taxText.text = "$${data?.tax}"
                 }
                 if (data?.tip != null) {
-                    detailHomeFooter.tipText.text = "$${data?.tip}"
+                    val localTip =   Util.convToDouble(data?.tip?:"")
+                    detailHomeFooter.tipLayout.visibility=View.VISIBLE
+                    detailHomeFooter.tipText.text = "$$localTip"
+
+                }else{
+                    detailHomeFooter.tipLayout.visibility=View.VISIBLE
+                    detailHomeFooter.tipText.text = "$0.00"
                 }
                 if (data?.total != null) {
-                    detailHomeFooter.totalTax.text = "Total $${data?.total}"
+                    val localTotal =  Util.convToDouble(data?.total?.toString()?:"0.00")
+                    detailHomeFooter.totalTax.text = "Total $localTotal"
                 }
-                if (!data?.tip2.isNullOrEmpty()) {
-                    if(data?.tip2 != "0.0" ||  data?.tip2 != "0") {
-                        addItemsTipsLayout.addTipButton.visibility = View.INVISIBLE
-                        detailHomeFooter.tipTwoText.text = "Tips $${data?.tip2}"
+                if(Util.checkPriceEmpty(data?.tip2)){
+                    addItemsTipsLayout.addTipButton.visibility=View.GONE
+                    detailHomeFooter.tipTwoText.visibility=View.GONE
+                }else{
+                    val localTip2 =   Util.convToDouble(data?.tip2?:"")
+                    if(localTip2.equals("0.00")) {
+                        addItemsTipsLayout.addTipButton.visibility = View.GONE
+                        detailHomeFooter.tipTwoText.visibility=View.GONE
                     }else{
-                        addItemsTipsLayout.addTipButton.visibility=View.VISIBLE
-                        detailHomeFooter.tipTwoText.text = "Tips_____"
+                        addItemsTipsLayout.addTipButton.visibility = View.VISIBLE
+                        detailHomeFooter.tipTwoText.visibility=View.VISIBLE
+                        detailHomeFooter.tipTwoText.text = "Added Tips $$localTip2"
                     }
-                } else {
-                    addItemsTipsLayout.addTipButton.visibility=View.VISIBLE
-                    detailHomeFooter.tipTwoText.text = "Tips_____"
                 }
                 if (!data?.date2.isNullOrEmpty()) {
                     orderTimeText.text = "ORDER TIME: ${data?.date2}"
@@ -351,7 +364,6 @@ class HomeDetailActivity : BaseActivity() {
 
 
                         } else {
-
                             AlertDialog.Builder(this@HomeDetailActivity)
                                 .setMessage("Location is off")
                                 .setPositiveButton(
@@ -718,7 +730,7 @@ class HomeDetailActivity : BaseActivity() {
             if (Validation.isOnline(this)) {
                 var orderDetailRequest = OrderDetailRequest()
                 orderDetailRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
-                orderDetailRequest.order_id = data!!.id!!
+                orderDetailRequest.order_id = data?.id?:""
                 orderDetailRequest.deviceversion = Util.getVersionName(this)
                 orderDetailRequest.order_type="Inhouse"
                 //println("activerequest>>> ${Util.getStringFromBean(orderDetailRequest)}")
@@ -891,7 +903,7 @@ class HomeDetailActivity : BaseActivity() {
         })
 
         viewModel.addItemsOrderResponse.observe(this, Observer<AddOrderItemResponse> {
-            println("itemsResponse>>>>>>>>> ${Util.getStringFromBean(it)}")
+            //println("itemsResponse>>>>>>>>> ${Util.getStringFromBean(it)}")
             it?.let {
                 if (it.status == Constant.STATUS.FAIL) {
                     Util.alertDialog(it?.result ?: "", this)
@@ -975,21 +987,23 @@ class HomeDetailActivity : BaseActivity() {
                 }
                 if (!data.tip2.isNullOrEmpty()) {
                     tipTwoText.text =
-                        "Tips $${String.format("%.2f", data.tip2!!.toFloat())}"
+                        "Added Tips $${String.format("%.2f", data.tip2?.toFloat())}"
                 } else {
                     tipTwoText.text = "Tips_____"
                 }
                 if (data.subtotal != null) {
-                    subTotalText.text = "$${data.subtotal}"
+                    val localSubTotal= Util.convToDouble(data?.subtotal?.toString()?:"0.00")
+                    subTotalText.text = "$$localSubTotal"
                 }
                 if (data.total != null) {
-                    totalTax.text = "Total $${data.total}"
+                    val localTotal =  Util.convToDouble(data?.total?.toString()?:"0.00")
+                    totalTax.text = "Total $$localTotal"
                 }
                 if (data?.tax != null) {
-                    taxText.text = "$${String.format("%.2f", data?.tax!!.toFloat())}"
+                    taxText.text = "$${String.format("%.2f", data?.tax?.toFloat()?:0.00)}"
                 }
                 if (data?.tip != null) {
-                    tipText.text = "$${String.format("%.2f", data?.tip!!.toFloat())}"
+                    tipText.text = "$${String.format("%.2f", data?.tip?.toFloat()?:0.00)}"
                 }
                 if (!data?.deliverycharge.isNullOrEmpty()) {
                     data?.deliverycharge?.let {

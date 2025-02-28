@@ -97,6 +97,7 @@
 
                 <TextView
                         android:id="@+id/delivery_address"
+                        android:singleLine="false"
                         style="@style/normal_text_12" />
             </LinearLayout>
         </LinearLayout>

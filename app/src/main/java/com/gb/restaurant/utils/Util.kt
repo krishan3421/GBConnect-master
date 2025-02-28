@@ -8,6 +8,7 @@ import com.afollestad.date.month
 import com.afollestad.materialdialogs.MaterialDialog
 import com.gb.restaurant.R
 import com.google.gson.Gson
+import java.lang.Double.parseDouble
 import java.math.RoundingMode
 import java.text.DateFormat
 import java.text.DecimalFormat
@@ -348,6 +349,37 @@ class Util {
             calendar[Calendar.DATE] = calendar.getActualMaximum(Calendar.DAY_OF_MONTH)
             return calendar
         }
+
+        @JvmStatic
+        fun convToDouble(value: String): String{
+           val digit=  try {
+               roundOffDecimal(parseDouble(value))
+            } catch (e: Exception) {
+               0.00
+            }
+          return  String.format("%.2f", digit)
+        }
+        private fun roundOffDecimal(number: Double): Double {
+            val df = DecimalFormat("#.##")
+            df.roundingMode = RoundingMode.FLOOR
+            return df.format(number).toDouble()
+        }
+
+        fun checkPriceEmpty(value:String?):Boolean{
+            if(value?.isEmpty()==true){
+                return true
+            }
+            if(value.equals("0.0") || value.equals("0") || value.equals("0.00")){
+                return true
+            }
+            return false;
+        }
     }
 
+
+
 }
+
+//fun main(){
+//    println("data>>> ${Util.checkPriceEmpty("1.00")}")
+//}

@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.gb.restaurant.R
 import com.gb.restaurant.model.order.Data
 import com.gb.restaurant.ui.OrdersActivity
+import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.OrderViewModel
 
 class NewAdapter(val mContext:OrdersActivity, var orderList: MutableList<Data?>) : RecyclerView.Adapter<NewAdapter.OrderViewHolder>() {
@@ -61,7 +62,8 @@ class NewAdapter(val mContext:OrdersActivity, var orderList: MutableList<Data?>)
                  }else{
                      futureOrderLayout.visibility=View.GONE
                  }
-                totalPrice.text = "$${it.total}"
+                val localTotal =  Util.convToDouble(it.total?.toString()?:"0.00")
+                totalPrice.text = "$$localTotal"
                 if(it.date2.isNullOrEmpty()){
                     dateText.text = ""
                 }else {

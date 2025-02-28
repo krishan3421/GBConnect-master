@@ -11,6 +11,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.gb.restaurant.R
 import com.gb.restaurant.model.order.Data
+import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.OrderViewModel
 
 class CompletedAdapter(val mContext:Context, var viewModel: OrderViewModel) : RecyclerView.Adapter<CompletedAdapter.OrderViewHolder>() {
@@ -55,8 +56,8 @@ class CompletedAdapter(val mContext:Context, var viewModel: OrderViewModel) : Re
                 }else{
                     futureOrderLayout.visibility=View.GONE
                 }
-
-                totalPrice.text = "$${it.total}"
+                val localTotal =  Util.convToDouble(it.total?.toString()?:"0.00")
+                totalPrice.text = "$$localTotal"
                 dateText.text = "${it.date2}"
                // pickUpStatus.text = "${it.type}"
                 if(it.payment!!.contains("Pending",true)){

@@ -183,12 +183,13 @@ class ComDetailActivity : BaseActivity() {
                 binding.contentComDetail.holdTimeText.visibility = View.GONE
             }
 
-            if (!data?.type.isNullOrEmpty() && data?.type!!.contains("Pickup", true)) {
+            if (!data?.type.isNullOrEmpty() && data?.type?.contains("Pickup", true)==true) {
                 binding.contentComDetail.orderDetailItem.addressLayout.visibility = View.INVISIBLE
                 binding.contentComDetail.detailComFooter.deliveryFeeLayout.visibility = View.GONE
             } else {
                 binding.contentComDetail.orderDetailItem.addressLayout.visibility = View.VISIBLE
                 binding.contentComDetail.detailComFooter.deliveryFeeLayout.visibility = View.VISIBLE
+                binding.contentComDetail.orderDetailItem.deliveryAddress.text = data?.delivery?:""
             }
 //            if(!data?.type.isNullOrEmpty() && !data?.payment.isNullOrEmpty()){ //pending- cash(not paid)
 //                var paymentStatus = ""
@@ -232,13 +233,14 @@ class ComDetailActivity : BaseActivity() {
             if (data!!.items.isNullOrEmpty()) {
                 binding.contentComDetail.ordersItemCount.text = "Order(0 items)"
             } else {
-                binding.contentComDetail.ordersItemCount.text = "Order(${data!!.items!!.size} items)"
+                binding.contentComDetail.ordersItemCount.text = "Order(${data?.items?.size?:"0"} items)"
             }
 
 
-            binding.contentComDetail.orderIdText.text = "ORDER # ${data!!.id}"
+            binding.contentComDetail.orderIdText.text = "ORDER # ${data?.id?:""}"
             if (data?.subtotal != null) {
-                binding.contentComDetail.detailComFooter.subTotalText.text = "$${data?.subtotal}"
+                val localsubTotal =  Util.convToDouble(data?.subtotal?.toString()?:"0.00")
+                binding.contentComDetail.detailComFooter.subTotalText.text = "$$localsubTotal"
             }
             if (!data?.offeramount.isNullOrEmpty()) {
                 binding.contentComDetail.detailComFooter.discountTaxt.text = "Discount-$${data?.offeramount}"
@@ -247,15 +249,22 @@ class ComDetailActivity : BaseActivity() {
                 binding.contentComDetail.detailComFooter.taxText.text = "$${data?.tax}"
             }
             if (data?.tip != null) {
-                binding.contentComDetail.detailComFooter.tipText.text = "$${data?.tip}"
+                val localTip =   Util.convToDouble(data?.tip?:"")
+                binding.contentComDetail.detailComFooter.tipLayout.visibility=View.VISIBLE
+                binding.contentComDetail.detailComFooter.tipText.text = "$$localTip"
+            }else{
+                binding.contentComDetail.detailComFooter.tipText.text = "$0.00"
             }
             if (data?.total != null) {
-                binding.contentComDetail.detailComFooter.totalTax.text = "Total $${data?.total}"
+                val localTotal =  Util.convToDouble(data?.total?.toString()?:"0.00")
+                binding.contentComDetail.detailComFooter.totalTax.text = "Total $$localTotal"
             }
-            if (!data?.tip2.isNullOrEmpty()) {
-                binding.contentComDetail.detailComFooter.tipTwoText.text = "Tips $${data?.tip2}"
-            } else {
-                binding.contentComDetail.detailComFooter.tipTwoText.text = "Tips_____"
+            if(Util.checkPriceEmpty(data?.tip2)){
+                binding.contentComDetail.detailComFooter.tipTwoText.visibility=View.GONE
+            }else{
+                val localTip2 =   Util.convToDouble(data?.tip2?:"")
+                binding.contentComDetail.detailComFooter.tipTwoText.visibility=View.VISIBLE
+                binding.contentComDetail.detailComFooter.tipTwoText.text = "Added Tips $$localTip2"
             }
             data?.details?.let {noteDetail->
                 if(noteDetail.isNotEmpty()){
@@ -272,10 +281,17 @@ class ComDetailActivity : BaseActivity() {
             }
 
             data?.rewards?.let {reward->
-                if(reward.isNotEmpty()){
-                    binding.contentComDetail.detailComFooter.rewardLayout.visibility = View.VISIBLE
-                    binding.contentComDetail.detailComFooter.rewards.text="$$reward"
+                val localReward = Util.convToDouble(reward)
+                println("localReward>>>> $localReward")
+                binding.contentComDetail.detailComFooter.apply {
+                    if(localReward.equals("0.00")==true){
+                        rewardLayout.visibility = View.GONE
+                    }else{
+                        rewardLayout.visibility = View.VISIBLE
+                        rewards.text="$$localReward"
+                    }
                 }
+
             }
 
             callOrderDetailService()
@@ -563,7 +579,6 @@ class ComDetailActivity : BaseActivity() {
                 addOrderItemRequest.order_id = data?.orderid!!
                 addOrderItemRequest.itemslist = itemList
                 addOrderItemRequest.deviceversion = Util.getVersionName(this)
-                println("request add item>>>> ${Util.getStringFromBean(addOrderItemRequest)}")
                 viewModel.addItemsOrder(addOrderItemRequest)
             } else {
                 showToast(getString(R.string.internet_connected))

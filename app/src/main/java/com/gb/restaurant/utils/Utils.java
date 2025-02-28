@@ -60,17 +60,17 @@ public class Utils {
 
     public static Bitmap createOrderReceipt(Context ctx, Canvas mCanvas, int nPrintWidth, Data
             receiptData) {
-       if(receiptData ==null){
-           new Handler(Looper.getMainLooper()).post(new Runnable() {
-               @Override
-               public void run() {
-                   Toast.makeText(ctx,
-                           "There is some issue in data or Printer not connected, Please try later",
-                           Toast.LENGTH_LONG).show();
-               }
-           });
-           return null;
-       }
+        if(receiptData ==null){
+            new Handler(Looper.getMainLooper()).post(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(ctx,
+                            "There is some issue in data or Printer not connected, Please try later",
+                            Toast.LENGTH_LONG).show();
+                }
+            });
+            return null;
+        }
         Bitmap bitmap = null;
         int lineHeight = 0;
         Canvas canvas = mCanvas;
@@ -243,43 +243,65 @@ public class Utils {
         lineHeight += 10;
 
         if (receiptData.getSubtotal() != null) {
+            String subTotal = Util.convToDouble(String.valueOf(receiptData.getSubtotal()));
             canvas.DrawText("Sub Total", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-            canvas.DrawText("$" + receiptData.getSubtotal(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText("$" + subTotal, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 30;
         }
 
         if (receiptData.getOfferamount() !=null) {
             if(!receiptData.getOfferamount().isEmpty()) {
+                String offerAmount = Util.convToDouble(receiptData.getOfferamount());
                 canvas.DrawText("Discount", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-                canvas.DrawText("$" + receiptData.getOfferamount(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$" + offerAmount, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                lineHeight += 30;
+            }else{
+                canvas.DrawText("Discount", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$0.00" , -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 lineHeight += 30;
             }
+        }else{
+            canvas.DrawText("Discount", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText("$0.00" , -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            lineHeight += 30;
         }
+
         if (receiptData.getDeliverycharge() !=null && receiptData.getType().equalsIgnoreCase("Delivery")) {
             if(!receiptData.getOfferamount().isEmpty() ) {
+                String deliveryCharge = Util.convToDouble(String.valueOf(receiptData.getDeliverycharge()));
                 canvas.DrawText("Delivery Fee", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-                canvas.DrawText("$" + receiptData.getDeliverycharge(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$" + deliveryCharge, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 lineHeight += 30;
             }
         }
 
         if (receiptData.getTax() != null) {
-            canvas.DrawText("Tax", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-            canvas.DrawText("$" + receiptData.getTax(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            String tax = Util.convToDouble(String.valueOf(receiptData.getTax()));
+            if(!tax.equalsIgnoreCase("0.00")) {
+                canvas.DrawText("Tax", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$" + tax, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            }
             lineHeight += 30;
         }
 
 
         if (receiptData.getTip() != null) {
-            canvas.DrawText("Tip", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-            canvas.DrawText("$" + receiptData.getTip(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-            lineHeight += 30;
+            String localTip = Util.convToDouble(receiptData.getTip());
+            if(!localTip.equalsIgnoreCase("0.00")) {
+                canvas.DrawText("Tip", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$" + localTip, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                lineHeight += 30;
+            }
+
         }
 
         if (receiptData.getRewards() != null) {
-            canvas.DrawText("Rewards Applied", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-            canvas.DrawText("$" + receiptData.getRewards(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-            lineHeight += 30;
+            String localReward = Util.convToDouble(receiptData.getRewards());
+            if(!localReward.equalsIgnoreCase("0.00")) {
+                canvas.DrawText("Rewards Applied", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$" +localReward, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                lineHeight += 30;
+            }
         }
 
         lineHeight += 30;
@@ -293,13 +315,18 @@ public class Utils {
         lineHeight += 20;
 
         if (receiptData.getTotal() != null) {
-            canvas.DrawText("TOTAL: $" + receiptData.getTotal(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            String total = Util.convToDouble(String.valueOf(receiptData.getTotal()));
+            canvas.DrawText("TOTAL", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+            canvas.DrawText("$" + total, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
             lineHeight += 30;
         }
         if (receiptData.getTip2() != null) {
-            canvas.DrawText("Tips", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-            canvas.DrawText("$" + receiptData.getTip2(), -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
-            lineHeight += 30;
+            String tip2 = Util.convToDouble(String.valueOf(receiptData.getTip2()));
+            if(!tip2.equalsIgnoreCase("0.00")) {
+                canvas.DrawText("Tips", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("$" + tip2, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                lineHeight += 30;
+            }
         }
         lineHeight += 30;
 
@@ -348,7 +375,7 @@ public class Utils {
 
                     int i = 0;
                     for (String li : addressList) {
-                        System.out.println("li>> "+li);
+                        //System.out.println("li>> "+li);
                         canvas.DrawText(li, 0, lineHeight, 0, defaultFont, 30, 0);
                         i++;
                         lineHeight += 40;
@@ -363,7 +390,7 @@ public class Utils {
 //            canvas.DrawText(receiptData.getMobile(), -2, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
 //            lineHeight += 40;
 //        }
-       // lineHeight += drawEmptyCanvas(canvas,defaultFont);
+        // lineHeight += drawEmptyCanvas(canvas,defaultFont);
         lineHeight+=10;
         canvas.CanvasEnd();
         System.gc();
@@ -410,7 +437,7 @@ public class Utils {
         int lineHeight = 400;
         canvas.DrawText("  ", 0, lineHeight, 0, defaultFont, 10, FONTSTYLE_BOLD);
         lineHeight += 30;
-        canvas.DrawText("    ", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+        canvas.DrawText("*****Thank You Grabull****", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
         lineHeight += 100;
         canvas.DrawText("  ", 0, lineHeight, 0, defaultFont, 10, FONTSTYLE_BOLD);
         lineHeight += 30;
@@ -431,10 +458,10 @@ public class Utils {
 
     public static Bitmap  dummyPrint(Context context){
         Bitmap bitmap = null;
-           Canvas  mCanvas = new Canvas(bitmap);
+        Canvas  mCanvas = new Canvas(bitmap);
         bitmap =   dummyOrderReceipt(context,mCanvas,576);
         Constant.setBitmap(bitmap);
-       return bitmap;
+        return bitmap;
     }
 
 
@@ -521,6 +548,26 @@ public class Utils {
 
 
         lineHeight += 100;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
+        lineHeight += 300;
         lineHeight += 300;
         lineHeight += 300;
         lineHeight += 300;

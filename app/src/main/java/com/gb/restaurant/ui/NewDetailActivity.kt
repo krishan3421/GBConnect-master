@@ -156,7 +156,7 @@ class NewDetailActivity : BaseActivity() {
                 }
                 orderDetailItem.conUpdateButton.visibility = View.VISIBLE
                 data?.name?.let {
-                    orderDetailItem.nameText.text = "$it"
+                    orderDetailItem.nameText.text = it
                 }
                 if (data?.payment?.contains("Paid", true)==true) {
                     orderDetailItem.prepaidText.text = "PREPAID"
@@ -197,9 +197,12 @@ class NewDetailActivity : BaseActivity() {
                     detailFooter.deliveryFeeLayout.visibility = View.VISIBLE
                 }
                 data?.rewards?.let {reward->
-                    if(reward.isNotEmpty()){
-                       detailFooter.rewardLayout.visibility = View.VISIBLE
-                        detailFooter.rewards.text="$$reward"
+                    val localReward = Util.convToDouble(reward)
+                    if(localReward.equals("0.00")==true){
+                        detailFooter.rewardLayout.visibility = View.GONE
+                    }else{
+                        detailFooter.rewardLayout.visibility = View.VISIBLE
+                        detailFooter.rewards.text="$$localReward"
                     }
                 }
                 data?.details?.let {noteDetail->
@@ -238,13 +241,14 @@ class NewDetailActivity : BaseActivity() {
                 if (data!!.items.isNullOrEmpty()) {
                     ordersItemCount.text = "Order(0 items)"
                 } else {
-                    ordersItemCount.text = "Order(${data!!.items!!.size} items)"
+                    ordersItemCount.text = "Order(${data?.items?.size?:0} items)"
                 }
 
 
-                orderIdText.text = "ORDER # ${data!!.id}"
+                orderIdText.text = "ORDER # ${data?.id?:""}"
                 if (data?.subtotal != null) {
-                    detailFooter.subTotalText.text = "$${data?.subtotal}"
+                    val localSubTotal =  Util.convToDouble(data?.subtotal?.toString()?:"0.00")
+                    detailFooter.subTotalText.text = "$$localSubTotal"
                 }
                 if (!data?.offeramount.isNullOrEmpty()) {
                     // "$${String.format("%.2f",data?.deliverycharge!!.toFloat())}"
@@ -256,15 +260,23 @@ class NewDetailActivity : BaseActivity() {
                     detailFooter.taxText.text = "$${data?.tax}"
                 }
                 if (data?.tip != null) {
-                    detailFooter.tipText.text = "$${data?.tip}"
+                    val localTip =   Util.convToDouble(data?.tip?:"")
+                    detailFooter.tipLayout.visibility=View.VISIBLE
+                    detailFooter.tipText.text = "$$localTip"
+                }else{
+                    detailFooter.tipText.text = "$0.00"
                 }
                 if (data?.total != null) {
-                    detailFooter.totalTax.text = "Total $${data?.total}"
+                    val localTotal =  Util.convToDouble(data?.total?.toString()?:"0.00")
+                    detailFooter.totalTax.text = "Total $$localTotal"
                 }
-                if (!data?.tip2.isNullOrEmpty()) {
-                    detailFooter.tipTwoText.text = "Tips $${data?.tip2}"
-                } else {
-                    detailFooter.tipTwoText.text = "Tips_____"
+
+                if(Util.checkPriceEmpty(data?.tip2)){
+                    detailFooter.tipTwoText.visibility=View.GONE
+                }else{
+                  val localTip2 =   Util.convToDouble(data?.tip2?:"")
+                    detailFooter.tipTwoText.visibility=View.VISIBLE
+                    detailFooter.tipTwoText.text = "Added Tips $$localTip2"
                 }
 
                 orderDetailItem.txtPrint.isEnabled = true

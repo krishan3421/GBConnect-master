@@ -238,7 +238,7 @@ class ActiveFragment : BaseFragment() {
             if (binding.activeSwipeRefresh != null)
                 binding.activeSwipeRefresh.isRefreshing = false
             it?.let {
-                println("data>>> ${Util.getStringFromBean(it)}")
+                //println("data>>> ${Util.getStringFromBean(it)}")
                 activeAdapter.notifyDataSetChanged()
                 if (activeAdapter.itemCount > 0) {
                     binding.activeRecycler?.visibility = View.VISIBLE

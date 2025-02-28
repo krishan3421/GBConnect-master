@@ -137,7 +137,7 @@ public class MunbynPrinter {
        if(printSize==0){
            printSize =1;
        }
-        if(printSize > 1){
+        if(printSize >= 1){
             printSize +=1;
         }
         if (ISCONNECT) {
@@ -161,7 +161,7 @@ public class MunbynPrinter {
                     for(int j = 0; j < finalPrintSize; j++) {
                         list.add(DataForSendToPrinterPos80.initializePrinter());
                         List<Bitmap> blist = new ArrayList<>();
-                        if(j==finalPrintSize-1 && finalPrintSize > 1){
+                        if(j==finalPrintSize-1 && finalPrintSize >= 1){
                             blist = BitmapProcess.cutBitmap(150, Constant.getBitmap());
                         }else {
                             blist = BitmapProcess.cutBitmap(150, bitmap1);
