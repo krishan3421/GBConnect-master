@@ -212,7 +212,7 @@ class HomeDetailActivity : BaseActivity() {
                     holdTimeText.visibility = View.GONE
                 }
 
-                if (!data?.type.isNullOrEmpty() && data?.type!!.contains("Pickup", true)) {
+                if (!data?.type.isNullOrEmpty() && data?.type?.contains("Pickup", true)==true) {
                     orderDetailItem.addressLayout.visibility = View.INVISIBLE
                     detailHomeFooter.deliveryFeeHomeLayout.visibility = View.GONE
                     trackOrderText.visibility=View.GONE
@@ -262,11 +262,14 @@ class HomeDetailActivity : BaseActivity() {
                 if (!data?.delivery.isNullOrEmpty()) {
                     orderDetailItem.deliveryAddress.text = "${data?.delivery}"
                 }
-                if (!data?.deliverycharge.isNullOrEmpty()) {
-                    data?.deliverycharge?.let {
-                        detailHomeFooter.deliveryFeeText.text = "$${data?.deliverycharge}"
-                    }
+                if(data?.type?.equals("Delivery",true)==true){
+                    detailHomeFooter.deliveryFeeHomeLayout.visibility = View.VISIBLE
+                    val deliveryCharge =  Util.convToDouble(data?.deliverycharge?.toString()?:"0.00")
+                    detailHomeFooter.deliveryFeeText.text = "$$deliveryCharge"
+                }else{
+                    detailHomeFooter.deliveryFeeHomeLayout.visibility = View.GONE
                 }
+
                 if (!data?.mobile.isNullOrEmpty()) {
                     orderDetailItem.phoneText.text = "Customer Ph: ${data?.mobile}"
                 }
@@ -944,6 +947,7 @@ class HomeDetailActivity : BaseActivity() {
         })
 
         viewModel.orderDetailResponse.observe(this, Observer<OrderDetailResponse> {
+            println("itemsResponse>>>>>>>>> ${Util.getStringFromBean(it)}")
             it?.let {
                 if (it.status == Constant.STATUS.FAIL) {
                     showToast(it.result!!)
@@ -1008,12 +1012,12 @@ class HomeDetailActivity : BaseActivity() {
                 if (!data?.deliverycharge.isNullOrEmpty()) {
                     data?.deliverycharge?.let {
                         deliveryFeeText.text =
-                            "$${String.format("%.2f", data?.deliverycharge!!.toFloat())}"
+                            "$${String.format("%.2f", data?.deliverycharge?.toFloat())}"
                     }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e(TAG, e.message!!)
+                Log.e(TAG, e.message?:"")
             }
         }
 

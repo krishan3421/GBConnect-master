@@ -267,12 +267,12 @@ public class Utils {
         }
 
         if (receiptData.getDeliverycharge() !=null && receiptData.getType().equalsIgnoreCase("Delivery")) {
-            if(!receiptData.getOfferamount().isEmpty() ) {
-                String deliveryCharge = Util.convToDouble(String.valueOf(receiptData.getDeliverycharge()));
+            String deliveryCharge = Util.convToDouble(String.valueOf(receiptData.getDeliverycharge()));
+            //if(!receiptData.getDeliverycharge().isEmpty() ) {
                 canvas.DrawText("Delivery Fee", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 canvas.DrawText("$" + deliveryCharge, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 lineHeight += 30;
-            }
+            //}
         }
 
         if (receiptData.getTax() != null) {
@@ -287,12 +287,9 @@ public class Utils {
 
         if (receiptData.getTip() != null) {
             String localTip = Util.convToDouble(receiptData.getTip());
-            if(!localTip.equalsIgnoreCase("0.00")) {
                 canvas.DrawText("Tip", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 canvas.DrawText("$" + localTip, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 lineHeight += 30;
-            }
-
         }
 
         if (receiptData.getRewards() != null) {
@@ -323,7 +320,7 @@ public class Utils {
         if (receiptData.getTip2() != null) {
             String tip2 = Util.convToDouble(String.valueOf(receiptData.getTip2()));
             if(!tip2.equalsIgnoreCase("0.00")) {
-                canvas.DrawText("Tips", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
+                canvas.DrawText("Added Tips", 0, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 canvas.DrawText("$" + tip2, -3, lineHeight, 0, defaultFont, 30, FONTSTYLE_BOLD);
                 lineHeight += 30;
             }
