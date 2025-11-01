@@ -83,4 +83,5 @@ dependencies {
     // For Kotlin users, also import the Kotlin extensions library for Play In-App Update:
     implementation("com.google.android.play:app-update-ktx:2.1.0")
     implementation("org.glassfish:javax.annotation:10.0-b28")
+    implementation("com.google.auth:google-auth-library-oauth2-http:1.20.0")
 }

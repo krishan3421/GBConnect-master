@@ -65,7 +65,7 @@ class ActiveAdapter(val mContext:Context, var viewModel: OrderViewModel) : Recyc
                  }else {
                      dateText.text = "Received: ${it.date2}"
                  }
-                 if(it.payment!!.contains("Pending",true)){
+                 if(it.payment?.contains("Pending",true)==true){
                      typeText.text = "${it.type?.toUpperCase()} CASH"
                      typeText.setTextColor(ContextCompat.getColor(mContext, R.color.colorAccent))
                  }else{

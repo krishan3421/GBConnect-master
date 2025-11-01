@@ -1,6 +1,7 @@
 package com.gb.restaurant.ui
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -26,6 +27,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.lifecycle.lifecycleScope
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
@@ -50,6 +52,10 @@ import com.gb.restaurant.utils.Util
 import com.gb.restaurant.viewmodel.OrderViewModel
 import com.gb.restaurant.session.SessionManager
 import com.gb.restaurant.utils.Utils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 
 //https://stackoverflow.com/questions/17685787/access-a-method-of-a-fragment-from-the-viewpager-activity
 class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
@@ -130,7 +136,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             mediaPlayer = MediaPlayer.create(this, R.raw.sound);
             mediaPlayer.isLooping = true
             //blinkTab(1)
-            handler.post(runnableCode);
+           // handler.post(runnableCode);
         } catch (e: java.lang.Exception) {
             e.printStackTrace()
         }
@@ -151,7 +157,28 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(BaseFragment.TAG, e.message!!)
+            Log.e(BaseFragment.TAG, e.message?:"")
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        lifecycleScope.launch {
+            while (isActive) {
+//                val currentTime = System.currentTimeMillis()
+//                val lastEventTime = sessionManager?.getLastPrintTime()?:System.currentTimeMillis()
+//                val diffMinutes = (currentTime - lastEventTime) / (60 * 1000)
+//                if (diffMinutes >= 10) {
+//                    sessionManager?.setPrintTime(currentTime)
+//                    Log.d("Coroutine", "Called on main thread")
+//                    callService(isPrintLastOrder = true)
+//                }
+                Log.d("Coroutine", "Called on main thread")
+                callService(isPrintLastOrder = true)
+                // Repeat every 10 minutes
+               // delay(10 * 60 * 1000L)
+                delay(10 * 60 * 1000L)
+            }
         }
     }
 
@@ -163,7 +190,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             // Repeat this the same runnable code block again another 2 seconds
             // 'this' is referencing the Runnable object
             callService(isPrintLastOrder = true)
-            handler.postDelayed(this, 70 * 1000)
+            handler.postDelayed(this, 10 * 60 * 1000)
         }
     }
     inner class MyReceiver : BroadcastReceiver() {
@@ -179,7 +206,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             onBackPressed()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -216,6 +243,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
         onBackPressed()
     }
 
+    @SuppressLint("UnspecifiedRegisterReceiverFlag")
     override fun onResume() {
         super.onResume()
         isPageVisible = true
@@ -235,7 +263,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             );
         }
         Utils.setBluetooth(true,MyApp.instance)
-        callService(false)
+        //callService(false)
        // mainHandler.post(updateTextTask)
 
     }
@@ -310,7 +338,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -335,7 +363,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             startMedia()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -374,7 +402,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             startActivityForResult(intent, RESERVATION)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -385,7 +413,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             startActivity(intent)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -396,7 +424,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             startActivity(intent)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -407,7 +435,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -423,7 +451,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -528,7 +556,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -551,8 +579,12 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
         viewModel.orderResponse.observe(this, Observer<OrderResponse> {
             it?.let {
                 newOrderList = it.data?: emptyList()
-                if (newOrderList.isNotEmpty())
+                if (newOrderList.isNotEmpty()) {
                     onFragmentInteraction(0, newOrderList.size)
+                }else{
+                    stopMedia()
+                    onStop(Constant.TAB.NEW, 0)
+                }
 
                 //println(("item count>>>>>> " + it.reservation) ?: 0)
                 val reservationCount = it.reservation ?: 0
@@ -566,6 +598,12 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             try {
                 it?.let {
                     if (it) {
+//                        confirmData = viewModel.getOrderAt(0)
+//                        val  printStatus =  Intent("com.gb.restaurant.utils.returnPrintStatus");
+//                        printStatus.putExtra("PRINT_STATUS", 1);
+//                        this.sendBroadcast(printStatus);
+//                        return@Observer
+                        //LocalBroadcastManager.getInstance(context).sendBroadcast(printStatus);
                         if (ContextCompat.checkSelfPermission(
                                 this,
                                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -611,7 +649,12 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
                    showToast(it.result?:"")
                 } else {
                     showToast(it.result?:"")
-                    callService(false)
+                    //callService(false)
+                    lifecycleScope.launch(Dispatchers.Main) {
+                        delay(1000)
+                        viewModel.rmAndUpdateOrderList(it.data?.id?:"",true)
+                    }
+
                     //(activity as OrdersActivity?)!!.refreshActiveFragment()
 
                 }
@@ -692,7 +735,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
 
         try {
             if (Validation.isOnline(this)) {
-                orderStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId!!
+                orderStatusRequest.restaurant_id = rsLoginResponse?.data?.restaurantId?:""
                // println("request>>>>> ${Util.getStringFromBean(orderStatusRequest)}")
                 viewModel.orderStatus(orderStatusRequest)
             } else {
@@ -700,7 +743,7 @@ class OrdersActivity : BaseActivity(), ViewPager.OnPageChangeListener,
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(BaseFragment.TAG, e.message!!)
+            Log.e(BaseFragment.TAG, e.message?:"")
         }
 
     }

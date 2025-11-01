@@ -137,7 +137,7 @@ class HomeFragment : BaseFragment() ,View.OnClickListener,InstallStateUpdatedLis
             )
         }catch (e:Exception){
             e.printStackTrace()
-            Log.e(TAG,e.message!!)
+            Log.e(TAG,e.message?:"")
         }
     }
 
@@ -254,7 +254,7 @@ class HomeFragment : BaseFragment() ,View.OnClickListener,InstallStateUpdatedLis
             }
         }catch (e:Exception){
             e.printStackTrace()
-            Log.e(TAG,e.message!!)
+            Log.e(TAG,e.message?:"")
         }
     }
 

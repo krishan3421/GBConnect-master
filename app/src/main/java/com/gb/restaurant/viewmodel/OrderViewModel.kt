@@ -45,6 +45,19 @@ class OrderViewModel :ViewModel(){
 
             })
     }
+    fun rmAndUpdateOrderList(orderId:String,isPrintLastOrder: Boolean){
+        orderResponse.value?.data?.let {
+            val updatedList= it.filter { order-> order?.id!=orderId }
+            orderResponse.value?.data=updatedList
+            val updatedResponse = orderResponse.value
+            if(updatedResponse!=null) {
+                orderResponse.value = updatedResponse!!
+            }
+            if(updatedList.isNotEmpty()) {
+                printLastOrder.value = isPrintLastOrder
+            }
+        }
+    }
 
     fun getCompOrderResponse(compOrderRequest: CompOrderRequest) {
         isLoading.value = true

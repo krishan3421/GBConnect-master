@@ -45,13 +45,13 @@ class ReservationAdapter(val mContext:Context, var viewModel: ReservationViewMod
                 peopleText.text ="${it.peoples}"
                // detailsValue.text = "${it.details}"
                 println("status>> ${it.status}")
-                if(it.status!!.equals("Pending",true)){
+                if(it.status?.equals("Pending",true)==true){
                     //confirmButton.text = "Confirm"
                   //  replyLayout.visibility = View.GONE
                     statusImage.setImageResource(R.drawable.panding)
-                }else if(it.status!!.equals("Confirmed",true)){
+                }else if(it.status?.equals("Confirmed",true)==true){
                     statusImage.setImageResource(R.drawable.tick_icon)
-                }else if(it.status!!.equals(Constant.ORDER_STATUS.CLOSED,true)) {
+                }else if(it.status?.equals(Constant.ORDER_STATUS.CLOSED,true)==true) {
                     statusImage.setImageResource(R.drawable.tick_icon)
                     statusImage.setColorFilter(ContextCompat.getColor(mContext, R.color.dark_gray), android.graphics.PorterDuff.Mode.SRC_IN);
                 }else{
@@ -87,7 +87,7 @@ class ReservationAdapter(val mContext:Context, var viewModel: ReservationViewMod
             reserStatusRequest.deviceversion = Util.getVersionName(mContext)
             reserStatusRequest.status = orderStatus
             reserStatusRequest.reply = reply
-            reserStatusRequest.reservation_id = viewModel.getReservationAt(position)?.id!!
+            reserStatusRequest.reservation_id = viewModel.getReservationAt(position)?.id?:""
             statusClickListener.onButtonClick(reserStatusRequest)
         }catch (e:Exception){
             e.printStackTrace()

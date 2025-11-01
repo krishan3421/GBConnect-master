@@ -28,7 +28,7 @@ abstract class BaseFragment : Fragment() {
             val imm = activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(view?.getWindowToken(), 0)
         } catch (e: Exception) {
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
             e.printStackTrace()
         }
 

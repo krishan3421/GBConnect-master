@@ -29,6 +29,7 @@ class SessionManager(mContext: Context) {
         val PRINTER_TYPE = "printer_type"
         val API_TYPE = "GD"
         val PRINT_PAGE_SIZE = "PRINT_PAGE_SIZE"
+        val LAST_PRINT_TIME = "LAST_PRINT_TIME"
 
     }
 
@@ -134,6 +135,13 @@ class SessionManager(mContext: Context) {
     fun setPrintPageSize(page: Int) {
         editor.putInt(PRINT_PAGE_SIZE, page)
         editor.commit()
+    }
+    fun setPrintTime(lastPrintTime: Long) {
+        editor.putLong(LAST_PRINT_TIME, lastPrintTime)
+        editor.commit()
+    }
+    fun getLastPrintTime(): Long {
+        return  pref.getLong(LAST_PRINT_TIME, System.currentTimeMillis())
     }
 
     fun getPrintPageSize(): Int {

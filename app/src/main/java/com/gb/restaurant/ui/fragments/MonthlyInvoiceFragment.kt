@@ -123,7 +123,7 @@ class MonthlyInvoiceFragment : BaseFragment(),View.OnClickListener{
             }
         }catch (e:Exception){
             e.printStackTrace()
-            Log.e(TAG,e.message!!)
+            Log.e(TAG,e.message?:"")
         }
     }
 
@@ -175,14 +175,14 @@ class MonthlyInvoiceFragment : BaseFragment(),View.OnClickListener{
                         callService()
                     }catch (e:Exception){
                         e.printStackTrace()
-                        Log.e(TAG,e.message!!)
+                        Log.e(TAG,e.message?:"")
                     }
 
                 }
             }
         }catch (e:Exception){
             e.printStackTrace()
-            Log.e(TAG,e.message!!)
+            Log.e(TAG,e.message?:"")
         }
     }
 
@@ -198,7 +198,7 @@ class MonthlyInvoiceFragment : BaseFragment(),View.OnClickListener{
                         callService()
                     }catch (e:Exception){
                         e.printStackTrace()
-                        Log.e(TAG,e.message!!)
+                        Log.e(TAG,e.message?:"")
                     }
 
                 }

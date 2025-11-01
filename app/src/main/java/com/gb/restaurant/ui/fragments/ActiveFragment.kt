@@ -207,7 +207,7 @@ class ActiveFragment : BaseFragment() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -256,9 +256,9 @@ class ActiveFragment : BaseFragment() {
         viewModel.orderStatusResponse.observe(viewLifecycleOwner, Observer<OrderStatusResponse> {
             it?.let {
                 if (it.status == Constant.STATUS.FAIL) {
-                    fragmentBaseActivity.showToast(it.result!!)
+                    fragmentBaseActivity.showToast(it.result?:"")
                 } else {
-                    fragmentBaseActivity.showToast(it.result!!)
+                    fragmentBaseActivity.showToast(it.result?:"")
                     if (materialDialog != null) {
                         materialDialog!!.dismiss()
                     }

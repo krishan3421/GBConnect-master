@@ -146,7 +146,7 @@ companion object{
             checkBundle(intent)
         }catch (e:Exception){
             e.printStackTrace()
-            Log.e(TAG,e.message!!)
+            Log.e(TAG,e.message?:"")
         }
     }
     private fun checkBundle(intent: Intent?):Boolean{
@@ -320,7 +320,7 @@ companion object{
             fragmentTransaction.commit()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
 
         }
 

@@ -51,7 +51,7 @@ class Util {
                  }
             }catch (e:Exception) {
                 e.printStackTrace()
-                Log.e(TAG, e.message!!)
+                Log.e(TAG, e.message?:"")
             }
          }
 
@@ -68,7 +68,7 @@ class Util {
                 }
             }catch (e:Exception){
                 e.printStackTrace()
-                Log.e(TAG, e.message!!)
+                Log.e(TAG, e.message?:"")
             }
         }
 
@@ -77,7 +77,7 @@ class Util {
             try {
                 result = Gson().toJson(bean)
             } catch (e: Exception) {
-                Log.e(TAG, e.message!!)
+                Log.e(TAG, e.message?:"")
                 e.printStackTrace()
             }
             return result

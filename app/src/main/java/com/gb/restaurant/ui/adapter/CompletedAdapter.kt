@@ -60,7 +60,7 @@ class CompletedAdapter(val mContext:Context, var viewModel: OrderViewModel) : Re
                 totalPrice.text = "$$localTotal"
                 dateText.text = "${it.date2}"
                // pickUpStatus.text = "${it.type}"
-                if(it.payment!!.contains("Pending",true)){
+                if(it.payment?.contains("Pending",true)==true){
                     typeText.text = "${it.type?.toUpperCase()} CASH"
                     typeText.setTextColor(ContextCompat.getColor(mContext, R.color.colorAccent))
                 }else{

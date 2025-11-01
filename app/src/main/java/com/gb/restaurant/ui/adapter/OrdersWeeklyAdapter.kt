@@ -53,7 +53,7 @@ class OrdersWeeklyAdapter(val mContext:Context, var viewModel: ReportViewModel) 
                 }
             }catch (e:Exception){
                 e.printStackTrace()
-                Log.e(TAG,e.message!!)
+                Log.e(TAG,e.message?:"")
             }
         }
 
@@ -67,7 +67,7 @@ class OrdersWeeklyAdapter(val mContext:Context, var viewModel: ReportViewModel) 
                 }
             }catch (e:Exception){
                 e.printStackTrace()
-                Log.e(TAG,e.message!!)
+                Log.e(TAG,e.message?:"")
             }
         }
 

@@ -29,7 +29,7 @@ class Validation {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e(TAG, e.message!!)
+                Log.e(TAG, e.message?:"")
             }
 
             return false
@@ -49,7 +49,7 @@ class Validation {
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e(TAG, e.message!!)
+                Log.e(TAG, e.message?:"")
             }
 
             return false

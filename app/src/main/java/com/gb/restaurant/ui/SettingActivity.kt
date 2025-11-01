@@ -108,7 +108,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             viewModel = createViewModel()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -223,7 +223,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             callStatusService()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -248,7 +248,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -336,7 +336,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -352,7 +352,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -369,7 +369,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -385,7 +385,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -407,7 +407,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -429,7 +429,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -442,7 +442,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -522,7 +522,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -531,7 +531,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             showCustomViewDialog()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -541,7 +541,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             gbSelect = Constant.GB_DELIVERY.SELF
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -551,7 +551,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             gbSelect = Constant.GB_DELIVERY.GB
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -561,7 +561,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             rsLoginResponse?.data?.pickup
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -659,7 +659,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
                 callUpdateSetting(updateSettingRequest)
             } catch (e: Exception) {
                 e.printStackTrace()
-                Log.e(TAG, e.message!!)
+                Log.e(TAG, e.message?:"")
             }
         }
     }
@@ -673,7 +673,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -699,7 +699,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -715,7 +715,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -805,7 +805,7 @@ class SettingActivity : BaseActivity(), View.OnClickListener {
             MyApp.instance.rsLoginResponse = rsLoginResponse
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 

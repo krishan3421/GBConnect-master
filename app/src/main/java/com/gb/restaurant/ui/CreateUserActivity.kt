@@ -167,7 +167,7 @@ class CreateUserActivity : BaseActivity() {
                 }
             }catch (e:Exception){
                 e.printStackTrace()
-                Log.e(TAG, e.message!!)
+                Log.e(TAG, e.message?:"")
             }
         }
 

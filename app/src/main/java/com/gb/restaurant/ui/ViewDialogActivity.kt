@@ -71,7 +71,7 @@ class ViewDialogActivity : BaseActivity() {
             createItmList()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -151,7 +151,7 @@ class ViewDialogActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -218,7 +218,7 @@ class ViewDialogActivity : BaseActivity() {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -239,7 +239,7 @@ class ViewDialogActivity : BaseActivity() {
             onBackPressed()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -249,7 +249,7 @@ class ViewDialogActivity : BaseActivity() {
             addItemsViewDialog()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -258,7 +258,7 @@ class ViewDialogActivity : BaseActivity() {
             showCustomViewDialog(data)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -300,7 +300,7 @@ class ViewDialogActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -370,7 +370,7 @@ class ViewDialogActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -389,7 +389,7 @@ class ViewDialogActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 

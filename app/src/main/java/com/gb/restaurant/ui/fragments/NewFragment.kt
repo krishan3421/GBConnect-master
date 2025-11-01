@@ -140,7 +140,7 @@ class NewFragment : BaseFragment() {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -299,7 +299,7 @@ class NewFragment : BaseFragment() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
 
     }
@@ -373,7 +373,7 @@ class NewFragment : BaseFragment() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 

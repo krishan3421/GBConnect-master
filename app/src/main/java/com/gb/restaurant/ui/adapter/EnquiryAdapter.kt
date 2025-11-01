@@ -40,7 +40,7 @@ class EnquiryAdapter(val mContext:Context, var viewModel: ReservationViewModel) 
              var enquiryStatusRequest =EnquiryStatusRequest()
             enquiryStatusRequest.deviceversion = com.gb.restaurant.utils.Util.getVersionName(mContext)
             enquiryStatusRequest.status = Constant.ORDER_STATUS.CONFIRMED
-            enquiryStatusRequest.enquiry_id = viewModel.getReservationAt(position)?.id!!
+            enquiryStatusRequest.enquiry_id = viewModel.getReservationAt(position)?.id?:""
             statusClickListener.onButtonClick(enquiryStatusRequest)
         }
 
@@ -48,7 +48,7 @@ class EnquiryAdapter(val mContext:Context, var viewModel: ReservationViewModel) 
             var enquiryStatusRequest =EnquiryStatusRequest()
             enquiryStatusRequest.deviceversion = com.gb.restaurant.utils.Util.getVersionName(mContext)
             enquiryStatusRequest.status = Constant.ORDER_STATUS.CANCEL
-            enquiryStatusRequest.enquiry_id = viewModel.getReservationAt(position)?.id!!
+            enquiryStatusRequest.enquiry_id = viewModel.getReservationAt(position)?.id?:""
             statusClickListener.onButtonClick(enquiryStatusRequest)
         }
 

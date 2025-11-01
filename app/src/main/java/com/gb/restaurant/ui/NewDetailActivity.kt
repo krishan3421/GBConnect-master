@@ -108,7 +108,7 @@ class NewDetailActivity : BaseActivity() {
             createItmList()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -120,7 +120,7 @@ class NewDetailActivity : BaseActivity() {
             callOrderDetailService()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -341,7 +341,7 @@ class NewDetailActivity : BaseActivity() {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -419,7 +419,7 @@ class NewDetailActivity : BaseActivity() {
             onBackPressed()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -429,7 +429,7 @@ class NewDetailActivity : BaseActivity() {
             addItemsViewDialog()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -438,7 +438,7 @@ class NewDetailActivity : BaseActivity() {
             showCustomViewDialog(data)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -470,7 +470,7 @@ class NewDetailActivity : BaseActivity() {
             onBackPressed()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -512,7 +512,7 @@ class NewDetailActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -582,7 +582,7 @@ class NewDetailActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -601,7 +601,7 @@ class NewDetailActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 

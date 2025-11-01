@@ -278,7 +278,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -354,7 +354,7 @@ class CompletedFragment : BaseFragment(), View.OnClickListener {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 

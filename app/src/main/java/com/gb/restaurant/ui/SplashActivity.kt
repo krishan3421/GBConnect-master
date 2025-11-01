@@ -7,8 +7,13 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.DisplayMetrics
 import android.view.View
+import androidx.lifecycle.lifecycleScope
 import com.gb.restaurant.databinding.ActivitySplashBinding
 import com.gb.restaurant.utils.Utils
+import com.google.auth.oauth2.GoogleCredentials
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import java.io.IOException
 
 
 class SplashActivity : BaseActivity() {
@@ -58,8 +63,8 @@ class SplashActivity : BaseActivity() {
             }
         }
         Utils.dummyPrint(this);
-        println("density>>>>>>>>> ${metrics.densityDpi}")
-        //getAccessToken()
+        //println("density>>>>>>>>> ${metrics.densityDpi}")
+       // getAccessToken()
     }
 
 
@@ -88,19 +93,20 @@ class SplashActivity : BaseActivity() {
         finish()
     }
 
-//    @Throws(IOException::class)
-//    private fun getAccessToken() {
-//        lifecycleScope.launch(Dispatchers.IO){
-//            val googleCredentials: GoogleCredentials = GoogleCredentials
-//                .fromStream(assets.open("service-account.json"))
-//                .createScoped(
-//                    listOf("https://www.googleapis.com/auth/firebase",
-//                        "https://www.googleapis.com/auth/cloud-platform",
-//                        "https://www.googleapis.com/auth/firebase.readonly")
-//                )
-//            googleCredentials.refresh()
-//            val token =  googleCredentials.accessToken.tokenValue
-//            println("token>>>> $token")
-//        }
-//    }
+    @Throws(IOException::class)
+    private fun getAccessToken() {
+        lifecycleScope.launch(Dispatchers.IO){
+            val googleCredentials: GoogleCredentials = GoogleCredentials
+                .fromStream(assets.open("service-account.json"))
+                .createScoped(
+                    listOf("https://www.googleapis.com/auth/firebase",
+                        "https://www.googleapis.com/auth/cloud-platform",
+                        "https://www.googleapis.com/auth/firebase.readonly",
+                        "https://www.googleapis.com/auth/firebase.messaging")
+                )
+            googleCredentials.refresh()
+            val token =  googleCredentials.accessToken.tokenValue
+            println("accesstoken>>>> $token")
+        }
+    }
 }

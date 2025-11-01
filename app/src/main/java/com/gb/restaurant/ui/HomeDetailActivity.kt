@@ -119,7 +119,7 @@ class HomeDetailActivity : BaseActivity() {
             createItmList()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -129,7 +129,7 @@ class HomeDetailActivity : BaseActivity() {
             data = MyApp.instance.data
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
     private fun openURL(url:String){
@@ -391,7 +391,7 @@ class HomeDetailActivity : BaseActivity() {
 
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -463,7 +463,7 @@ class HomeDetailActivity : BaseActivity() {
             onBackPressed()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -473,7 +473,7 @@ class HomeDetailActivity : BaseActivity() {
             addItemsViewDialog()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -482,7 +482,7 @@ class HomeDetailActivity : BaseActivity() {
             showCustomViewDialog(data)
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -545,7 +545,7 @@ class HomeDetailActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -743,7 +743,7 @@ class HomeDetailActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -761,7 +761,7 @@ class HomeDetailActivity : BaseActivity() {
             }
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
@@ -1030,7 +1030,7 @@ class HomeDetailActivity : BaseActivity() {
             finish()
         } catch (e: Exception) {
             e.printStackTrace()
-            Log.e(TAG, e.message!!)
+            Log.e(TAG, e.message?:"")
         }
     }
 
